@@ -198,7 +198,9 @@ export default function AuthorSubmit() {
       setAuthors([{ id: Math.random().toString(), full_name: user.user_metadata?.full_name || '', email: user.email || '', affiliation: '', country: '', orcid: '' }]);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err: any) {
-      setError(err.message || 'Gagal mensubmit artikel.');
+      const errorMessage = err.message || 'Gagal mensubmit artikel.';
+      setError(errorMessage);
+      window.alert('Terjadi Kesalahan: ' + errorMessage);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } finally {
       setLoading(false);
@@ -377,10 +379,17 @@ export default function AuthorSubmit() {
               </div>
 
               {/* ACTION BUTTONS */}
-              <div className="p-6 md:p-8 bg-academic-50 border-t border-academic-200 flex justify-end gap-3">
-                <button type="submit" disabled={loading || !formData.journal_id} className="px-8 py-3 rounded-xl bg-brand-700 text-white font-bold hover:bg-brand-800 shadow-md hover:shadow-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-lg">
-                  {loading ? 'Memproses...' : <><Send className="w-5 h-5" /> Submit Artikel</>}
-                </button>
+              <div className="p-6 md:p-8 bg-academic-50 border-t border-academic-200 flex flex-col gap-4 items-end">
+                {error && (
+                  <div className="w-full bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm font-medium animate-pulse">
+                    <span className="font-bold">Error:</span> {error}
+                  </div>
+                )}
+                <div className="flex gap-3">
+                  <button type="submit" disabled={loading || !formData.journal_id} className="px-8 py-3 rounded-xl bg-brand-700 text-white font-bold hover:bg-brand-800 shadow-md hover:shadow-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-lg">
+                    {loading ? 'Mengunggah Data...' : <><Send className="w-5 h-5" /> Submit Artikel</>}
+                  </button>
+                </div>
               </div>
             </form>
           </div>
