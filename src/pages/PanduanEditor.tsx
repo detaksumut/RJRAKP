@@ -44,7 +44,7 @@ export default function PanduanEditor() {
             {[
               {
                 title: 'Pendidikan Akademis Tinggi',
-                desc: 'Memiliki gelar minimal Doktor (S3) atau pakar profesional dengan rekam jejak riset kuat di bidang kepakarannya.'
+                desc: 'Memiliki gelar minimal Magister (S2) atau pakar profesional dengan rekam jejak riset kuat di bidang kepakarannya.'
               },
               {
                 title: 'Reputasi Publikasi Terindeks',
