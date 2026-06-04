@@ -94,8 +94,8 @@ export default function Footer() {
                <div className="absolute left-1/2 top-0 bottom-0 w-px bg-white/20 -translate-x-1/2"></div>
                
                {/* Row 1: Labels */}
-               <div className="text-right text-[10px] md:text-xs uppercase tracking-widest text-accent-400 font-black pr-4 md:pr-6">Penerbit</div>
-               <div className="text-left text-[10px] md:text-xs uppercase tracking-widest text-accent-400 font-black pl-4 md:pl-6">Supervisi</div>
+               <div className="text-right text-[10px] md:text-xs uppercase tracking-widest text-accent-500 font-black pr-4 md:pr-6">Penerbit</div>
+               <div className="text-left text-[10px] md:text-xs uppercase tracking-widest text-accent-500 font-black pl-4 md:pl-6">Supervisi</div>
                
                {/* Row 2: Values */}
                <div className="text-right text-xs md:text-sm font-bold text-white pr-4 md:pr-6">PT. Bernas Sumut Jaya</div>
