@@ -415,7 +415,7 @@ export default function AdminJournals() {
                 Belum ada data jurnal yang cocok atau terdaftar.
               </div>
             ) : (
-              <table className="min-w-full divide-y divide-academic-200 text-left border-collapse">
+              <table className="min-w-[900px] w-full divide-y divide-academic-200 text-left border-collapse">
                 <thead className="bg-academic-50/50">
                   <tr className="text-xs uppercase tracking-wider text-academic-500 font-bold">
                     <th scope="col" className="px-6 py-4">Nama Jurnal</th>
