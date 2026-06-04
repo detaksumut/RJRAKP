@@ -13,6 +13,7 @@ export default function JurnalDetail() {
   const [journal, setJournal] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [articles, setArticles] = useState<any[]>([]);
+  const [editorialTeam, setEditorialTeam] = useState<any[]>([]);
 
   useEffect(() => {
     async function fetchData() {
@@ -26,25 +27,36 @@ export default function JurnalDetail() {
         if (journalData) {
           setJournal(journalData);
           
-          const { data: articlesData } = await supabase
-            .from('publications')
-            .select(`
-              id,
-              pdf_url,
-              articles!inner (
-                title,
-                slug,
-                abstract,
-                article_authors ( full_name )
-              )
-            `)
-            .eq('articles.journal_id', journalData.id)
-            .limit(10);
-            
-          if (articlesData) {
-            setArticles(articlesData.filter((a: any) => a.articles));
+            const { data: articlesData } = await supabase
+              .from('publications')
+              .select(`
+                id,
+                pdf_url,
+                articles!inner (
+                  title,
+                  slug,
+                  abstract,
+                  article_authors ( full_name )
+                )
+              `)
+              .eq('articles.journal_id', journalData.id)
+              .limit(10);
+              
+            if (articlesData) {
+              setArticles(articlesData.filter((a: any) => a.articles));
+            }
+
+            const { data: editorsData } = await supabase
+              .from('journal_editorial_team')
+              .select('*')
+              .eq('journal_id', journalData.id)
+              .order('sort_order', { ascending: true })
+              .order('created_at', { ascending: false });
+              
+            if (editorsData) {
+              setEditorialTeam(editorsData);
+            }
           }
-        }
       } catch (err) {
         console.error(err);
       } finally {
@@ -199,9 +211,32 @@ export default function JurnalDetail() {
                   Tim Editorial
                 </h3>
                 
-                <div className="text-academic-500 text-sm italic">
-                  Data tim editorial akan ditampilkan dari database.
-                </div>
+                {editorialTeam.length === 0 ? (
+                  <div className="text-academic-500 text-sm italic">
+                    Belum ada data tim editorial.
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {editorialTeam.map(editor => (
+                      <div key={editor.id} className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-full overflow-hidden border border-academic-200 shrink-0 bg-academic-100 flex items-center justify-center">
+                          {editor.image_url ? (
+                            <img src={editor.image_url} alt={editor.name} className="w-full h-full object-cover" />
+                          ) : (
+                            <span className="font-bold text-academic-400 text-lg">{editor.name.charAt(0)}</span>
+                          )}
+                        </div>
+                        <div className="min-w-0">
+                          <h4 className="font-bold text-academic-900 text-sm truncate">{editor.name}</h4>
+                          <p className="text-xs font-semibold text-brand-700 truncate">{editor.role}</p>
+                          {editor.affiliation && (
+                            <p className="text-xs text-academic-500 truncate">{editor.affiliation}</p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>
