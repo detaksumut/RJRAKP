@@ -75,20 +75,22 @@ export default function Footer() {
             </ul>
           </div>
         </div>
+      </div>
 
-        <div className="mt-12 pt-8 border-t border-academic-200 text-center shrink-0">
-          <div className="flex justify-center items-center gap-8 mb-4">
-            <div className="flex flex-col items-center">
-              <img src="/logo-bernas.png.png" alt="PT. Bernas Sumut Jaya" className="h-20 md:h-24 w-auto object-contain mb-1" />
+      <div className="bg-gradient-to-r from-brand-900 via-brand-800 to-brand-900 border-t-4 border-accent-500 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center shrink-0">
+          <div className="flex justify-center items-center gap-6 md:gap-10 mb-6">
+            <div className="flex flex-col items-center bg-white/5 hover:bg-white/10 transition-colors p-3 rounded-2xl backdrop-blur-sm border border-white/10">
+              <img src="/logo-bernas.png.png" alt="PT. Bernas Sumut Jaya" className="h-16 md:h-20 w-auto object-contain" />
             </div>
-            <div className="flex flex-col items-center">
-              <img src="/logo-binews.png.png" alt="BeritaIndonesia.News" className="h-20 md:h-24 w-auto object-contain mb-1" />
+            <div className="flex flex-col items-center bg-white/5 hover:bg-white/10 transition-colors p-3 rounded-2xl backdrop-blur-sm border border-white/10">
+              <img src="/logo-binews.png.png" alt="BeritaIndonesia.News" className="h-16 md:h-20 w-auto object-contain" />
             </div>
           </div>
-          <p className="text-xs font-bold text-academic-600 mb-2">
-            Penerbit PT. Bernas Sumut Jaya | Supervisi BeritaIndonesia.News
+          <p className="text-xs md:text-sm font-bold text-accent-400 mb-2">
+            Penerbit PT. Bernas Sumut Jaya <span className="text-white/30 mx-2">|</span> Supervisi BeritaIndonesia.News
           </p>
-          <p className="text-[10px] text-academic-400 font-medium tracking-widest uppercase">
+          <p className="text-[10px] text-brand-200/60 font-medium tracking-widest uppercase">
             &copy; {new Date().getFullYear()} Rumah Jurnal Riset, Analisis dan Keadilan Publik. Hak Cipta Dilindungi.
           </p>
         </div>
