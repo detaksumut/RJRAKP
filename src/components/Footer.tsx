@@ -79,27 +79,27 @@ export default function Footer() {
 
       <div className="bg-gradient-to-r from-brand-900 via-brand-800 to-brand-900 border-t-4 border-accent-500 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center shrink-0">
-          <div className="flex flex-col md:flex-row justify-center items-center md:items-stretch gap-6 md:gap-12 mb-8">
-            {/* Publisher Block */}
-            <div className="flex flex-col items-center">
-              <div className="bg-white/5 hover:bg-white/10 transition-colors p-3 rounded-2xl backdrop-blur-sm border border-white/10 mb-3 h-24 md:h-28 flex items-center justify-center">
-                <img src="/logo-bernas.png.png" alt="PT. Bernas Sumut Jaya" className="h-16 md:h-20 w-auto object-contain" />
-              </div>
-              <span className="text-[10px] uppercase tracking-widest text-accent-400 font-black mb-1">Penerbit</span>
-              <span className="text-sm font-bold text-white text-center">PT. Bernas Sumut Jaya</span>
+          <div className="flex justify-center items-center gap-6 md:gap-10 mb-6">
+            <div className="bg-white/5 hover:bg-white/10 transition-colors p-3 rounded-2xl backdrop-blur-sm border border-white/10 h-24 md:h-28 flex items-center justify-center">
+              <img src="/logo-bernas.png.png" alt="PT. Bernas Sumut Jaya" className="h-16 md:h-20 w-auto object-contain" />
             </div>
+            <div className="bg-white/5 hover:bg-white/10 transition-colors p-3 rounded-2xl backdrop-blur-sm border border-white/10 h-24 md:h-28 flex items-center justify-center">
+              <img src="/logo-binews.png.png" alt="BeritaIndonesia.News" className="h-16 md:h-20 w-auto object-contain" />
+            </div>
+          </div>
 
-            {/* Divider */}
-            <div className="hidden md:block w-px bg-white/20 self-stretch my-2"></div>
-            <div className="md:hidden w-12 h-px bg-white/20 my-2"></div>
-
-            {/* Supervisor Block */}
-            <div className="flex flex-col items-center">
-              <div className="bg-white/5 hover:bg-white/10 transition-colors p-3 rounded-2xl backdrop-blur-sm border border-white/10 mb-3 h-24 md:h-28 flex items-center justify-center">
-                <img src="/logo-binews.png.png" alt="BeritaIndonesia.News" className="h-16 md:h-20 w-auto object-contain" />
-              </div>
-              <span className="text-[10px] uppercase tracking-widest text-accent-400 font-black mb-1">Supervisi</span>
-              <span className="text-sm font-bold text-white text-center">BeritaIndonesia.News</span>
+          <div className="flex flex-col items-center mb-6">
+            <div className="grid grid-cols-2 gap-x-0 gap-y-1 w-full max-w-lg mx-auto relative">
+               {/* Center vertical divider */}
+               <div className="absolute left-1/2 top-0 bottom-0 w-px bg-white/20 -translate-x-1/2"></div>
+               
+               {/* Row 1: Labels */}
+               <div className="text-right text-[10px] md:text-xs uppercase tracking-widest text-accent-400 font-black pr-4 md:pr-6">Penerbit</div>
+               <div className="text-left text-[10px] md:text-xs uppercase tracking-widest text-accent-400 font-black pl-4 md:pl-6">Supervisi</div>
+               
+               {/* Row 2: Values */}
+               <div className="text-right text-xs md:text-sm font-bold text-white pr-4 md:pr-6">PT. Bernas Sumut Jaya</div>
+               <div className="text-left text-xs md:text-sm font-bold text-white pl-4 md:pl-6">BeritaIndonesia.News</div>
             </div>
           </div>
           <p className="text-[10px] text-white/70 font-medium tracking-widest uppercase">
