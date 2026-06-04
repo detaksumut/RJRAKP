@@ -31,7 +31,7 @@ export default function JurnalDetail() {
             .select(`
               id,
               pdf_url,
-              articles (
+              articles!inner (
                 title,
                 slug,
                 abstract,
