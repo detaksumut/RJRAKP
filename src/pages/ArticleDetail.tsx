@@ -29,7 +29,7 @@ export default function ArticleDetail() {
             slug, 
             created_at, 
             status,
-            article_authors (full_name, affiliation, email, is_primary, order_index),
+            article_authors (full_name, affiliation, email, is_corresponding, author_order),
             journals (id, name, p_issn, e_issn, publisher, slug),
             publications (id, doi, pdf_url, volume_number, issue_number, publication_date)
           `)
@@ -43,9 +43,9 @@ export default function ArticleDetail() {
         // Sort authors
         if (data.article_authors) {
           data.article_authors.sort((a: any, b: any) => {
-            if (a.is_primary) return -1;
-            if (b.is_primary) return 1;
-            return (a.order_index || 0) - (b.order_index || 0);
+            if (a.is_corresponding) return -1;
+            if (b.is_corresponding) return 1;
+            return (a.author_order || 0) - (b.author_order || 0);
           });
         }
 
@@ -167,7 +167,7 @@ export default function ArticleDetail() {
                 <div className="flex flex-wrap gap-x-6 gap-y-3">
                   {authors.map((author: any, idx: number) => (
                     <div key={idx} className="flex flex-col">
-                      <span className="font-bold text-academic-900 text-lg">{author.full_name} {author.is_primary && '*'}</span>
+                      <span className="font-bold text-academic-900 text-lg">{author.full_name} {author.is_corresponding && '*'}</span>
                       {author.affiliation && (
                         <span className="text-sm text-academic-600 flex items-center gap-1.5 mt-0.5">
                           <Building2 className="w-3 h-3 text-academic-400" /> {author.affiliation}
