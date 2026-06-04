@@ -56,6 +56,8 @@ export default function AdminBoardMembers() {
     }
   };
 
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
   const handleOpenModal = (member?: BoardMember) => {
     if (member) {
       setFormData(member);
@@ -68,6 +70,7 @@ export default function AdminBoardMembers() {
         sort_order: members.length,
       });
     }
+    setSelectedFile(null);
     setError('');
     setIsModalOpen(true);
   };
@@ -78,6 +81,28 @@ export default function AdminBoardMembers() {
     setError('');
 
     try {
+      let finalImageUrl = formData.image_url;
+
+      // 1. Upload image if selected
+      if (selectedFile) {
+        const fileExt = selectedFile.name.split('.').pop();
+        const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from('images')
+          .upload(fileName, selectedFile);
+          
+        if (uploadError) {
+          throw new Error(`Gagal mengunggah foto: ${uploadError.message}`);
+        }
+        
+        const { data: urlData } = supabase.storage
+          .from('images')
+          .getPublicUrl(fileName);
+          
+        finalImageUrl = urlData?.publicUrl || formData.image_url;
+      }
+
       if (formData.id) {
         // Update
         const { error } = await supabase
@@ -86,7 +111,7 @@ export default function AdminBoardMembers() {
             name: formData.name,
             role: formData.role,
             affiliation: formData.affiliation,
-            image_url: formData.image_url,
+            image_url: finalImageUrl,
             sort_order: formData.sort_order,
           })
           .eq('id', formData.id);
@@ -99,7 +124,7 @@ export default function AdminBoardMembers() {
             name: formData.name,
             role: formData.role,
             affiliation: formData.affiliation,
-            image_url: formData.image_url,
+            image_url: finalImageUrl,
             sort_order: formData.sort_order,
           }]);
         if (error) throw error;
@@ -109,7 +134,7 @@ export default function AdminBoardMembers() {
       fetchMembers();
     } catch (err: any) {
       console.error('Error saving board member:', err);
-      setError('Gagal menyimpan data pengurus. Pastikan tabel telah dibuat.');
+      setError(err.message || 'Gagal menyimpan data pengurus.');
     } finally {
       setIsSaving(false);
     }
@@ -285,15 +310,43 @@ export default function AdminBoardMembers() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1.5">Link / URL Foto Profil</label>
-                  <input
-                    type="url"
-                    value={formData.image_url}
-                    onChange={(e) => setFormData({...formData, image_url: e.target.value})}
-                    className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors"
-                    placeholder="https://..."
-                  />
-                  <p className="mt-1 text-xs text-gray-500 font-medium">Bisa gunakan link gambar dari website, Google Drive (direct link), dll.</p>
+                  <label className="block text-sm font-bold text-gray-700 mb-1.5">Foto Profil</label>
+                  <div className="flex flex-col gap-3">
+                    {/* Preview Image */}
+                    {(selectedFile || formData.image_url) && (
+                      <div className="w-20 h-20 rounded-lg overflow-hidden border border-gray-200 bg-gray-50 flex items-center justify-center relative group">
+                        {selectedFile ? (
+                          <img src={URL.createObjectURL(selectedFile)} alt="Preview" className="w-full h-full object-cover" />
+                        ) : (
+                          <img src={formData.image_url} alt="Current" className="w-full h-full object-cover" />
+                        )}
+                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                           <button 
+                             type="button"
+                             onClick={() => {
+                               setSelectedFile(null);
+                               setFormData({...formData, image_url: ''});
+                             }}
+                             className="text-white bg-red-500 rounded-full p-1"
+                           >
+                             <X className="w-4 h-4" />
+                           </button>
+                        </div>
+                      </div>
+                    )}
+                    
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files.length > 0) {
+                          setSelectedFile(e.target.files[0]);
+                        }
+                      }}
+                      className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100 transition-all cursor-pointer"
+                    />
+                  </div>
+                  <p className="mt-1 text-xs text-gray-500 font-medium">Bisa memilih langsung file gambar (JPG/PNG) dari perangkat Anda.</p>
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-1.5">Nomor Urut Tampil</label>
