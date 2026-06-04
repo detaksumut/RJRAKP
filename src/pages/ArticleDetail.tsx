@@ -112,10 +112,12 @@ export default function ArticleDetail() {
         {/* Google Scholar Highwire Press Meta Tags */}
         <meta name="citation_title" content={article.title} />
         {authors.map((author: any, index: number) => (
-          <meta key={`author-${index}`} name="citation_author" content={author.full_name} />
-        ))}
-        {authors.map((author: any, index: number) => (
-          author.affiliation ? <meta key={`affil-${index}`} name="citation_author_institution" content={author.affiliation} /> : null
+          <React.Fragment key={`author-meta-${index}`}>
+            <meta name="citation_author" content={author.full_name} />
+            {author.affiliation && <meta name="citation_author_institution" content={author.affiliation + (author.country ? `, ${author.country}` : '')} />}
+            {author.email && <meta name="citation_author_email" content={author.email} />}
+            {author.orcid && <meta name="citation_author_orcid" content={author.orcid} />}
+          </React.Fragment>
         ))}
         {journal && <meta name="citation_journal_title" content={journal.name} />}
         {journal?.p_issn && <meta name="citation_issn" content={journal.p_issn} />}
@@ -167,10 +169,17 @@ export default function ArticleDetail() {
                 <div className="flex flex-wrap gap-x-6 gap-y-3">
                   {authors.map((author: any, idx: number) => (
                     <div key={idx} className="flex flex-col">
-                      <span className="font-bold text-academic-900 text-lg">{author.full_name} {author.is_corresponding && '*'}</span>
-                      {author.affiliation && (
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-academic-900 text-lg">{author.full_name} {author.is_corresponding && '*'}</span>
+                        {author.orcid && (
+                          <a href={author.orcid} target="_blank" rel="noopener noreferrer" className="text-brand-600 hover:text-brand-800 transition-colors" title="Lihat profil ORCID">
+                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zM7.369 4.378c.525 0 .947.431.947.947s-.422.947-.947.947a.95.95 0 0 1-.947-.947c0-.525.422-.947.947-.947zm-.722 3.038h1.444v10.041H6.647V7.416zm3.562 0h3.9c3.712 0 5.344 2.653 5.344 5.025 0 2.578-2.016 5.025-5.325 5.025h-3.919V7.416zm1.444 1.303v7.444h2.297c3.272 0 4.022-2.484 4.022-3.722 0-2.016-1.284-3.722-4.097-3.722h-2.222z"/></svg>
+                          </a>
+                        )}
+                      </div>
+                      {(author.affiliation || author.country) && (
                         <span className="text-sm text-academic-600 flex items-center gap-1.5 mt-0.5">
-                          <Building2 className="w-3 h-3 text-academic-400" /> {author.affiliation}
+                          <Building2 className="w-3 h-3 text-academic-400" /> {author.affiliation}{author.country ? `, ${author.country}` : ''}
                         </span>
                       )}
                     </div>
