@@ -87,10 +87,10 @@ export default function Footer() {
               <img src="/logo-binews.png.png" alt="BeritaIndonesia.News" className="h-16 md:h-20 w-auto object-contain" />
             </div>
           </div>
-          <p className="text-xs md:text-sm font-bold text-accent-400 mb-2">
-            Penerbit PT. Bernas Sumut Jaya <span className="text-white/30 mx-2">|</span> Supervisi BeritaIndonesia.News
+          <p className="text-xs md:text-sm font-bold text-white mb-2">
+            Penerbit PT. Bernas Sumut Jaya <span className="text-white/40 mx-2">|</span> Supervisi BeritaIndonesia.News
           </p>
-          <p className="text-[10px] text-brand-200/60 font-medium tracking-widest uppercase">
+          <p className="text-[10px] text-white/70 font-medium tracking-widest uppercase">
             &copy; {new Date().getFullYear()} Rumah Jurnal Riset, Analisis dan Keadilan Publik. Hak Cipta Dilindungi.
           </p>
         </div>
