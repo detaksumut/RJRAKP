@@ -51,6 +51,7 @@ import AdminLogs from './pages/dashboards/AdminLogs';
 import AdminSettings from './pages/dashboards/AdminSettings';
 import AdminJournals from './pages/dashboards/AdminJournals';
 import AdminArticles from './pages/dashboards/AdminArticles';
+import AdminBoardMembers from './pages/dashboards/AdminBoardMembers';
 import Unauthorized from './pages/dashboards/Unauthorized';
 import SetupAdmin from './pages/SetupAdmin';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -118,6 +119,7 @@ export default function App() {
               <Route path="/dashboard/admin/users" element={<AdminUsers />} />
               <Route path="/dashboard/admin/reviewers" element={<AdminReviewers />} />
               <Route path="/dashboard/admin/editors" element={<AdminEditors />} />
+              <Route path="/dashboard/admin/board-members" element={<AdminBoardMembers />} />
               <Route path="/dashboard/admin/journals" element={<AdminJournals />} />
               <Route path="/dashboard/admin/articles" element={<AdminArticles />} />
               <Route path="/dashboard/admin/logs" element={<AdminLogs />} />
