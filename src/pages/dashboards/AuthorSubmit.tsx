@@ -250,7 +250,16 @@ export default function AuthorSubmit() {
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-academic-900 mb-2">Judul Artikel <span className="text-red-500">*</span></label>
-                  <input type="text" name="title" required value={formData.title} onChange={handleChange} className="w-full border border-academic-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-brand-500" placeholder="Masukkan judul artikel Anda..." />
+                  <input
+                    type="text"
+                    name="title"
+                    required
+                    autoComplete="off"
+                    value={formData.title}
+                    onChange={handleChange}
+                    className="w-full border border-academic-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-brand-500"
+                    placeholder="Masukkan judul artikel Anda..."
+                  />
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-academic-900 mb-2">Abstrak <span className="text-red-500">*</span></label>
@@ -289,7 +298,7 @@ export default function AuthorSubmit() {
                       <div className="p-5 grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div className="md:col-span-2">
                           <label className="block text-xs font-bold text-academic-700 mb-1.5">Nama Lengkap <span className="text-red-500">*</span></label>
-                          <input type="text" required value={author.full_name} onChange={(e) => handleAuthorChange(index, 'full_name', e.target.value)} className="w-full border border-academic-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500" placeholder="Beserta gelar jika ada" />
+                          <input type="text" required autoComplete="off" value={author.full_name} onChange={(e) => handleAuthorChange(index, 'full_name', e.target.value)} className="w-full border border-academic-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500" placeholder="Beserta gelar jika ada" />
                         </div>
                         <div>
                           <label className="block text-xs font-bold text-academic-700 mb-1.5">Email <span className="text-red-500">*</span></label>
