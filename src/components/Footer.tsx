@@ -40,7 +40,7 @@ export default function Footer() {
             <h3 className="text-academic-900 text-[11px] font-bold uppercase tracking-widest mb-6">Informasi</h3>
             <ul className="space-y-3">
               <li><Link to="/tentang" className="text-academic-500 hover:text-brand-700 transition-colors text-xs font-semibold">Tentang Kami</Link></li>
-              <li><Link to="/pedoman" className="text-academic-500 hover:text-brand-700 transition-colors text-xs font-semibold">Panduan Penulis / Pedoman Penulisan</Link></li>
+              <li><Link to="/pedoman" className="text-academic-500 hover:text-brand-700 transition-colors text-xs font-semibold">Panduan Penulisan</Link></li>
               <li><a href="#" className="text-academic-500 hover:text-brand-700 transition-colors text-xs font-semibold">Kebijakan Editorial</a></li>
               <li><Link to="/etika-publikasi" className="text-academic-500 hover:text-brand-700 transition-colors text-xs font-semibold">Etika Publikasi</Link></li>
               <li><Link to="/proses-peer-review" className="text-academic-500 hover:text-brand-700 transition-colors text-xs font-semibold">Proses Peer Review</Link></li>
