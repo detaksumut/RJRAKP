@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { FileText, Eye, Download, Calendar, ArrowRight, Filter, BookOpen, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
@@ -123,6 +124,7 @@ export default function Publikasi() {
             title,
             abstract,
             keywords,
+            slug,
             journal_id,
             article_authors ( full_name, affiliation ),
             journals ( name, slug, e_issn, p_issn, description )
@@ -341,7 +343,9 @@ export default function Publikasi() {
                       
                       {/* Title */}
                       <h4 className="text-base font-serif font-bold text-academic-950 hover:text-brand-700 transition-colors leading-snug mb-1.5">
-                        {title}
+                        <Link to={article?.slug ? `/article/${article.slug}` : '#'}>
+                          {title}
+                        </Link>
                       </h4>
                       
                       {/* Authors */}

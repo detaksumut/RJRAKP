@@ -33,6 +33,7 @@ export default function JurnalDetail() {
               pdf_url,
               articles (
                 title,
+                slug,
                 abstract,
                 article_authors ( full_name )
               )
@@ -227,7 +228,9 @@ export default function JurnalDetail() {
                 return (
                 <div key={pub.id} className="py-5 border-b border-academic-100 last:border-0 hover:bg-academic-50/50 transition-colors -mx-6 px-6 sm:-mx-8 sm:px-8">
                   <h4 className="text-lg font-bold text-brand-800 mb-2 leading-snug">
-                    {article?.title}
+                    <Link to={article?.slug ? `/article/${article.slug}` : '#'} className="hover:underline">
+                      {article?.title}
+                    </Link>
                   </h4>
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-academic-600">
                     <span className="font-medium text-academic-800">{authors}</span>

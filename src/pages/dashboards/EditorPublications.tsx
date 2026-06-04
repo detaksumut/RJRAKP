@@ -266,6 +266,13 @@ export default function EditorPublications() {
       const journalSlug = selectedJournal.slug;
       const generatedDoi = `10.47822/rjrakp.${journalSlug}.${selectedVolume.volume_number.toLowerCase().replace(/\s+/g, '')}${selectedIssue.issue_number.toLowerCase().replace(/\s+/g, '')}.${article.id.substring(0, 8)}`;
 
+      // Generate article slug for HTML page
+      const baseSlug = article.title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)+/g, '');
+      const uniqueSlug = `${baseSlug}-${article.id.substring(0, 8)}`;
+
       // 1. Insert into publications
       const { error: pubErr } = await supabase
         .from('publications')
@@ -281,10 +288,10 @@ export default function EditorPublications() {
 
       if (pubErr) throw pubErr;
 
-      // 2. Update article status to published
+      // 2. Update article status to published and set slug
       const { error: artErr } = await supabase
         .from('articles')
-        .update({ status: 'published' })
+        .update({ status: 'published', slug: uniqueSlug })
         .eq('id', article.id);
 
       if (artErr) throw artErr;

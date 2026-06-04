@@ -4,6 +4,7 @@
  */
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import Home from './pages/Home';
 import About from './pages/About';
 import Pedoman from './pages/Pedoman';
@@ -19,6 +20,7 @@ import PeerReview from './pages/PeerReview';
 import JurnalList from './pages/JurnalList';
 import JurnalDetail from './pages/JurnalDetail';
 import Publikasi from './pages/Publikasi';
+import ArticleDetail from './pages/ArticleDetail';
 import PanduanPenulis from './pages/PanduanPenulis';
 import PanduanReviewer from './pages/PanduanReviewer';
 import PanduanEditor from './pages/PanduanEditor';
@@ -56,15 +58,17 @@ import { AuthProvider } from './contexts/AuthContext';
 
 export default function App() {
   return (
-    <Router>
-      <AuthProvider>
-        <div className="min-h-screen bg-academic-50 font-sans text-academic-800 selection:bg-brand-100 selection:text-brand-900 flex flex-col overflow-x-hidden">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/tentang" element={<About />} />
-            <Route path="/jurnal" element={<JurnalList />} />
-            <Route path="/jurnal/:slug" element={<JurnalDetail />} />
-            <Route path="/publikasi" element={<Publikasi />} />
+    <HelmetProvider>
+      <Router>
+        <AuthProvider>
+          <div className="min-h-screen bg-academic-50 font-sans text-academic-800 selection:bg-brand-100 selection:text-brand-900 flex flex-col overflow-x-hidden">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/tentang" element={<About />} />
+              <Route path="/jurnal" element={<JurnalList />} />
+              <Route path="/jurnal/:slug" element={<JurnalDetail />} />
+              <Route path="/publikasi" element={<Publikasi />} />
+              <Route path="/article/:slug" element={<ArticleDetail />} />
             <Route path="/panduan-penulis" element={<PanduanPenulis />} />
             <Route path="/panduan-reviewer" element={<PanduanReviewer />} />
             <Route path="/panduan-editor" element={<PanduanEditor />} />
@@ -123,5 +127,6 @@ export default function App() {
         </div>
       </AuthProvider>
     </Router>
+    </HelmetProvider>
   );
 }
