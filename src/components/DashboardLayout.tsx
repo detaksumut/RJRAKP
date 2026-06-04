@@ -100,7 +100,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       </aside>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col md:ml-64 relative min-h-screen">
+      <div className="flex-1 flex flex-col md:ml-64 relative min-h-screen min-w-0">
          <header className="h-16 bg-white border-b border-academic-200 sticky top-0 z-10 flex items-center justify-end px-4 sm:px-6 lg:px-8">
             <div className="flex h-full items-center gap-4">
               <Link to="/" className="text-sm font-bold text-academic-600 hover:text-brand-600 transition-colors uppercase tracking-wider">
@@ -108,7 +108,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               </Link>
             </div>
          </header>
-         <main className="p-4 sm:p-6 lg:p-8 flex-1 overflow-y-auto">
+         <main className="p-4 sm:p-6 lg:p-8 flex-1 overflow-y-auto overflow-x-hidden min-w-0">
             {children}
          </main>
       </div>
