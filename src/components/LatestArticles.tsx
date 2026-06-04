@@ -22,6 +22,7 @@ export default function LatestArticles() {
           pdf_url,
           articles (
             title,
+            slug,
             abstract,
             article_authors ( full_name ),
             journals ( name )
@@ -69,7 +70,7 @@ export default function LatestArticles() {
                 </div>
                 <div className="p-5 flex-1 flex flex-col">
                   <h5 className="text-[15px] font-bold text-academic-800 leading-snug mb-3 group-hover:text-brand-600 transition-colors line-clamp-2">
-                    <a href="#">{title}</a>
+                    <Link to={article?.slug ? `/article/${article.slug}` : '#'}>{title}</Link>
                   </h5>
                   <p className="text-[11px] text-academic-500 italic mb-3">Oleh: {authors}</p>
                   
