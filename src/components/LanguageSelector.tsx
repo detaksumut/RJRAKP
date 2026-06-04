@@ -57,6 +57,14 @@ export default function LanguageSelector() {
       }
     };
 
+    // Append translate element to body to avoid display: none issues on mobile
+    if (!document.getElementById('google_translate_element')) {
+      const translateDiv = document.createElement('div');
+      translateDiv.id = 'google_translate_element';
+      translateDiv.style.display = 'none';
+      document.body.appendChild(translateDiv);
+    }
+
     // Append script if not present
     if (!document.getElementById('google-translate-script')) {
       const script = document.createElement('script');
@@ -110,9 +118,6 @@ export default function LanguageSelector() {
 
   return (
     <div className="relative inline-block text-left" ref={dropdownRef}>
-      {/* Target element for Google Translate (must be hidden in DOM) */}
-      <div id="google_translate_element" className="hidden" style={{ display: 'none' }} />
-
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}

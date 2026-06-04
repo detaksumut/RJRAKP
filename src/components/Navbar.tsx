@@ -24,9 +24,9 @@ export default function Navbar() {
         <div className="flex justify-between py-2 items-center">
           <div className="flex items-center">
             <Link to="/" className="flex items-center gap-4 group">
-              <div className="w-40 h-40 flex items-center justify-center transition-transform group-hover:scale-105 shrink-0">
-                <img src="/logo.png" alt="RJRAKP Logo" className="w-full h-full object-contain" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling!.classList.remove('hidden'); }} />
-                <BookOpen className="h-12 w-12 text-brand-900 hidden" />
+              <div className="flex items-center justify-center transition-transform group-hover:scale-105 shrink-0">
+                <img src="/logo.png" alt="RJRAKP Logo" className="w-auto h-12 max-h-12 sm:h-16 sm:max-h-16 lg:h-20 lg:max-h-20 object-contain" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling!.classList.remove('hidden'); }} />
+                <BookOpen className="h-8 w-8 text-brand-900 hidden" />
               </div>
             </Link>
           </div>
