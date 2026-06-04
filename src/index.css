@@ -39,15 +39,16 @@
 
 /* Google Translate Custom Overrides */
 iframe.goog-te-banner-frame,
-.goog-te-banner-frame, 
-#goog-gt-tt, 
-.goog-te-balloon-frame,
-.goog-te-gadget-simple {
+.goog-te-banner-frame,
+.skiptranslate > iframe.skiptranslate,
+body > .skiptranslate {
   display: none !important;
   visibility: hidden !important;
-  height: 0px !important;
-  width: 0px !important;
-  opacity: 0 !important;
+}
+
+#goog-gt-tt, 
+.goog-te-balloon-frame {
+  display: none !important;
 }
 
 html {
