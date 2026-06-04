@@ -415,14 +415,14 @@ export default function AdminJournals() {
                 Belum ada data jurnal yang cocok atau terdaftar.
               </div>
             ) : (
-              <table className="min-w-[900px] w-full divide-y divide-academic-200 text-left border-collapse">
+              <table className="min-w-max w-full divide-y divide-academic-200 text-left border-collapse">
                 <thead className="bg-academic-50/50">
                   <tr className="text-xs uppercase tracking-wider text-academic-500 font-bold">
-                    <th scope="col" className="px-6 py-4">Nama Jurnal</th>
-                    <th scope="col" className="px-6 py-4">ISSN (P / E)</th>
-                    <th scope="col" className="px-6 py-4">Slug Jurnal</th>
-                    <th scope="col" className="px-6 py-4 text-center">Status</th>
-                    <th scope="col" className="px-6 py-4 text-center">Aksi</th>
+                    <th scope="col" className="px-6 py-4 whitespace-nowrap">Nama Jurnal</th>
+                    <th scope="col" className="px-6 py-4 whitespace-nowrap">ISSN (P / E)</th>
+                    <th scope="col" className="px-6 py-4 whitespace-nowrap">Slug Jurnal</th>
+                    <th scope="col" className="px-6 py-4 text-center whitespace-nowrap">Status</th>
+                    <th scope="col" className="px-6 py-4 text-center whitespace-nowrap">Aksi</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-academic-200 bg-white text-xs">
@@ -445,11 +445,11 @@ export default function AdminJournals() {
 
                     return (
                       <tr key={journal.id} className="hover:bg-academic-50/40 transition-colors">
-                        <td className="px-6 py-4">
-                          <div className="font-serif font-bold text-academic-900 text-sm line-clamp-1">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="font-serif font-bold text-academic-900 text-sm">
                             {journal.name}
                           </div>
-                          <div className="text-[10px] text-academic-400 mt-0.5 line-clamp-1">
+                          <div className="text-[10px] text-academic-400 mt-0.5">
                             {journal.description || 'Tidak ada deskripsi.'}
                           </div>
                         </td>
