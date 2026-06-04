@@ -31,10 +31,19 @@ export default function Hero() {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="lg:col-span-6 flex flex-col justify-center text-left"
           >
-            {/* Tagline Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-accent-400 text-xs font-bold tracking-wider uppercase mb-6 w-fit shadow-inner backdrop-blur-md hover:bg-white/10 hover:border-white/20 transition-all cursor-pointer">
-              <Sparkles className="w-3.5 h-3.5 text-accent-500 animate-spin-slow" />
-              <span>Sistem Informasi Publikasi Ilmiah Terakreditasi</span>
+            {/* Top Badges / Actions */}
+            <div className="flex flex-wrap items-center gap-3 mb-6">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-accent-400 text-[10px] sm:text-xs font-bold tracking-wider uppercase shadow-inner backdrop-blur-md">
+                <Sparkles className="w-3.5 h-3.5 text-accent-500 animate-spin-slow" />
+                <span>Sistem Informasi Publikasi Ilmiah Terakreditasi</span>
+              </div>
+              <button 
+                onClick={() => setIsBoardModalOpen(true)}
+                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-800/40 border border-brand-500/30 text-brand-100 text-[10px] sm:text-xs font-bold tracking-wider uppercase shadow-inner backdrop-blur-md hover:bg-brand-700/60 hover:border-brand-400/50 hover:text-white transition-all cursor-pointer group"
+              >
+                <Users className="w-3.5 h-3.5 text-brand-400 group-hover:text-brand-300" />
+                <span>Dewan Pengurus</span>
+              </button>
             </div>
 
             {/* Main Title */}
@@ -59,13 +68,6 @@ export default function Hero() {
               >
                 Membaca Jurnal <ArrowRight className="w-3.5 h-3.5" />
               </a>
-              <button 
-                onClick={() => setIsBoardModalOpen(true)}
-                className="flex items-center justify-center gap-2 px-6 py-3.5 border border-white/20 text-[11px] font-black rounded-xl text-white bg-white/10 hover:bg-white/20 hover:border-white/40 shadow-[0_0_15px_rgba(255,255,255,0.05)] transition-all hover:-translate-y-0.5 duration-200 uppercase tracking-widest backdrop-blur-sm"
-              >
-                <Users className="w-4 h-4 text-accent-400" />
-                Dewan Pengurus
-              </button>
               <a 
                 href="/pedoman" 
                 className="flex items-center justify-center gap-2 px-6 py-3.5 border border-white/10 text-[11px] font-black rounded-xl text-white/80 bg-white/5 hover:bg-white/10 hover:text-white transition-all hover:-translate-y-0.5 duration-200 uppercase tracking-widest"
