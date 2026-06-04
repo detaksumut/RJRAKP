@@ -77,12 +77,12 @@ export default function Footer() {
         </div>
 
         <div className="mt-12 pt-8 border-t border-academic-200 text-center shrink-0">
-          <div className="flex justify-center items-center gap-6 mb-4">
+          <div className="flex justify-center items-center gap-8 mb-4">
             <div className="flex flex-col items-center">
-              <img src="/logo-bernas.png.png" alt="PT. Bernas Sumut Jaya" className="h-14 md:h-16 w-auto object-contain mb-1" />
+              <img src="/logo-bernas.png.png" alt="PT. Bernas Sumut Jaya" className="h-20 md:h-24 w-auto object-contain mb-1" />
             </div>
             <div className="flex flex-col items-center">
-              <img src="/logo-binews.png.png" alt="BeritaIndonesia.News" className="h-14 md:h-16 w-auto object-contain mb-1" />
+              <img src="/logo-binews.png.png" alt="BeritaIndonesia.News" className="h-20 md:h-24 w-auto object-contain mb-1" />
             </div>
           </div>
           <p className="text-xs font-bold text-academic-600 mb-2">
