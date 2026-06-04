@@ -21,31 +21,34 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Nav */}
-          <div>
-            <h3 className="text-academic-900 text-[11px] font-bold uppercase tracking-widest mb-6">Pintasan Cepat</h3>
-            <ul className="space-y-3">
-              {MENU_ITEMS.map((item) => (
-                <li key={item.label}>
-                  <a href={item.href} className="text-academic-500 hover:text-brand-700 transition-colors text-xs font-semibold">
-                    {item.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {/* Nav & Resources Group (Side by side on mobile) */}
+          <div className="grid grid-cols-2 gap-8 lg:col-span-2">
+            {/* Nav */}
+            <div>
+              <h3 className="text-academic-900 text-[11px] font-bold uppercase tracking-widest mb-6">Pintasan Cepat</h3>
+              <ul className="space-y-3">
+                {MENU_ITEMS.map((item) => (
+                  <li key={item.label}>
+                    <a href={item.href} className="text-academic-500 hover:text-brand-700 transition-colors text-xs font-semibold">
+                      {item.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          {/* Resources */}
-          <div>
-            <h3 className="text-academic-900 text-[11px] font-bold uppercase tracking-widest mb-6">Informasi</h3>
-            <ul className="space-y-3">
-              <li><Link to="/tentang" className="text-academic-500 hover:text-brand-700 transition-colors text-xs font-semibold">Tentang Kami</Link></li>
-              <li><Link to="/pedoman" className="text-academic-500 hover:text-brand-700 transition-colors text-xs font-semibold">Panduan Penulisan</Link></li>
-              <li><a href="#" className="text-academic-500 hover:text-brand-700 transition-colors text-xs font-semibold">Kebijakan Editorial</a></li>
-              <li><Link to="/etika-publikasi" className="text-academic-500 hover:text-brand-700 transition-colors text-xs font-semibold">Etika Publikasi</Link></li>
-              <li><Link to="/proses-peer-review" className="text-academic-500 hover:text-brand-700 transition-colors text-xs font-semibold">Proses Peer Review</Link></li>
-              <li><Link to="/hak-cipta" className="text-academic-500 hover:text-brand-700 transition-colors text-xs font-semibold">Lisensi & Hak Cipta</Link></li>
-            </ul>
+            {/* Resources */}
+            <div>
+              <h3 className="text-academic-900 text-[11px] font-bold uppercase tracking-widest mb-6">Informasi</h3>
+              <ul className="space-y-3">
+                <li><Link to="/tentang" className="text-academic-500 hover:text-brand-700 transition-colors text-xs font-semibold">Tentang Kami</Link></li>
+                <li><Link to="/pedoman" className="text-academic-500 hover:text-brand-700 transition-colors text-xs font-semibold">Panduan Penulisan</Link></li>
+                <li><a href="#" className="text-academic-500 hover:text-brand-700 transition-colors text-xs font-semibold">Kebijakan Editorial</a></li>
+                <li><Link to="/etika-publikasi" className="text-academic-500 hover:text-brand-700 transition-colors text-xs font-semibold">Etika Publikasi</Link></li>
+                <li><Link to="/proses-peer-review" className="text-academic-500 hover:text-brand-700 transition-colors text-xs font-semibold">Proses Peer Review</Link></li>
+                <li><Link to="/hak-cipta" className="text-academic-500 hover:text-brand-700 transition-colors text-xs font-semibold">Lisensi & Hak Cipta</Link></li>
+              </ul>
+            </div>
           </div>
 
           {/* Contact */}
