@@ -1,0 +1,87 @@
+import { BookOpen, Mail, MapPin, Phone } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { MENU_ITEMS } from '../data';
+
+export default function Footer() {
+  return (
+    <footer className="bg-white border-t border-academic-200">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
+          
+          {/* Brand */}
+          <div className="lg:col-span-1">
+            <Link to="/" className="flex items-center gap-4 mb-6">
+              <div className="w-48 h-48 flex items-center justify-center shrink-0">
+                <img src="/logo.png" alt="RJRAKP Logo" className="w-full h-full object-contain" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling!.classList.remove('hidden'); }} />
+                <BookOpen className="h-12 w-12 text-brand-900 hidden" />
+              </div>
+            </Link>
+            <p className="text-academic-500 text-[11px] leading-relaxed mb-6 font-medium pr-4">
+              Rumah Jurnal Riset, Analisis dan Keadilan Publik (RJRAKP) mendedikasikan diri untuk publikasi ilmiah berkualitas demi transparansi, akuntabilitas, dan keadilan publik.
+            </p>
+          </div>
+
+          {/* Nav */}
+          <div>
+            <h3 className="text-academic-900 text-[11px] font-bold uppercase tracking-widest mb-6">Pintasan Cepat</h3>
+            <ul className="space-y-3">
+              {MENU_ITEMS.map((item) => (
+                <li key={item.label}>
+                  <a href={item.href} className="text-academic-500 hover:text-brand-700 transition-colors text-xs font-semibold">
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Resources */}
+          <div>
+            <h3 className="text-academic-900 text-[11px] font-bold uppercase tracking-widest mb-6">Informasi</h3>
+            <ul className="space-y-3">
+              <li><Link to="/tentang" className="text-academic-500 hover:text-brand-700 transition-colors text-xs font-semibold">Tentang Kami</Link></li>
+              <li><Link to="/pedoman" className="text-academic-500 hover:text-brand-700 transition-colors text-xs font-semibold">Panduan Penulis / Pedoman Penulisan</Link></li>
+              <li><a href="#" className="text-academic-500 hover:text-brand-700 transition-colors text-xs font-semibold">Kebijakan Editorial</a></li>
+              <li><Link to="/etika-publikasi" className="text-academic-500 hover:text-brand-700 transition-colors text-xs font-semibold">Etika Publikasi</Link></li>
+              <li><Link to="/proses-peer-review" className="text-academic-500 hover:text-brand-700 transition-colors text-xs font-semibold">Proses Peer Review</Link></li>
+              <li><Link to="/hak-cipta" className="text-academic-500 hover:text-brand-700 transition-colors text-xs font-semibold">Lisensi & Hak Cipta</Link></li>
+            </ul>
+          </div>
+
+          {/* Contact */}
+          <div id="kontak">
+            <h3 className="text-academic-900 text-[11px] font-bold uppercase tracking-widest mb-6">Kontak Kami</h3>
+            <ul className="space-y-4">
+              <li className="flex items-start gap-3">
+                <MapPin className="w-4 h-4 text-accent-600 shrink-0 mt-0.5" />
+                <span className="text-academic-600 text-xs leading-relaxed font-semibold">
+                  Gedung Rektorat Lt. 3<br />
+                  Jalan Pendidikan No. 123<br />
+                  DKI Jakarta, Indonesia 10110
+                </span>
+              </li>
+              <li className="flex items-center gap-3">
+                <Phone className="w-4 h-4 text-accent-600 shrink-0" />
+                <span className="text-academic-600 text-xs font-semibold">
+                  +62 21 555 1234
+                </span>
+              </li>
+              <li className="flex items-center gap-3">
+                <Mail className="w-4 h-4 text-accent-600 shrink-0" />
+                <span className="text-academic-600 text-xs font-semibold">
+                  admin@rjrakp.ac.id
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="mt-12 pt-6 border-t border-academic-200 text-center shrink-0">
+          <p className="text-[10px] text-academic-400 font-medium tracking-widest uppercase">
+            &copy; {new Date().getFullYear()} Rumah Jurnal Riset, Analisis dan Keadilan Publik. Hak Cipta Dilindungi.
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
+}

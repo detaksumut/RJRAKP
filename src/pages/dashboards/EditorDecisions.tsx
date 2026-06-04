@@ -1,0 +1,424 @@
+import React, { useState, useEffect } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import DashboardLayout from '../../components/DashboardLayout';
+import { useAuth } from '../../contexts/AuthContext';
+import { supabase } from '../../lib/supabase';
+import { 
+  FileText, CheckSquare, Eye, ArrowLeft, Download, 
+  MessageSquare, User, Calendar, Award, Send, X
+} from 'lucide-react';
+
+export default function EditorDecisions() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const articleId = searchParams.get('articleId');
+
+  const [articles, setArticles] = useState<any[]>([]);
+  const [selectedArticle, setSelectedArticle] = useState<any | null>(null);
+  const [reviewAssignments, setReviewAssignments] = useState<any[]>([]);
+  
+  const [decisionForm, setDecisionForm] = useState({
+    decision: '',
+    comments: ''
+  });
+
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  useEffect(() => {
+    fetchArticles();
+  }, [articleId]);
+
+  const fetchArticles = async () => {
+    setLoading(true);
+    try {
+      // Fetch articles that are submitted or in review
+      const { data, error: artError } = await supabase
+        .from('articles')
+        .select(`
+          id,
+          title,
+          abstract,
+          manuscript_file,
+          status,
+          submission_date,
+          journals (name, slug)
+        `)
+        .in('status', ['submitted', 'in_review', 'under_review', 'revised'])
+        .order('submission_date', { ascending: false });
+
+      if (artError) throw artError;
+      setArticles(data || []);
+
+      if (articleId && data) {
+        const found = data.find(a => a.id === articleId);
+        if (found) {
+          setSelectedArticle(found);
+          fetchReviews(found.id);
+        }
+      } else if (data && data.length > 0) {
+        setSelectedArticle(data[0]);
+        fetchReviews(data[0].id);
+      }
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || 'Gagal memuat artikel.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchReviews = async (id: string) => {
+    try {
+      const { data, error: revError } = await supabase
+        .from('review_assignments')
+        .select(`
+          id,
+          status,
+          assigned_date,
+          due_date,
+          users!reviewer_id (full_name, email),
+          reviews (*)
+        `)
+        .eq('article_id', id);
+
+      if (revError) throw revError;
+      setReviewAssignments(data || []);
+    } catch (err) {
+      console.error('Error fetching reviews:', err);
+    }
+  };
+
+
+  const handleArticleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const id = e.target.value;
+    const found = articles.find(a => a.id === id);
+    if (found) {
+      setSelectedArticle(found);
+      fetchReviews(found.id);
+      setDecisionForm({ decision: '', comments: '' });
+      setError('');
+      setSuccess('');
+    }
+  };
+
+  const handleSubmitDecision = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedArticle) return;
+    if (!decisionForm.decision) {
+      setError('Pilih keputusan terlebih dahulu.');
+      return;
+    }
+
+    setSubmitting(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      // 1. Insert into editorial_decisions
+      const { error: decError } = await supabase
+        .from('editorial_decisions')
+        .insert({
+          article_id: selectedArticle.id,
+          editor_id: user?.id,
+          decision: decisionForm.decision,
+          comments: decisionForm.comments
+        });
+
+      if (decError) throw decError;
+
+      // Map choice to database status column values
+      // db check constraint is: 'submitted', 'in_review', 'revised', 'accepted', 'published', 'rejected'
+      let targetStatus = 'submitted';
+      if (decisionForm.decision === 'accept') {
+        targetStatus = 'accepted';
+      } else if (decisionForm.decision === 'revision') {
+        targetStatus = 'revised';
+      } else if (decisionForm.decision === 'reject') {
+        targetStatus = 'rejected';
+      }
+
+      // 2. Update status of article
+      const { error: artUpdateError } = await supabase
+        .from('articles')
+        .update({ status: targetStatus })
+        .eq('id', selectedArticle.id);
+
+      if (artUpdateError) throw artUpdateError;
+
+      // 3. Log activity
+      await supabase.from('activity_logs').insert({
+        user_id: user?.id,
+        action: `Submitted editorial decision (${decisionForm.decision}) for article: ${selectedArticle.title}`,
+        entity_type: 'articles',
+        entity_id: selectedArticle.id
+      });
+
+      setSuccess('Keputusan editorial berhasil disimpan!');
+      setDecisionForm({ decision: '', comments: '' });
+      fetchArticles();
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || 'Gagal menyimpan keputusan.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <DashboardLayout>
+      <div className="max-w-6xl">
+        <button 
+          onClick={() => navigate('/dashboard/editor/articles')}
+          className="flex items-center gap-1.5 text-xs font-bold text-brand-700 hover:text-brand-800 transition-colors uppercase tracking-widest mb-6"
+        >
+          <ArrowLeft className="w-4 h-4" /> Kembali ke Daftar Artikel
+        </button>
+
+        <div className="mb-8">
+          <h1 className="text-2xl font-serif font-bold text-academic-900 mb-2">Pemeriksaan Hasil Reviewer & Keputusan Editorial</h1>
+          <p className="text-academic-500">Tinjau hasil review mitra bestari dan buat keputusan akhir naskah.</p>
+        </div>
+
+        {loading ? (
+          <div className="text-center py-12 text-academic-500 font-medium">Memuat data...</div>
+        ) : (
+          <>
+            {articles.length === 0 ? (
+              <div className="bg-white p-8 rounded-xl border border-academic-200 shadow-sm text-center text-academic-500 mb-8">
+                Tidak ada manuskrip aktif yang memerlukan keputusan editorial saat ini.
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                
+                {/* Left/Main Column - Article Info & Reviews */}
+                <div className="lg:col-span-2 space-y-6">
+                  
+                  {/* Selector and core info */}
+                  <div className="bg-white p-6 rounded-xl border border-academic-200 shadow-sm space-y-5">
+                    <div>
+                      <label className="block text-xs font-black text-academic-500 uppercase tracking-wider mb-2">Pilih Artikel Sasaran</label>
+                      <select
+                        value={selectedArticle?.id || ''}
+                        onChange={handleArticleChange}
+                        className="w-full border border-academic-300 rounded-lg px-4 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500 bg-academic-50 font-medium cursor-pointer"
+                      >
+                        {articles.map(a => (
+                          <option key={a.id} value={a.id}>
+                            [{a.journals?.name}] {a.title.slice(0, 75)}...
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {selectedArticle && (
+                      <div className="border-t border-academic-100 pt-4 space-y-3">
+                        <span className="inline-block text-[9px] font-black text-brand-700 bg-brand-50 border border-brand-100 px-2 py-0.5 rounded uppercase">
+                          {selectedArticle.journals?.name}
+                        </span>
+                        <h2 className="font-serif font-bold text-academic-900 text-lg leading-snug">{selectedArticle.title}</h2>
+                        <div>
+                          <h4 className="text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Abstrak</h4>
+                          <p className="text-xs text-academic-700 leading-relaxed text-justify">{selectedArticle.abstract || 'Tidak ada abstrak.'}</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Scrollable Manuscript File card */}
+                  {selectedArticle?.manuscript_file && (() => {
+                    const url = selectedArticle.manuscript_file;
+                    const isPdf = url.toLowerCase().endsWith('.pdf') || url.includes('/pdf/') || url.includes('dummy.pdf');
+                    const isWord = url.toLowerCase().endsWith('.docx') || url.toLowerCase().endsWith('.doc');
+                    let embedUrl = '';
+                    if (isPdf) {
+                      embedUrl = url;
+                    } else if (isWord) {
+                      embedUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(url)}`;
+                    }
+
+                    return (
+                      <div className="bg-white p-6 rounded-xl border border-academic-200 shadow-sm space-y-4">
+                        <div className="flex justify-between items-center border-b border-academic-100 pb-3 flex-wrap gap-2">
+                          <h3 className="font-serif font-bold text-base text-academic-900">Naskah Manuskrip</h3>
+                          <div className="flex items-center gap-2">
+                            <a 
+                              href={url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-700 bg-brand-50 border border-brand-200 px-3 py-1.5 rounded-lg hover:bg-brand-100 transition-colors"
+                            >
+                              <Eye className="w-3.5 h-3.5" /> Buka Pratinjau Penuh
+                            </a>
+                            <a 
+                              href={url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg hover:bg-slate-100 transition-colors"
+                            >
+                              <Download className="w-3.5 h-3.5" /> Unduh Dokumen
+                            </a>
+                          </div>
+                        </div>
+                        {embedUrl ? (
+                          <div className="w-full border border-academic-200 rounded-lg overflow-hidden bg-slate-100 shadow-inner">
+                            <iframe 
+                              src={embedUrl}
+                              className="w-full border-0 block"
+                              title="Pratinjau Manuskrip"
+                              style={{ height: '650px', minHeight: '650px', overflow: 'hidden' }}
+                            />
+                          </div>
+                        ) : (
+                          <div className="p-8 bg-slate-50 border border-dashed border-slate-200 rounded-lg text-center">
+                            <p className="text-xs text-academic-500 mb-2">Pratinjau dokumen tidak didukung langsung.</p>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
+
+                </div>
+
+                {/* Right Column - Reviewer Results & Submit Decision Form */}
+                <div className="space-y-6">
+                  
+                  {/* Reviewer Results Card */}
+                  <div className="bg-white rounded-xl border border-academic-200 shadow-sm overflow-hidden">
+                    <div className="px-5 py-3 border-b border-academic-200 bg-academic-50/50 flex justify-between items-center">
+                      <h3 className="font-serif font-bold text-sm text-academic-900">Hasil Peninjauan Mitra Bestari (Reviewer)</h3>
+                    </div>
+
+                    <div className="divide-y divide-academic-100">
+                      {reviewAssignments.length === 0 ? (
+                        <div className="p-8 text-center text-academic-500 text-xs font-medium">
+                          Belum ada reviewer ditugaskan untuk manuskrip ini.
+                        </div>
+                      ) : (
+                        reviewAssignments.map((assign: any) => {
+                          const hasReviewed = assign.reviews && assign.reviews.length > 0;
+                          const review = hasReviewed ? assign.reviews[0] : null;
+
+                          const recommendLabels = {
+                            accept: 'Accept Submission (Diterima)',
+                            minor_revision: 'Revisions Required (Revisi Minor)',
+                            major_revision: 'Resubmit for Review (Revisi Mayor)',
+                            reject: 'Decline Submission (Ditolak)'
+                          };
+
+                          return (
+                            <div key={assign.id} className="p-6 space-y-3 hover:bg-academic-50/20 transition-colors">
+                              <div className="flex justify-between items-start gap-4">
+                                <div>
+                                  <h4 className="text-sm font-bold text-academic-900">{assign.users?.full_name}</h4>
+                                  <p className="text-[10px] text-academic-500">{assign.users?.email}</p>
+                                </div>
+                                <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-wider border ${
+                                  (assign.status === 'completed' || hasReviewed) ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'
+                                }`}>
+                                  {(assign.status === 'completed' || hasReviewed) ? 'Review Selesai' : 'Sedang Ditinjau'}
+                                </span>
+                              </div>
+
+                              {hasReviewed && review ? (
+                                <div className="space-y-3 bg-white p-4 rounded-lg border border-academic-200 shadow-sm text-xs">
+                                  <div>
+                                    <span className="text-[9px] font-black text-academic-500 uppercase tracking-widest block mb-0.5">Rekomendasi Reviewer</span>
+                                    <span className={`inline-block px-2 py-0.5 rounded text-[9px] font-bold border ${
+                                      review.recommendation === 'accept' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                                      review.recommendation === 'reject' ? 'bg-rose-50 text-rose-700 border-rose-200' :
+                                      'bg-amber-50 text-amber-700 border-amber-200'
+                                    }`}>
+                                      {recommendLabels[review.recommendation as keyof typeof recommendLabels] || review.recommendation}
+                                    </span>
+                                  </div>
+                                  <div>
+                                    <span className="text-[9px] font-black text-academic-500 uppercase tracking-widest block mb-0.5">Komentar Untuk Penulis (Author)</span>
+                                    <p className="text-academic-700 bg-slate-50 p-2.5 rounded border border-slate-100 leading-relaxed font-serif italic">
+                                      "{review.comments_for_author}"
+                                    </p>
+                                  </div>
+                                  <div>
+                                    <span className="text-[9px] font-black text-academic-500 uppercase tracking-widest block mb-0.5">Catatan Untuk Editor (Rahasia)</span>
+                                    <p className="text-academic-700 bg-amber-50/30 p-2.5 rounded border border-amber-100 leading-relaxed font-serif italic">
+                                      "{review.comments_for_editor}"
+                                    </p>
+                                  </div>
+                                </div>
+                              ) : (
+                                <p className="text-[10px] text-academic-400 italic">Reviewer belum mengirimkan hasil peninjauan berkas.</p>
+                              )}
+                            </div>
+                          );
+                        })
+                      )}
+                    </div>
+                  </div>
+                  
+                  {/* Form Card */}
+                  <div className="bg-white p-5 rounded-xl border border-academic-200 shadow-sm space-y-4">
+                    <h3 className="font-serif font-bold text-academic-900 border-b border-academic-100 pb-2">Buat Keputusan Editorial</h3>
+                    
+                    {error && (
+                      <div className="bg-rose-50 border border-rose-200 text-rose-700 px-3 py-2 rounded text-xs font-semibold">
+                        {error}
+                      </div>
+                    )}
+
+                    {success && (
+                      <div className="bg-emerald-50 border border-emerald-200 text-emerald-700 px-3 py-2 rounded text-xs font-semibold">
+                        {success}
+                      </div>
+                    )}
+
+                    <form onSubmit={handleSubmitDecision} className="space-y-4">
+                      <div>
+                        <label className="block text-xs font-bold text-academic-950 uppercase tracking-wider mb-2">Keputusan Akhir *</label>
+                        <select
+                          value={decisionForm.decision}
+                          onChange={e => setDecisionForm({ ...decisionForm, decision: e.target.value })}
+                          required
+                          className="w-full border border-academic-300 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white cursor-pointer font-medium"
+                        >
+                          <option value="">-- Pilih Keputusan --</option>
+                          <option value="accept">Accept Submission (Diterima)</option>
+                          <option value="revision">Revisions Required (Revisi Diperlukan)</option>
+                          <option value="reject">Decline Submission (Ditolak)</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-academic-950 uppercase tracking-wider mb-2">Catatan Masukan Untuk Penulis</label>
+                        <textarea
+                          rows={6}
+                          value={decisionForm.comments}
+                          onChange={e => setDecisionForm({ ...decisionForm, comments: e.target.value })}
+                          placeholder="Masukkan masukan penyempurnaan, catatan revisi, atau alasan penolakan naskah..."
+                          className="w-full border border-academic-300 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white"
+                        />
+                      </div>
+
+                      <button
+                        type="submit"
+                        disabled={submitting || !selectedArticle}
+                        className="w-full bg-brand-700 hover:bg-brand-800 text-white font-bold py-2.5 rounded-lg text-xs transition-colors flex items-center justify-center gap-1.5 shadow-sm disabled:opacity-50"
+                      >
+                        <Send className="w-3.5 h-3.5" /> Kirim Keputusan
+                      </button>
+                    </form>
+                  </div>
+
+                </div>
+
+              </div>
+            )}
+
+          </>
+        )}
+      </div>
+    </DashboardLayout>
+  );
+}

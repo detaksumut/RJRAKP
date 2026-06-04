@@ -1,0 +1,6 @@
+{
+  "name": "RJRAKP",
+  "description": "Rumah Jurnal Riset, Analisis dan Keadilan Publik (RJRAKP) - Publikasi Ilmiah untuk Transparansi, Akuntabilitas, dan Keadilan Publik",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

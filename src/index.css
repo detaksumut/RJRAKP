@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Merriweather", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  
+  --color-brand-50: #f3f6f9;
+  --color-brand-100: #dfebf6;
+  --color-brand-500: #3c6598;
+  --color-brand-600: #2c4d79;
+  --color-brand-700: #20395c;
+  --color-brand-800: #162843;
+  --color-brand-900: #0a1b33;
+  --color-brand-950: #061122;
+
+  --color-accent-50: #fbf9f4;
+  --color-accent-100: #f5eedd;
+  --color-accent-500: #c39c50;
+  --color-accent-600: #a6813b;
+  --color-accent-700: #89672c;
+  --color-accent-800: #6b4f21;
+  --color-accent-900: #513b19;
+  
+  --color-academic-50: var(--color-slate-50);
+  --color-academic-100: var(--color-slate-100);
+  --color-academic-200: var(--color-slate-200);
+  --color-academic-300: var(--color-slate-300);
+  --color-academic-400: var(--color-slate-400);
+  --color-academic-500: var(--color-slate-500);
+  --color-academic-600: var(--color-slate-600);
+  --color-academic-700: var(--color-slate-700);
+  --color-academic-800: var(--color-slate-800);
+  --color-academic-900: var(--color-slate-900);
+  --color-academic-950: var(--color-slate-950);
+  
+  --animate-spin-slow: spin 12s linear infinite;
+}
+
+/* Google Translate Custom Overrides */
+iframe.goog-te-banner-frame,
+.goog-te-banner-frame, 
+#goog-gt-tt, 
+.goog-te-balloon-frame,
+.goog-te-gadget-simple {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0px !important;
+  width: 0px !important;
+  opacity: 0 !important;
+}
+
+html {
+  margin-top: 0px !important;
+  padding-top: 0px !important;
+}
+
+body {
+  top: 0px !important;
+  position: static !important;
+  margin-top: 0px !important;
+}
+
+.goog-text-highlight {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+
