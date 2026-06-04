@@ -76,7 +76,18 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 pt-6 border-t border-academic-200 text-center shrink-0">
+        <div className="mt-12 pt-8 border-t border-academic-200 text-center shrink-0">
+          <div className="flex justify-center items-center gap-6 mb-4">
+            <div className="flex flex-col items-center">
+              <img src="/logo-bernas.png.png" alt="PT. Bernas Sumut Jaya" className="h-14 md:h-16 w-auto object-contain mb-1" />
+            </div>
+            <div className="flex flex-col items-center">
+              <img src="/logo-binews.png.png" alt="BeritaIndonesia.News" className="h-14 md:h-16 w-auto object-contain mb-1" />
+            </div>
+          </div>
+          <p className="text-xs font-bold text-academic-600 mb-2">
+            Penerbit PT. Bernas Sumut Jaya | Supervisi BeritaIndonesia.News
+          </p>
           <p className="text-[10px] text-academic-400 font-medium tracking-widest uppercase">
             &copy; {new Date().getFullYear()} Rumah Jurnal Riset, Analisis dan Keadilan Publik. Hak Cipta Dilindungi.
           </p>

@@ -32,7 +32,7 @@ export default function Navbar() {
           </div>
 
           <div className="flex flex-1 justify-center px-2">
-            <a href="https://scholar.google.com/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 sm:gap-2.5 px-4 py-2 sm:px-5 sm:py-2.5 rounded-full bg-blue-50/50 hover:bg-blue-50 border border-blue-100 transition-all shadow-sm group">
+            <a href="https://scholar.google.com/citations?user=EoHXXg0AAAAJ&hl=en" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 sm:gap-2.5 px-4 py-2 sm:px-5 sm:py-2.5 rounded-full bg-blue-50/50 hover:bg-blue-50 border border-blue-100 transition-all shadow-sm group">
               <GraduationCap className="w-6 h-6 sm:w-7 sm:h-7 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" fillOpacity={0.2} />
               <span className="text-sm sm:text-base font-black text-blue-900 tracking-wide whitespace-nowrap">Google Scholar</span>
             </a>
