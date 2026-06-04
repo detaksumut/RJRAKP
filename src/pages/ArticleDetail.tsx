@@ -29,9 +29,9 @@ export default function ArticleDetail() {
             slug, 
             created_at, 
             status,
-            article_authors (full_name, affiliation, email, is_corresponding, author_order),
-            journals (id, name, p_issn, e_issn, publisher, slug),
-            publications (id, doi, pdf_url, volume_number, issue_number, publication_date)
+            article_authors (*),
+            journals (*),
+            publications (*)
           `)
           .eq('slug', slug)
           .eq('status', 'published')
