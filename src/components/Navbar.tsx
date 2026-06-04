@@ -1,4 +1,4 @@
-import { Menu, X, BookOpen, User } from 'lucide-react';
+import { Menu, X, BookOpen, User, GraduationCap } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { MENU_ITEMS } from '../data';
@@ -29,6 +29,13 @@ export default function Navbar() {
                 <BookOpen className="h-8 w-8 text-brand-900 hidden" />
               </div>
             </Link>
+          </div>
+
+          <div className="flex flex-1 justify-center px-2">
+            <a href="https://scholar.google.com/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-blue-50/50 hover:bg-blue-50 border border-blue-100 transition-all shadow-sm group">
+              <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" fillOpacity={0.2} />
+              <span className="text-[10px] sm:text-xs font-bold text-blue-900 tracking-wide whitespace-nowrap">Google Scholar</span>
+            </a>
           </div>
 
           <div className="hidden lg:flex lg:items-center lg:space-x-2">
