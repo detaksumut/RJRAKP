@@ -19,6 +19,27 @@ export default function AuthorSubmit() {
     keywords: '',
   });
 
+  // Load from localStorage on mount
+  useEffect(() => {
+    const savedDraft = localStorage.getItem('manuscript_draft');
+    if (savedDraft) {
+      try {
+        const parsed = JSON.parse(savedDraft);
+        setFormData(prev => ({ ...prev, ...parsed }));
+      } catch (e) {
+        console.error('Failed to parse draft', e);
+      }
+    }
+  }, []);
+
+  // Save to localStorage when formData changes
+  useEffect(() => {
+    // Only save if there's actually some content
+    if (formData.title || formData.abstract || formData.keywords) {
+      localStorage.setItem('manuscript_draft', JSON.stringify(formData));
+    }
+  }, [formData]);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setSelectedFile(e.target.files[0]);
@@ -30,9 +51,13 @@ export default function AuthorSubmit() {
       const { data } = await supabase.from('journals').select('id, name');
       if (data) {
         setJournals(data);
-        if (data.length > 0) {
-          setFormData(prev => ({ ...prev, journal_id: data[0].id }));
-        }
+        // Only set default journal if we haven't loaded one from draft
+        setFormData(prev => {
+          if (!prev.journal_id && data.length > 0) {
+            return { ...prev, journal_id: data[0].id };
+          }
+          return prev;
+        });
       }
     }
     fetchJournals();
@@ -101,6 +126,8 @@ export default function AuthorSubmit() {
 
       if (authorError) throw authorError;
 
+      // Clear draft on successful submission
+      localStorage.removeItem('manuscript_draft');
       setSuccess(true);
       setSelectedFile(null);
       setFormData({ ...formData, title: '', abstract: '', keywords: '' });
