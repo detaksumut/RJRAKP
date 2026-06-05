@@ -258,9 +258,10 @@ export default function AuthorSubmit() {
       // Sukses
       localStorage.removeItem('manuscript_draft');
       setSuccess(true);
-      setSelectedFile(null);
+      setTitlePageFile(null);
+      setAnonymousFile(null);
       setSupportingFile(null);
-      setFormData({ journal_id: journals[0]?.id || '', title: '', abstract: '', keywords: '', cover_letter: '' });
+      setFormData({ journal_id: journals[0]?.id || '', title: '', abstract: '', abstract_en: '', bibliography: '', funding_source: '', conflict_of_interest: false, keywords: '', cover_letter: '' });
       setAuthors([{ id: Math.random().toString(), full_name: user.user_metadata?.full_name || '', email: user.email || '', affiliation: '', country: '', orcid: '' }]);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err: any) {
