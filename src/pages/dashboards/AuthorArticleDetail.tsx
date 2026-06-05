@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import DashboardLayout from '../../components/DashboardLayout';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
-import { FileText, ArrowLeft, Upload, Send, Clock, MessageSquare, AlertCircle, CheckCircle } from 'lucide-react';
+import { FileText, ArrowLeft, Upload, Send, Clock, MessageSquare, AlertCircle, CheckCircle, Edit3, Save, X } from 'lucide-react';
 
 export default function AuthorArticleDetail() {
   const { id } = useParams<{ id: string }>();
@@ -19,6 +19,12 @@ export default function AuthorArticleDetail() {
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState('');
   const [uploadSuccess, setUploadSuccess] = useState('');
+
+  // Edit metadata states
+  const [isEditing, setIsEditing] = useState(false);
+  const [editForm, setEditForm] = useState({ title: '', abstract: '' });
+  const [savingMetadata, setSavingMetadata] = useState(false);
+  const [metadataSuccess, setMetadataSuccess] = useState('');
 
   useEffect(() => {
     if (user?.id && id) {
@@ -40,6 +46,7 @@ export default function AuthorArticleDetail() {
 
       if (articleError) throw articleError;
       setArticle(articleData);
+      setEditForm({ title: articleData.title, abstract: articleData.abstract });
 
       // 2. Fetch Editorial Decisions
       const { data: decisionData } = await supabase
@@ -77,6 +84,36 @@ export default function AuthorArticleDetail() {
       console.error('Error fetching article details:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSaveMetadata = async () => {
+    if (!article) return;
+    setSavingMetadata(true);
+    setMetadataSuccess('');
+    
+    try {
+      const { error } = await supabase
+        .from('articles')
+        .update({
+          title: editForm.title,
+          abstract: editForm.abstract,
+        })
+        .eq('id', article.id);
+        
+      if (error) throw error;
+      
+      setArticle({ ...article, title: editForm.title, abstract: editForm.abstract });
+      setIsEditing(false);
+      setMetadataSuccess('Metadata artikel berhasil diperbarui.');
+      
+      // Clear success message after 3 seconds
+      setTimeout(() => setMetadataSuccess(''), 3000);
+    } catch (err: any) {
+      console.error(err);
+      alert('Gagal menyimpan metadata: ' + err.message);
+    } finally {
+      setSavingMetadata(false);
     }
   };
 
@@ -191,29 +228,105 @@ export default function AuthorArticleDetail() {
         </div>
 
         {/* 1. Article Details Card */}
-        <div className="bg-white p-6 rounded-xl border border-academic-200 shadow-sm mb-6">
-          <span className="inline-block text-[10px] font-black text-brand-700 bg-brand-50 border border-brand-100 px-2 py-0.5 rounded uppercase mb-3">
-            {article.journals?.name || 'Jurnal'}
-          </span>
-          <h2 className="font-serif font-bold text-xl text-academic-900 mb-4">{article.title}</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mb-4">
-            <div>
-              <span className="block text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Tanggal Submit</span>
-              <p className="font-medium text-academic-800">{new Date(article.submission_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
-            </div>
-            <div>
-              <span className="block text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Manuskrip Saat Ini</span>
-              <a href={article.manuscript_file} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-brand-600 hover:text-brand-800 font-medium">
-                <FileText className="w-4 h-4" /> Buka / Unduh File
-              </a>
-            </div>
+        <div className="bg-white p-6 rounded-xl border border-academic-200 shadow-sm mb-6 relative">
+          <div className="flex justify-between items-start mb-3">
+            <span className="inline-block text-[10px] font-black text-brand-700 bg-brand-50 border border-brand-100 px-2 py-0.5 rounded uppercase">
+              {article.journals?.name || 'Jurnal'}
+            </span>
+            {['revised', 'in_review', 'under_review'].includes(article.status) && !isEditing && (
+              <button 
+                onClick={() => setIsEditing(true)}
+                className="text-xs font-bold text-brand-600 hover:text-brand-800 flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-brand-50 transition-colors"
+              >
+                <Edit3 className="w-4 h-4" /> Edit Metadata
+              </button>
+            )}
           </div>
           
-          <div>
-            <span className="block text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Abstrak</span>
-            <p className="text-sm text-academic-700 leading-relaxed text-justify">{article.abstract}</p>
-          </div>
+          {metadataSuccess && (
+            <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-lg text-sm font-medium mb-4 flex items-center gap-2">
+              <CheckCircle className="w-4 h-4 shrink-0" />
+              <span>{metadataSuccess}</span>
+            </div>
+          )}
+
+          {isEditing ? (
+            <div className="space-y-4 mb-4">
+              <div>
+                <label className="block text-xs font-bold text-academic-700 uppercase tracking-widest mb-1">Judul Artikel</label>
+                <textarea 
+                  value={editForm.title}
+                  onChange={e => setEditForm({...editForm, title: e.target.value})}
+                  className="w-full border border-academic-300 rounded-lg p-3 text-academic-900 font-serif font-bold text-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all"
+                  rows={2}
+                />
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div>
+                  <span className="block text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Tanggal Submit</span>
+                  <p className="font-medium text-academic-800">{new Date(article.submission_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+                </div>
+                <div>
+                  <span className="block text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Manuskrip Saat Ini</span>
+                  <a href={article.manuscript_file} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-brand-600 hover:text-brand-800 font-medium">
+                    <FileText className="w-4 h-4" /> Buka / Unduh File
+                  </a>
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-xs font-bold text-academic-700 uppercase tracking-widest mb-1">Abstrak</label>
+                <textarea 
+                  value={editForm.abstract}
+                  onChange={e => setEditForm({...editForm, abstract: e.target.value})}
+                  className="w-full border border-academic-300 rounded-lg p-3 text-sm text-academic-700 leading-relaxed text-justify focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all"
+                  rows={8}
+                />
+              </div>
+              
+              <div className="flex gap-2 justify-end mt-4 pt-4 border-t border-academic-100">
+                <button 
+                  onClick={() => {
+                    setIsEditing(false);
+                    setEditForm({ title: article.title, abstract: article.abstract });
+                  }}
+                  className="px-4 py-2 text-academic-600 hover:bg-academic-100 rounded-lg font-bold text-sm transition-colors flex items-center gap-1.5"
+                >
+                  <X className="w-4 h-4" /> Batal
+                </button>
+                <button 
+                  onClick={handleSaveMetadata}
+                  disabled={savingMetadata}
+                  className="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg font-bold text-sm transition-colors flex items-center gap-1.5 disabled:opacity-50 shadow-sm"
+                >
+                  {savingMetadata ? 'Menyimpan...' : <><Save className="w-4 h-4" /> Simpan Perubahan</>}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <>
+              <h2 className="font-serif font-bold text-xl text-academic-900 mb-4">{article.title}</h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mb-4">
+                <div>
+                  <span className="block text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Tanggal Submit</span>
+                  <p className="font-medium text-academic-800">{new Date(article.submission_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+                </div>
+                <div>
+                  <span className="block text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Manuskrip Saat Ini</span>
+                  <a href={article.manuscript_file} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-brand-600 hover:text-brand-800 font-medium">
+                    <FileText className="w-4 h-4" /> Buka / Unduh File
+                  </a>
+                </div>
+              </div>
+              
+              <div>
+                <span className="block text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Abstrak</span>
+                <p className="text-sm text-academic-700 leading-relaxed text-justify">{article.abstract}</p>
+              </div>
+            </>
+          )}
         </div>
 
         {/* 2. Reviewer & Editor Feedback */}
