@@ -119,20 +119,24 @@ export default function AuthorArticleDetail() {
 
   const handleUploadRevision = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedFile || !article) return;
+    if (!article) return;
 
     setUploading(true);
     setUploadError('');
     setUploadSuccess('');
 
     try {
-      const fileExt = selectedFile.name.split('.').pop();
-      const fileName = `revised_manuscript_${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
-      
-      const { error: uploadError } = await supabase.storage.from('manuscripts').upload(fileName, selectedFile);
-      if (uploadError) throw new Error(`Gagal mengunggah file revisi: ${uploadError.message}`);
-      
-      const manuscriptUrl = supabase.storage.from('manuscripts').getPublicUrl(fileName).data.publicUrl;
+      let manuscriptUrl = article.manuscript_file;
+
+      if (selectedFile) {
+        const fileExt = selectedFile.name.split('.').pop();
+        const fileName = `revised_manuscript_${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
+        
+        const { error: uploadError } = await supabase.storage.from('manuscripts').upload(fileName, selectedFile);
+        if (uploadError) throw new Error(`Gagal mengunggah file revisi: ${uploadError.message}`);
+        
+        manuscriptUrl = supabase.storage.from('manuscripts').getPublicUrl(fileName).data.publicUrl;
+      }
 
       // Update article status and manuscript file
       const { error: updateError } = await supabase
@@ -153,7 +157,7 @@ export default function AuthorArticleDetail() {
         entity_id: article.id
       });
 
-      setUploadSuccess('File revisi berhasil diunggah! Status artikel telah diperbarui.');
+      setUploadSuccess('Revisi berhasil dikirim! Status artikel telah diperbarui.');
       setSelectedFile(null);
       fetchArticleDetails(); // Refresh data
 
@@ -402,10 +406,10 @@ export default function AuthorArticleDetail() {
         {['revised', 'in_review', 'under_review'].includes(article.status) && (
           <div className="bg-white p-6 rounded-xl border border-brand-200 shadow-md">
             <h3 className="font-serif font-bold text-lg text-academic-900 mb-2 flex items-center gap-2">
-              <Upload className="w-5 h-5 text-brand-600" /> Unggah Manuskrip Revisi
+              <Upload className="w-5 h-5 text-brand-600" /> Kirim Hasil Revisi
             </h3>
             <p className="text-sm text-academic-500 mb-6">
-              Jika Anda telah melakukan perbaikan sesuai catatan dari Editor dan Reviewer, silakan unggah file manuskrip terbaru di sini.
+              Jika Anda telah melakukan perbaikan sesuai catatan dari Editor dan Reviewer, silakan konfirmasi perbaikan Anda di sini. Jika revisi mewajibkan perbaikan file manuskrip, silakan unggah file PDF/DOC terbaru. Jika revisi <strong>hanya pada metadata</strong> (Judul/Abstrak), Anda tidak perlu mengunggah file baru.
             </p>
 
             {uploadError && (
@@ -431,14 +435,13 @@ export default function AuthorArticleDetail() {
                       <p className="text-sm text-brand-700 font-bold">{selectedFile.name}</p>
                     ) : (
                       <>
-                        <p className="text-sm text-brand-700 font-bold mb-1">Klik untuk memilih file revisi</p>
+                        <p className="text-sm text-brand-700 font-bold mb-1">Klik untuk memilih file revisi (Opsional)</p>
                         <p className="text-xs text-academic-500">Format DOC, DOCX, atau PDF (Max 10MB)</p>
                       </>
                     )}
                   </div>
                   <input 
                     type="file" 
-                    required 
                     accept=".pdf,.doc,.docx" 
                     onChange={(e) => e.target.files && setSelectedFile(e.target.files[0])} 
                     className="hidden" 
@@ -449,13 +452,13 @@ export default function AuthorArticleDetail() {
               <div className="flex justify-end">
                 <button 
                   type="submit" 
-                  disabled={uploading || !selectedFile}
+                  disabled={uploading}
                   className="px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-lg font-bold text-sm transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
                 >
                   {uploading ? (
-                    'Mengunggah...'
+                    'Mengirim...'
                   ) : (
-                    <><Send className="w-4 h-4" /> Kirim Revisi</>
+                    <><Send className="w-4 h-4" /> Tandai Revisi Selesai & Kirim</>
                   )}
                 </button>
               </div>
