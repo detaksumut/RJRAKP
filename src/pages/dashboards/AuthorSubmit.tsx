@@ -19,6 +19,7 @@ export default function AuthorSubmit() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+  const [isTranslating, setIsTranslating] = useState(false);
   
   const [titlePageFile, setTitlePageFile] = useState<File | null>(null);
   const [anonymousFile, setAnonymousFile] = useState<File | null>(null);
@@ -39,6 +40,40 @@ export default function AuthorSubmit() {
   const [authors, setAuthors] = useState<AuthorData[]>([
     { id: Math.random().toString(), full_name: '', email: '', affiliation: '', country: '', orcid: '' }
   ]);
+
+  // Auto Translate function using public Google Translate API
+  const handleAutoTranslate = async () => {
+    if (!formData.abstract || formData.abstract.trim().length < 10) {
+      alert("Silakan isi Abstrak (Bahasa Indonesia) terlebih dahulu dengan lengkap.");
+      return;
+    }
+    
+    setIsTranslating(true);
+    try {
+      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=id&tl=en&dt=t&q=${encodeURIComponent(formData.abstract)}`;
+      
+      const response = await fetch(url);
+      const data = await response.json();
+      
+      let translatedText = '';
+      if (data && data[0]) {
+        data[0].forEach((item: any) => {
+          if (item[0]) translatedText += item[0];
+        });
+      }
+      
+      if (translatedText) {
+        setFormData(prev => ({ ...prev, abstract_en: translatedText }));
+      } else {
+        throw new Error("Empty translation result");
+      }
+    } catch (error) {
+      console.error("Translation error:", error);
+      alert("Gagal menerjemahkan secara otomatis. Silakan coba lagi nanti atau isi secara manual.");
+    } finally {
+      setIsTranslating(false);
+    }
+  };
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -308,7 +343,17 @@ export default function AuthorSubmit() {
                     ></textarea>
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-academic-900 mb-2">Abstract (English) <span className="text-red-500">*</span></label>
+                    <div className="flex justify-between items-center mb-2">
+                      <label className="block text-sm font-bold text-academic-900">Abstract (English) <span className="text-red-500">*</span></label>
+                      <button 
+                        type="button" 
+                        onClick={handleAutoTranslate}
+                        disabled={isTranslating || !formData.abstract}
+                        className="text-xs font-bold bg-brand-50 text-brand-700 hover:bg-brand-100 border border-brand-200 px-2 py-1 rounded transition-colors disabled:opacity-50 flex items-center gap-1"
+                      >
+                        {isTranslating ? 'Menerjemahkan...' : '✨ Auto Translate'}
+                      </button>
+                    </div>
                     <textarea 
                       name="abstract_en" 
                       required 

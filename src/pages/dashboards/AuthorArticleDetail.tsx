@@ -28,6 +28,38 @@ export default function AuthorArticleDetail() {
   const [editForm, setEditForm] = useState({ title: '', abstract: '', abstract_en: '', bibliography: '' });
   const [savingMetadata, setSavingMetadata] = useState(false);
   const [metadataSuccess, setMetadataSuccess] = useState('');
+  const [isTranslating, setIsTranslating] = useState(false);
+
+  // Auto Translate function
+  const handleAutoTranslate = async () => {
+    if (!editForm.abstract || editForm.abstract.trim().length < 10) {
+      alert("Silakan isi Abstrak (Bahasa Indonesia) terlebih dahulu dengan lengkap.");
+      return;
+    }
+    
+    setIsTranslating(true);
+    try {
+      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=id&tl=en&dt=t&q=${encodeURIComponent(editForm.abstract)}`;
+      const response = await fetch(url);
+      const data = await response.json();
+      
+      let translatedText = '';
+      if (data && data[0]) {
+        data[0].forEach((item: any) => {
+          if (item[0]) translatedText += item[0];
+        });
+      }
+      
+      if (translatedText) {
+        setEditForm(prev => ({ ...prev, abstract_en: translatedText }));
+      }
+    } catch (error) {
+      console.error("Translation error:", error);
+      alert("Gagal menerjemahkan secara otomatis.");
+    } finally {
+      setIsTranslating(false);
+    }
+  };
 
   useEffect(() => {
     if (user?.id && id) {
@@ -350,7 +382,17 @@ export default function AuthorArticleDetail() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-academic-700 uppercase tracking-widest mb-1">Abstract (English)</label>
+                  <div className="flex justify-between items-center mb-1">
+                    <label className="block text-xs font-bold text-academic-700 uppercase tracking-widest">Abstract (English)</label>
+                    <button 
+                      type="button" 
+                      onClick={handleAutoTranslate}
+                      disabled={isTranslating || !editForm.abstract}
+                      className="text-[10px] font-bold bg-brand-50 text-brand-700 hover:bg-brand-100 border border-brand-200 px-2 py-0.5 rounded transition-colors disabled:opacity-50 flex items-center gap-1"
+                    >
+                      {isTranslating ? 'Menerjemahkan...' : '✨ Auto Translate'}
+                    </button>
+                  </div>
                   <textarea 
                     value={editForm.abstract_en || ''}
                     onChange={e => setEditForm({...editForm, abstract_en: e.target.value})}
