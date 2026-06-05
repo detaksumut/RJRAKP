@@ -143,9 +143,16 @@ export default function EditorAssignReviewer() {
         matchScore,
         expertiseArea: profile?.expertise_area || '-',
         academicTitle: profile?.academic_title || '',
-        affiliation: profile?.affiliation || '-'
+        affiliation: profile?.affiliation || '-',
+        reviewerType: profile?.reviewer_type || 'CO_REVIEWER'
       };
-    }).sort((a, b) => b.matchScore - a.matchScore);
+    }).sort((a, b) => {
+      // Sort primarily by reviewerType (PRIMARY first)
+      if (a.reviewerType === 'PRIMARY' && b.reviewerType !== 'PRIMARY') return -1;
+      if (a.reviewerType !== 'PRIMARY' && b.reviewerType === 'PRIMARY') return 1;
+      // Then sort by matchScore
+      return b.matchScore - a.matchScore;
+    });
   };
 
   const handleAssign = async (e: React.FormEvent) => {
@@ -279,23 +286,33 @@ export default function EditorAssignReviewer() {
                       value={selectedReviewerId}
                       onChange={e => setSelectedReviewerId(e.target.value)}
                       required
-                      className="w-full border border-academic-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white"
+                      className="w-full border border-academic-300 rounded-lg px-4 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500 bg-academic-50 font-medium"
                     >
                       <option value="">-- Pilih Reviewer --</option>
                       
-                      {recommendedReviewers.length > 0 && (
-                        <optgroup label="⭐ DIREKOMENDASIKAN (Keahlian Cocok Jurnal)">
-                          {recommendedReviewers.map(r => (
+                      {matchingReviewers.filter(r => r.reviewerType === 'PRIMARY').length > 0 && (
+                        <optgroup label="⭐ Reviewer Utama (Spesialis)">
+                          {matchingReviewers.filter(r => r.reviewerType === 'PRIMARY').map(r => (
                             <option key={r.id} value={r.id}>
                               {r.academicTitle ? `${r.academicTitle} ` : ''}{r.full_name} [{r.expertiseArea}]
                             </option>
                           ))}
                         </optgroup>
                       )}
-                      
-                      {otherReviewers.length > 0 && (
-                        <optgroup label="⚠️ REVIEWER LAIN (Keahlian Tidak Cocok Jurnal)">
-                          {otherReviewers.map(r => (
+
+                      {matchingReviewers.filter(r => r.reviewerType !== 'PRIMARY' && r.matchScore > 0).length > 0 && (
+                        <optgroup label="👥 Co-Reviewer (Sesuai Bidang)">
+                          {matchingReviewers.filter(r => r.reviewerType !== 'PRIMARY' && r.matchScore > 0).map(r => (
+                            <option key={r.id} value={r.id}>
+                              {r.academicTitle ? `${r.academicTitle} ` : ''}{r.full_name} [{r.expertiseArea}]
+                            </option>
+                          ))}
+                        </optgroup>
+                      )}
+
+                      {matchingReviewers.filter(r => r.reviewerType !== 'PRIMARY' && r.matchScore === 0).length > 0 && (
+                        <optgroup label="⚠️ Co-Reviewer (Lainnya)">
+                          {matchingReviewers.filter(r => r.reviewerType !== 'PRIMARY' && r.matchScore === 0).map(r => (
                             <option key={r.id} value={r.id}>
                               {r.academicTitle ? `${r.academicTitle} ` : ''}{r.full_name} [{r.expertiseArea}]
                             </option>
@@ -394,10 +411,14 @@ export default function EditorAssignReviewer() {
                 <div className="space-y-4 max-h-[300px] overflow-y-auto pr-1">
                   {matchingReviewers.map(rev => {
                     const isRec = rev.matchScore > 0;
+                    const isPrimary = rev.reviewerType === 'PRIMARY';
                     return (
-                      <div key={rev.id} className={`p-3 rounded-lg border text-xs transition-colors ${isRec ? 'bg-emerald-50/30 border-emerald-200' : 'bg-slate-50/50 border-slate-200'}`}>
+                      <div key={rev.id} className={`p-3 rounded-lg border text-xs transition-colors ${isPrimary ? 'bg-amber-50/50 border-amber-200 shadow-sm' : isRec ? 'bg-emerald-50/30 border-emerald-200' : 'bg-slate-50/50 border-slate-200'}`}>
                         <div className="font-bold text-academic-800 flex justify-between items-start gap-1">
-                          <span>{rev.academicTitle ? `${rev.academicTitle} ` : ''}{rev.full_name}</span>
+                          <div className="flex items-center gap-1.5">
+                            {isPrimary && <span title="Reviewer Utama"><Award className="w-4 h-4 text-amber-500" /></span>}
+                            <span>{rev.academicTitle ? `${rev.academicTitle} ` : ''}{rev.full_name}</span>
+                          </div>
                           {isRec && (
                             <span className="px-1.5 py-0.2 bg-emerald-100 text-emerald-800 text-[8px] font-black uppercase tracking-wider rounded shrink-0">Cocok</span>
                           )}
