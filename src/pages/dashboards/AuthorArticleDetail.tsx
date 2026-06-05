@@ -485,7 +485,7 @@ export default function AuthorArticleDetail() {
                       Pernyataan Kesesuaian Naskah <span className="text-red-500">*</span>
                     </label>
                     <p className="text-xs text-academic-700 mt-1">
-                      Saya mengonfirmasi bahwa naskah jurnal (termasuk hasil revisi ini) <strong>WAJIB berjumlah minimal 5000 kata (termasuk Daftar Pustaka)</strong>. Naskah telah dilengkapi dengan Daftar Pustaka yang sesuai standar akademik.
+                      Saya mengonfirmasi bahwa naskah jurnal (termasuk hasil revisi ini) <strong>telah dilengkapi dengan Daftar Pustaka</strong> yang sesuai standar akademik.
                     </p>
                   </div>
                 </div>

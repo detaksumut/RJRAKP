@@ -406,7 +406,7 @@ export default function AuthorSubmit() {
                       Pernyataan Kesesuaian Naskah Jurnal <span className="text-red-500">*</span>
                     </label>
                     <p className="text-sm text-academic-700 mt-1">
-                      Saya menyatakan bahwa naskah jurnal yang dikirimkan ini <strong>WAJIB berjumlah minimal 5000 kata (termasuk Daftar Pustaka)</strong>. Naskah ini telah dilengkapi dengan Daftar Pustaka yang sesuai dengan standar penulisan akademik.
+                      Saya menyatakan bahwa naskah jurnal yang dikirimkan ini <strong>telah dilengkapi dengan Daftar Pustaka</strong> yang sesuai dengan standar penulisan akademik.
                     </p>
                   </div>
                 </div>
