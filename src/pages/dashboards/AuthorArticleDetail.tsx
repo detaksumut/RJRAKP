@@ -22,7 +22,7 @@ export default function AuthorArticleDetail() {
 
   // Edit metadata states
   const [isEditing, setIsEditing] = useState(false);
-  const [editForm, setEditForm] = useState({ title: '', abstract: '' });
+  const [editForm, setEditForm] = useState({ title: '', abstract: '', bibliography: '' });
   const [savingMetadata, setSavingMetadata] = useState(false);
   const [metadataSuccess, setMetadataSuccess] = useState('');
 
@@ -46,7 +46,7 @@ export default function AuthorArticleDetail() {
 
       if (articleError) throw articleError;
       setArticle(articleData);
-      setEditForm({ title: articleData.title, abstract: articleData.abstract });
+      setEditForm({ title: articleData.title, abstract: articleData.abstract, bibliography: articleData.bibliography || '' });
 
       // 2. Fetch Editorial Decisions
       const { data: decisionData } = await supabase
@@ -98,12 +98,13 @@ export default function AuthorArticleDetail() {
         .update({
           title: editForm.title,
           abstract: editForm.abstract,
+          bibliography: editForm.bibliography,
         })
         .eq('id', article.id);
         
       if (error) throw error;
       
-      setArticle({ ...article, title: editForm.title, abstract: editForm.abstract });
+      setArticle({ ...article, title: editForm.title, abstract: editForm.abstract, bibliography: editForm.bibliography });
       setIsEditing(false);
       setMetadataSuccess('Metadata artikel berhasil diperbarui.');
       
@@ -285,6 +286,16 @@ export default function AuthorArticleDetail() {
                   value={editForm.abstract}
                   onChange={e => setEditForm({...editForm, abstract: e.target.value})}
                   className="w-full border border-academic-300 rounded-lg p-3 text-sm text-academic-700 leading-relaxed text-justify focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all"
+                  rows={6}
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-academic-700 uppercase tracking-widest mb-1">Daftar Pustaka (References)</label>
+                <textarea 
+                  value={editForm.bibliography}
+                  onChange={e => setEditForm({...editForm, bibliography: e.target.value})}
+                  className="w-full border border-academic-300 rounded-lg p-3 text-sm text-academic-700 leading-relaxed text-justify focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all"
                   rows={8}
                 />
               </div>
@@ -293,7 +304,7 @@ export default function AuthorArticleDetail() {
                 <button 
                   onClick={() => {
                     setIsEditing(false);
-                    setEditForm({ title: article.title, abstract: article.abstract });
+                    setEditForm({ title: article.title, abstract: article.abstract, bibliography: article.bibliography || '' });
                   }}
                   className="px-4 py-2 text-academic-600 hover:bg-academic-100 rounded-lg font-bold text-sm transition-colors flex items-center gap-1.5"
                 >
@@ -327,8 +338,17 @@ export default function AuthorArticleDetail() {
               
               <div>
                 <span className="block text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Abstrak</span>
-                <p className="text-sm text-academic-700 leading-relaxed text-justify">{article.abstract}</p>
+                <p className="text-sm text-academic-700 leading-relaxed text-justify mb-4">{article.abstract}</p>
               </div>
+
+              {article.bibliography && (
+                <div>
+                  <span className="block text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Daftar Pustaka</span>
+                  <div className="bg-academic-50 p-4 rounded-lg border border-academic-100 text-sm text-academic-700 leading-relaxed whitespace-pre-wrap">
+                    {article.bibliography}
+                  </div>
+                </div>
+              )}
             </>
           )}
         </div>

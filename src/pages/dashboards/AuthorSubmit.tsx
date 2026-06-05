@@ -29,6 +29,7 @@ export default function AuthorSubmit() {
     abstract: '',
     keywords: '',
     cover_letter: '',
+    bibliography: '',
   });
 
   const [authors, setAuthors] = useState<AuthorData[]>([
@@ -138,6 +139,11 @@ export default function AuthorSubmit() {
         throw new Error("Semua penulis wajib memiliki Nama, Email, dan Afiliasi yang terisi.");
       }
 
+      // Validasi Daftar Pustaka
+      if (!formData.bibliography || formData.bibliography.trim().length < 50) {
+        throw new Error("Daftar Pustaka wajib diisi dengan format yang benar (minimal 50 karakter).");
+      }
+
       // 1. Upload Manuscript File
       const fileExt = selectedFile.name.split('.').pop();
       const fileName = `manuscript_${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
@@ -165,6 +171,7 @@ export default function AuthorSubmit() {
           abstract: formData.abstract,
           keywords: formData.keywords,
           cover_letter: formData.cover_letter,
+          bibliography: formData.bibliography,
           supporting_data_file: supportingUrl || null,
           status: 'submitted',
           manuscript_file: manuscriptUrl
@@ -270,6 +277,11 @@ export default function AuthorSubmit() {
                 <div>
                   <label className="block text-sm font-bold text-academic-900 mb-2">Kata Kunci (Keywords) <span className="text-red-500">*</span></label>
                   <input type="text" name="keywords" required value={formData.keywords} onChange={handleChange} className="w-full border border-academic-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-brand-500" placeholder="Contoh: pendidikan, evaluasi, kebijakan (pisahkan dengan koma)" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-academic-900 mb-2">Daftar Pustaka (References) <span className="text-red-500">*</span></label>
+                  <p className="text-xs text-academic-500 mb-2">Wajib diisi. Copy-paste seluruh daftar pustaka dari naskah Anda ke dalam kotak ini.</p>
+                  <textarea name="bibliography" required value={formData.bibliography} onChange={handleChange} rows={10} className="w-full border border-academic-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-brand-500" placeholder="1. Penulis A. (2020). Judul Buku..."></textarea>
                 </div>
               </div>
 
