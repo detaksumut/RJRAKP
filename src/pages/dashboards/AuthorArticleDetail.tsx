@@ -12,6 +12,9 @@ export default function AuthorArticleDetail() {
   const [article, setArticle] = useState<any | null>(null);
   const [editorialDecisions, setEditorialDecisions] = useState<any[]>([]);
   const [reviews, setReviews] = useState<any[]>([]);
+  const [discussions, setDiscussions] = useState<any[]>([]);
+  const [newDiscussion, setNewDiscussion] = useState('');
+  const [sendingDiscussion, setSendingDiscussion] = useState(false);
   const [loading, setLoading] = useState(true);
 
   // Upload revision states
@@ -69,21 +72,47 @@ export default function AuthorArticleDetail() {
             created_at
           )
         `)
+      // 3. Fetch Reviews
+      const { data: reviewData } = await supabase
+        .from('article_reviews')
+        .select('*')
+        .eq('article_id', id);
+        
+      if (reviewData) setReviews(reviewData);
+
+      // 4. Fetch Discussions
+      const { data: discussionData } = await supabase
+        .from('article_discussions')
+        .select('*, users(full_name)')
         .eq('article_id', id)
-        .eq('status', 'completed');
+        .order('created_at', { ascending: true });
+        
+      if (discussionData) setDiscussions(discussionData);
 
-      // Flatten and filter reviews that have comments
-      if (reviewsData) {
-        const flatReviews = reviewsData
-          .flatMap((assignment: any) => assignment.reviews || [])
-          .filter((review: any) => review && review.comments_for_author);
-        setReviews(flatReviews);
-      }
-
-    } catch (err) {
-      console.error('Error fetching article details:', err);
+    } catch (error) {
+      console.error('Error fetching article:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSendDiscussion = async () => {
+    if (!newDiscussion.trim() || !user || !article) return;
+    try {
+      setSendingDiscussion(true);
+      const { error } = await supabase.from('article_discussions').insert({
+        article_id: article.id,
+        user_id: user.id,
+        message: newDiscussion.trim()
+      });
+      if (error) throw error;
+      setNewDiscussion('');
+      fetchArticleDetails(); // Refresh discussions
+    } catch (err) {
+      console.error(err);
+      alert('Gagal mengirim pesan.');
+    } finally {
+      setSendingDiscussion(false);
     }
   };
 
@@ -223,8 +252,11 @@ export default function AuthorArticleDetail() {
             <span className="block text-xs font-bold text-academic-400 uppercase tracking-widest mb-1">Status Saat Ini</span>
             <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold border capitalize ${
               article.status === 'accepted' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+              article.status === 'copyediting' ? 'bg-purple-50 text-purple-700 border-purple-200' :
+              article.status === 'layouting' ? 'bg-indigo-50 text-indigo-700 border-indigo-200' :
+              article.status === 'published' ? 'bg-blue-50 text-blue-700 border-blue-200' :
               article.status === 'rejected' ? 'bg-rose-50 text-rose-700 border-rose-200' :
-              article.status === 'revised' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+              article.status === 'revised' ? 'bg-teal-50 text-teal-700 border-teal-200' :
               'bg-amber-50 text-amber-700 border-amber-200'
             }`}>
               {(article.status || '').replace('_', ' ')}
@@ -273,10 +305,36 @@ export default function AuthorArticleDetail() {
                   <p className="font-medium text-academic-800">{new Date(article.submission_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
                 </div>
                 <div>
-                  <span className="block text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Manuskrip Saat Ini</span>
-                  <a href={article.manuscript_file} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-brand-600 hover:text-brand-800 font-medium">
-                    <FileText className="w-4 h-4" /> Buka / Unduh File
-                  </a>
+                  <span className="block text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Similarity Index</span>
+                  <p className="font-medium text-academic-800">
+                    {article.similarity_score !== null ? (
+                      <span className={`inline-flex items-center gap-1 ${article.similarity_score > 20 ? 'text-rose-600' : 'text-emerald-600'}`}>
+                        {article.similarity_score}%
+                      </span>
+                    ) : (
+                      <span className="text-academic-400 italic">Belum diperiksa</span>
+                    )}
+                  </p>
+                </div>
+                <div>
+                  <span className="block text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Title Page</span>
+                  {article.title_page_file ? (
+                    <a href={article.title_page_file} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-brand-600 hover:text-brand-800 font-medium">
+                      <FileText className="w-4 h-4" /> Buka File
+                    </a>
+                  ) : article.manuscript_file ? (
+                    <a href={article.manuscript_file} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-brand-600 hover:text-brand-800 font-medium">
+                      <FileText className="w-4 h-4" /> Naskah Lama
+                    </a>
+                  ) : <span className="text-academic-400 italic">Tidak ada</span>}
+                </div>
+                <div>
+                  <span className="block text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Anonymous Manuscript</span>
+                  {article.anonymous_manuscript_file ? (
+                    <a href={article.anonymous_manuscript_file} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-brand-600 hover:text-brand-800 font-medium">
+                      <FileText className="w-4 h-4" /> Buka File
+                    </a>
+                  ) : <span className="text-academic-400 italic">Tidak ada</span>}
                 </div>
               </div>
               
@@ -329,10 +387,36 @@ export default function AuthorArticleDetail() {
                   <p className="font-medium text-academic-800">{new Date(article.submission_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
                 </div>
                 <div>
-                  <span className="block text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Manuskrip Saat Ini</span>
-                  <a href={article.manuscript_file} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-brand-600 hover:text-brand-800 font-medium">
-                    <FileText className="w-4 h-4" /> Buka / Unduh File
-                  </a>
+                  <span className="block text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Similarity Index</span>
+                  <p className="font-medium text-academic-800">
+                    {article.similarity_score !== null ? (
+                      <span className={`inline-flex items-center gap-1 ${article.similarity_score > 20 ? 'text-rose-600' : 'text-emerald-600'}`}>
+                        {article.similarity_score}%
+                      </span>
+                    ) : (
+                      <span className="text-academic-400 italic">Belum diperiksa</span>
+                    )}
+                  </p>
+                </div>
+                <div>
+                  <span className="block text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Title Page</span>
+                  {article.title_page_file ? (
+                    <a href={article.title_page_file} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-brand-600 hover:text-brand-800 font-medium">
+                      <FileText className="w-4 h-4" /> Buka File
+                    </a>
+                  ) : article.manuscript_file ? (
+                    <a href={article.manuscript_file} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-brand-600 hover:text-brand-800 font-medium">
+                      <FileText className="w-4 h-4" /> Naskah Lama
+                    </a>
+                  ) : <span className="text-academic-400 italic">Tidak ada</span>}
+                </div>
+                <div>
+                  <span className="block text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Anonymous Manuscript</span>
+                  {article.anonymous_manuscript_file ? (
+                    <a href={article.anonymous_manuscript_file} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-brand-600 hover:text-brand-800 font-medium">
+                      <FileText className="w-4 h-4" /> Buka File
+                    </a>
+                  ) : <span className="text-academic-400 italic">Tidak ada</span>}
                 </div>
               </div>
               
@@ -340,6 +424,13 @@ export default function AuthorArticleDetail() {
                 <span className="block text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Abstrak</span>
                 <p className="text-sm text-academic-700 leading-relaxed text-justify mb-4">{article.abstract}</p>
               </div>
+
+              {article.funding_source && (
+                <div>
+                  <span className="block text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Sponsor / Sumber Pendanaan</span>
+                  <p className="text-sm text-academic-700 mb-4">{article.funding_source}</p>
+                </div>
+              )}
 
               {article.bibliography && (
                 <div>
@@ -353,7 +444,51 @@ export default function AuthorArticleDetail() {
           )}
         </div>
 
-        {/* 2. Reviewer & Editor Feedback */}
+        {/* 2. Editorial Discussion */}
+        <div className="bg-white p-6 rounded-xl border border-academic-200 shadow-sm mb-6">
+          <h3 className="font-serif font-bold text-lg text-academic-900 flex items-center gap-2 mb-4">
+            <MessageSquare className="w-5 h-5 text-brand-600" /> Diskusi Editorial
+          </h3>
+          <p className="text-xs text-academic-500 mb-4">Gunakan fitur ini untuk berdiskusi langsung dengan Editor terkait naskah Anda.</p>
+          
+          <div className="space-y-4 mb-4 max-h-64 overflow-y-auto pr-2">
+            {discussions.length === 0 ? (
+              <div className="text-center py-6 bg-academic-50 rounded-lg text-academic-500 text-sm">
+                Belum ada percakapan. Mulai diskusi dengan Editor di sini.
+              </div>
+            ) : (
+              discussions.map(msg => (
+                <div key={msg.id} className={`flex flex-col ${msg.user_id === user?.id ? 'items-end' : 'items-start'}`}>
+                  <span className="text-[10px] font-bold text-academic-400 mb-1">{msg.users?.full_name || 'Editor'}</span>
+                  <div className={`px-4 py-2 rounded-2xl max-w-[80%] text-sm ${msg.user_id === user?.id ? 'bg-brand-600 text-white rounded-tr-none' : 'bg-academic-100 text-academic-800 rounded-tl-none'}`}>
+                    {msg.message}
+                  </div>
+                  <span className="text-[10px] text-academic-400 mt-1">{new Date(msg.created_at).toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'})}</span>
+                </div>
+              ))
+            )}
+          </div>
+          
+          <div className="flex gap-2">
+            <input 
+              type="text" 
+              value={newDiscussion}
+              onChange={e => setNewDiscussion(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handleSendDiscussion()}
+              placeholder="Tulis pesan untuk Editor..."
+              className="flex-1 border border-academic-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-brand-500"
+            />
+            <button 
+              onClick={handleSendDiscussion}
+              disabled={sendingDiscussion || !newDiscussion.trim()}
+              className="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg font-bold transition-colors disabled:opacity-50"
+            >
+              <Send className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+
+        {/* 3. Reviewer & Editor Feedback */}
         <div className="mb-6 space-y-4">
           <h3 className="font-serif font-bold text-lg text-academic-900 flex items-center gap-2">
             <MessageSquare className="w-5 h-5 text-academic-500" /> Catatan Perbaikan & Keputusan

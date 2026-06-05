@@ -20,7 +20,8 @@ export default function AuthorSubmit() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
   
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [titlePageFile, setTitlePageFile] = useState<File | null>(null);
+  const [anonymousFile, setAnonymousFile] = useState<File | null>(null);
   const [supportingFile, setSupportingFile] = useState<File | null>(null);
 
   const [formData, setFormData] = useState({
@@ -30,6 +31,8 @@ export default function AuthorSubmit() {
     keywords: '',
     cover_letter: '',
     bibliography: '',
+    funding_source: '',
+    conflict_of_interest: '',
   });
 
   const [authors, setAuthors] = useState<AuthorData[]>([
@@ -132,7 +135,8 @@ export default function AuthorSubmit() {
 
     try {
       if (!user) throw new Error("Anda harus login.");
-      if (!selectedFile) throw new Error("Silakan unggah berkas naskah utama (PDF/Word).");
+      if (!titlePageFile) throw new Error("Silakan unggah Title Page (Halaman Judul).");
+      if (!anonymousFile) throw new Error("Silakan unggah Anonymous Manuscript (Naskah Tanpa Nama).");
       
       // Validasi penulis
       if (authors.some(a => !a.full_name || !a.email || !a.affiliation)) {
@@ -144,12 +148,18 @@ export default function AuthorSubmit() {
         throw new Error("Daftar Pustaka wajib diisi dengan format yang benar (minimal 50 karakter).");
       }
 
-      // 1. Upload Manuscript File
-      const fileExt = selectedFile.name.split('.').pop();
-      const fileName = `manuscript_${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
-      const { error: uploadError } = await supabase.storage.from('manuscripts').upload(fileName, selectedFile);
-      if (uploadError) throw new Error(`Gagal mengunggah naskah utama: ${uploadError.message}`);
-      const manuscriptUrl = supabase.storage.from('manuscripts').getPublicUrl(fileName).data.publicUrl;
+      // 1. Upload Manuscript Files
+      const tpExt = titlePageFile.name.split('.').pop();
+      const tpFileName = `titlepage_${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${tpExt}`;
+      const { error: tpUploadError } = await supabase.storage.from('manuscripts').upload(tpFileName, titlePageFile);
+      if (tpUploadError) throw new Error(`Gagal mengunggah Title Page: ${tpUploadError.message}`);
+      const titlePageUrl = supabase.storage.from('manuscripts').getPublicUrl(tpFileName).data.publicUrl;
+
+      const anonExt = anonymousFile.name.split('.').pop();
+      const anonFileName = `anonymous_${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${anonExt}`;
+      const { error: anonUploadError } = await supabase.storage.from('manuscripts').upload(anonFileName, anonymousFile);
+      if (anonUploadError) throw new Error(`Gagal mengunggah Naskah Anonim: ${anonUploadError.message}`);
+      const anonymousUrl = supabase.storage.from('manuscripts').getPublicUrl(anonFileName).data.publicUrl;
 
       // 2. Upload Supporting File (Optional)
       let supportingUrl = '';
@@ -172,9 +182,13 @@ export default function AuthorSubmit() {
           keywords: formData.keywords,
           cover_letter: formData.cover_letter,
           bibliography: formData.bibliography,
+          funding_source: formData.funding_source,
+          conflict_of_interest: formData.conflict_of_interest ? true : false,
           supporting_data_file: supportingUrl || null,
           status: 'submitted',
-          manuscript_file: manuscriptUrl
+          title_page_file: titlePageUrl,
+          anonymous_manuscript_file: anonymousUrl,
+          manuscript_file: titlePageUrl // fallback/legacy
         }])
         .select()
         .single();
@@ -344,28 +358,53 @@ export default function AuthorSubmit() {
                 </div>
 
                 <div>
+                  <label className="block text-sm font-bold text-academic-900 mb-2">Sponsor / Sumber Pendanaan (Opsional)</label>
+                  <p className="text-xs text-academic-500 mb-2">Misal: Penelitian ini didanai oleh LPDP, Kemenristekdikti, atau pihak lainnya.</p>
+                  <input type="text" name="funding_source" value={formData.funding_source} onChange={handleChange} className="w-full border border-academic-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-brand-500" placeholder="Ketik nama sponsor atau lembaga pendanaan jika ada..." />
+                </div>
+
+                <div className="mt-4">
                   <label className="block text-sm font-bold text-academic-900 mb-2">Cover Letter (Opsional)</label>
                   <p className="text-xs text-academic-500 mb-2">Pesan singkat kepada Editor mengenai mengapa artikel ini penting dan cocok diterbitkan di jurnal ini.</p>
                   <textarea name="cover_letter" value={formData.cover_letter} onChange={handleChange} rows={4} className="w-full border border-academic-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-brand-500" placeholder="Tuliskan cover letter di sini..."></textarea>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                  {/* Utama */}
+                  {/* Title Page */}
                   <div className="bg-academic-50 border border-academic-200 rounded-xl p-5 hover:border-brand-300 transition-colors">
                     <h3 className="text-sm font-bold text-academic-900 flex items-center gap-2 mb-1">
-                      <FileText className="w-5 h-5 text-brand-600" /> Naskah Utama <span className="text-red-500">*</span>
+                      <FileText className="w-5 h-5 text-brand-600" /> Title Page (Halaman Judul) <span className="text-red-500">*</span>
                     </h3>
-                    <p className="text-xs text-academic-500 mb-4">Format DOC, DOCX, atau PDF. Maksimal 10MB.</p>
+                    <p className="text-xs text-academic-500 mb-4">Berisi Judul, Nama Penulis, Afiliasi, Email, Abstrak, dan Acknowledgement.</p>
                     <label className="flex flex-col items-center justify-center w-full h-28 border-2 border-academic-300 border-dashed rounded-lg cursor-pointer bg-white hover:bg-brand-50 transition-colors">
                       <div className="flex flex-col items-center justify-center text-center px-4">
-                        <Upload className={`w-5 h-5 mb-1.5 ${selectedFile ? 'text-brand-600' : 'text-academic-400'}`} />
-                        {selectedFile ? (
-                          <p className="text-sm text-brand-700 font-bold line-clamp-1">{selectedFile.name}</p>
+                        <Upload className={`w-5 h-5 mb-1.5 ${titlePageFile ? 'text-brand-600' : 'text-academic-400'}`} />
+                        {titlePageFile ? (
+                          <p className="text-sm text-brand-700 font-bold line-clamp-1">{titlePageFile.name}</p>
                         ) : (
-                          <p className="text-sm text-academic-600 font-semibold">Pilih File Naskah</p>
+                          <p className="text-sm text-academic-600 font-semibold">Pilih File Title Page</p>
                         )}
                       </div>
-                      <input type="file" required accept=".pdf,.doc,.docx" onChange={(e) => e.target.files && setSelectedFile(e.target.files[0])} className="hidden" />
+                      <input type="file" required accept=".pdf,.doc,.docx" onChange={(e) => e.target.files && setTitlePageFile(e.target.files[0])} className="hidden" />
+                    </label>
+                  </div>
+
+                  {/* Anonymous Manuscript */}
+                  <div className="bg-academic-50 border border-academic-200 rounded-xl p-5 hover:border-brand-300 transition-colors">
+                    <h3 className="text-sm font-bold text-academic-900 flex items-center gap-2 mb-1">
+                      <FileText className="w-5 h-5 text-brand-600" /> Anonymous Manuscript <span className="text-red-500">*</span>
+                    </h3>
+                    <p className="text-xs text-academic-500 mb-4">Naskah lengkap <strong>TANPA</strong> nama penulis dan afiliasi (Untuk Blind Review).</p>
+                    <label className="flex flex-col items-center justify-center w-full h-28 border-2 border-academic-300 border-dashed rounded-lg cursor-pointer bg-white hover:bg-brand-50 transition-colors">
+                      <div className="flex flex-col items-center justify-center text-center px-4">
+                        <Upload className={`w-5 h-5 mb-1.5 ${anonymousFile ? 'text-brand-600' : 'text-academic-400'}`} />
+                        {anonymousFile ? (
+                          <p className="text-sm text-brand-700 font-bold line-clamp-1">{anonymousFile.name}</p>
+                        ) : (
+                          <p className="text-sm text-academic-600 font-semibold">Pilih Naskah Anonim</p>
+                        )}
+                      </div>
+                      <input type="file" required accept=".pdf,.doc,.docx" onChange={(e) => e.target.files && setAnonymousFile(e.target.files[0])} className="hidden" />
                     </label>
                   </div>
 
@@ -390,9 +429,29 @@ export default function AuthorSubmit() {
                 </div>
               </div>
 
-              {/* SECTION 4: KETENTUAN JURNAL */}
+              {/* SECTION 4: KETENTUAN JURNAL & ETIKA */}
               <div className="p-6 md:p-8 space-y-4 border-t border-academic-100 bg-amber-50/30">
                 <div className="flex items-start gap-3">
+                  <div className="mt-0.5">
+                    <input 
+                      type="checkbox" 
+                      id="conflict_of_interest" 
+                      checked={formData.conflict_of_interest === 'true'}
+                      onChange={(e) => setFormData({...formData, conflict_of_interest: e.target.checked ? 'true' : ''})}
+                      className="w-5 h-5 rounded border-academic-300 text-brand-600 focus:ring-brand-500 cursor-pointer"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="conflict_of_interest" className="text-sm font-bold text-academic-900 cursor-pointer">
+                      Pernyataan Konflik Kepentingan (Conflict of Interest) <span className="text-academic-500 font-normal">(Opsional)</span>
+                    </label>
+                    <p className="text-sm text-academic-700 mt-1">
+                      Centang kotak ini jika Anda menyatakan bahwa <strong>ada konflik kepentingan</strong> potensial dalam penelitian ini. Jika dibiarkan kosong, Anda menyatakan bahwa penelitian ini bebas dari konflik kepentingan.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3 mt-4 pt-4 border-t border-academic-200">
                   <div className="mt-0.5">
                     <input 
                       type="checkbox" 
@@ -406,7 +465,7 @@ export default function AuthorSubmit() {
                       Pernyataan Kesesuaian Naskah Jurnal <span className="text-red-500">*</span>
                     </label>
                     <p className="text-sm text-academic-700 mt-1">
-                      Saya menyatakan bahwa naskah jurnal yang dikirimkan ini <strong>telah dilengkapi dengan Daftar Pustaka</strong> yang sesuai dengan standar penulisan akademik.
+                      Saya menyatakan bahwa naskah jurnal yang dikirimkan ini <strong>telah dilengkapi dengan Daftar Pustaka</strong> yang sesuai dengan standar penulisan akademik, dan Naskah Anonim benar-benar tidak mengandung identitas penulis.
                     </p>
                   </div>
                 </div>
