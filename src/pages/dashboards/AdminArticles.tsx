@@ -405,77 +405,66 @@ export default function AdminArticles() {
                 )}
               </div>
 
-              {/* Manuscript File Card (Embedded) */}
-              <div className="bg-white p-6 rounded-xl border border-academic-200 shadow-sm">
-                <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
-                  <h3 className="font-serif font-bold text-lg text-academic-900">Manuskrip Tulisan</h3>
-                  {selectedArticle.manuscript_file && (
-                    <div className="flex items-center gap-2">
+              {/* Manuscript Files Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                
+                {/* Anonymous Manuscript (For Reviewers) */}
+                <div className="bg-white p-6 rounded-xl border border-academic-200 shadow-sm flex flex-col h-full">
+                  <h3 className="font-serif font-bold text-lg text-academic-900 mb-2 border-b border-academic-100 pb-2">Naskah Tanpa Nama</h3>
+                  <p className="text-[10px] text-academic-500 mb-4 leading-tight">Gunakan naskah ini untuk dikirim ke Reviewer (Double-blind peer review).</p>
+                  
+                  {selectedArticle.anonymous_manuscript_file ? (
+                    <div className="flex flex-col gap-2 mt-auto">
+                      <a 
+                        href={selectedArticle.anonymous_manuscript_file}
+                        target="_blank"
+                        rel="noopener noreferrer" 
+                        className="flex justify-center items-center gap-1.5 text-xs font-bold text-brand-700 bg-brand-50 hover:bg-brand-100 border border-brand-200 px-3 py-2 rounded-lg transition-colors w-full"
+                      >
+                        <Download className="w-3.5 h-3.5" /> Unduh Pratinjau
+                      </a>
+                    </div>
+                  ) : selectedArticle.manuscript_file ? (
+                    <div className="flex flex-col gap-2 mt-auto">
+                      <p className="text-[10px] text-rose-600 font-bold mb-1">⚠️ Naskah versi lama (mungkin berisi nama penulis).</p>
                       <a 
                         href={selectedArticle.manuscript_file}
                         target="_blank"
                         rel="noopener noreferrer" 
-                        className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-700 bg-brand-50 hover:bg-brand-100 border border-brand-200 px-3 py-1.5 rounded-lg transition-colors"
+                        className="flex justify-center items-center gap-1.5 text-xs font-bold text-brand-700 bg-brand-50 hover:bg-brand-100 border border-brand-200 px-3 py-2 rounded-lg transition-colors w-full"
                       >
-                        <Eye className="w-3.5 h-3.5" /> Buka Pratinjau Penuh
+                        <Download className="w-3.5 h-3.5" /> Unduh Naskah Lama
                       </a>
-                      <a 
-                        href={selectedArticle.manuscript_file}
-                        target="_blank"
-                        rel="noopener noreferrer" 
-                        className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 bg-slate-50 hover:bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-lg transition-colors"
-                      >
-                        <Download className="w-3.5 h-3.5" /> Unduh Berkas
-                      </a>
+                    </div>
+                  ) : (
+                    <div className="p-4 bg-slate-50 border border-dashed border-slate-200 rounded-lg text-center mt-auto">
+                      <p className="text-xs text-academic-500">Tidak ada file tersedia.</p>
                     </div>
                   )}
                 </div>
 
-                {selectedArticle.manuscript_file ? (
-                  embedUrl ? (
-                    <div className="w-full border border-academic-200 rounded-lg overflow-hidden bg-slate-100 shadow-inner">
-                      <iframe 
-                        src={embedUrl}
-                        className="w-full border-0 block"
-                        title="Pratinjau Manuskrip"
-                        style={{ height: '650px', minHeight: '650px', overflow: 'hidden' }}
-                      />
-                    </div>
-                  ) : (
-                    <div className="p-8 bg-slate-50 border border-dashed border-slate-200 rounded-lg text-center">
-                      <FileText className="w-12 h-12 mx-auto text-slate-400 mb-2" />
-                      <p className="text-sm text-academic-600 mb-4">Pratinjau langsung tidak tersedia untuk format berkas ini.</p>
+                {/* Title Page (With Names) */}
+                <div className="bg-white p-6 rounded-xl border border-academic-200 shadow-sm flex flex-col h-full">
+                  <h3 className="font-serif font-bold text-lg text-academic-900 mb-2 border-b border-academic-100 pb-2">Halaman Judul (Beridentitas)</h3>
+                  <p className="text-[10px] text-academic-500 mb-4 leading-tight">Naskah lengkap beserta identitas dan afiliasi penulis. Jangan dikirim ke Reviewer.</p>
+                  
+                  {selectedArticle.title_page_file ? (
+                    <div className="flex flex-col gap-2 mt-auto">
                       <a 
-                        href={selectedArticle.manuscript_file}
-                        className="inline-flex items-center gap-2 px-5 py-2.5 bg-brand-700 hover:bg-brand-800 text-white rounded-lg font-bold text-sm transition-colors shadow-sm"
+                        href={selectedArticle.title_page_file}
+                        target="_blank"
+                        rel="noopener noreferrer" 
+                        className="flex justify-center items-center gap-1.5 text-xs font-bold text-slate-700 bg-slate-50 hover:bg-slate-100 border border-slate-200 px-3 py-2 rounded-lg transition-colors w-full"
                       >
-                        Download / Buka Berkas <ExternalLink className="w-4 h-4" />
+                        <Download className="w-3.5 h-3.5" /> Unduh Title Page
                       </a>
                     </div>
-                  )
-                ) : (
-                  <div className="p-8 bg-academic-50 border border-dashed border-academic-200 rounded-lg text-center text-academic-500 text-sm space-y-4">
-                    <p>Tidak ada dokumen manuskrip terunggah.</p>
-                    <div className="max-w-xs mx-auto">
-                      <label className="flex flex-col items-center justify-center w-full h-28 border-2 border-academic-300 border-dashed rounded-lg cursor-pointer bg-white hover:bg-academic-50 transition-colors">
-                        <div className="flex flex-col items-center justify-center pt-4 pb-4 text-center px-2">
-                          <Plus className="w-6 h-6 text-academic-400 mb-1" />
-                          <span className="text-xs font-bold text-academic-700">
-                            {uploadingManuscript ? 'Mengunggah...' : 'Unggah Naskah Manuskrip'}
-                          </span>
-                          <span className="text-[10px] text-academic-400 mt-0.5">PDF, DOC, atau DOCX (Maks. 10MB)</span>
-                        </div>
-                        <input 
-                          type="file" 
-                          disabled={uploadingManuscript}
-                          accept=".pdf,.doc,.docx"
-                          onChange={handleUploadManuscriptFromAdmin}
-                          className="hidden" 
-                        />
-                      </label>
+                  ) : (
+                    <div className="p-4 bg-slate-50 border border-dashed border-slate-200 rounded-lg text-center mt-auto">
+                      <p className="text-xs text-academic-500">Tidak ada file title page.</p>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
 
               {/* Production Files Card (Copyediting & Layouting) */}
