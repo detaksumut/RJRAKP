@@ -37,6 +37,7 @@ export default function ReviewerDashboard() {
             id,
             title,
             abstract,
+            anonymous_manuscript_file,
             manuscript_file,
             journals (
               name
@@ -146,8 +147,8 @@ export default function ReviewerDashboard() {
                     {selectedAssignment.articles?.abstract || 'Tidak ada abstrak.'}
                   </p>
                 </div>
-                {selectedAssignment.articles?.manuscript_file && (() => {
-                  const url = selectedAssignment.articles.manuscript_file;
+                {selectedAssignment.articles?.anonymous_manuscript_file ? (() => {
+                  const url = selectedAssignment.articles.anonymous_manuscript_file;
                   const isPdf = url.toLowerCase().endsWith('.pdf') || url.includes('/pdf/') || url.includes('dummy.pdf');
                   const isWord = url.toLowerCase().endsWith('.docx') || url.toLowerCase().endsWith('.doc');
                   
@@ -206,11 +207,20 @@ export default function ReviewerDashboard() {
                       )}
                     </div>
                   );
-                })()}
-                {!selectedAssignment.articles?.manuscript_file && (
+                })() : selectedAssignment.articles?.manuscript_file ? (
+                  <div className="pt-4 border-t border-slate-200 mt-4">
+                    <div className="p-4 bg-rose-50 border border-rose-200 rounded-lg text-center text-xs space-y-2">
+                      <p className="font-bold text-rose-700">⚠️ File Anonim Belum Diunggah</p>
+                      <p className="text-rose-600">Naskah yang tersedia menggunakan format lama (mungkin berisi nama penulis).</p>
+                      <a href={selectedAssignment.articles.manuscript_file} target="_blank" rel="noopener noreferrer" className="inline-flex text-brand-700 font-bold border border-brand-200 bg-white px-3 py-1 rounded mt-2">
+                        Lihat Naskah Lama
+                      </a>
+                    </div>
+                  </div>
+                ) : (
                   <div className="p-6 bg-white/60 border border-dashed border-slate-200 rounded-lg text-center mt-4">
                     <FileText className="w-8 h-8 mx-auto text-slate-400 mb-1" />
-                    <p className="text-xs text-academic-500">Tidak ada dokumen manuskrip terunggah. Hanya menampilkan informasi naskah.</p>
+                    <p className="text-xs text-academic-500">Tidak ada naskah terunggah. Hanya menampilkan informasi abstrak.</p>
                   </div>
                 )}
               </div>

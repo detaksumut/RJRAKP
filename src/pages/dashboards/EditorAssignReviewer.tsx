@@ -33,7 +33,7 @@ export default function EditorAssignReviewer() {
       // 1. Fetch submitted articles
       const { data: artData } = await supabase
         .from('articles')
-        .select('id, title, status, journal_id, abstract, manuscript_file, journals(name, slug)')
+        .select('id, title, status, journal_id, abstract, manuscript_file, title_page_file, anonymous_manuscript_file, journals(name, slug)')
         .neq('status', 'published');
       if (artData) setArticles(artData);
 
@@ -415,61 +415,96 @@ export default function EditorAssignReviewer() {
 
               {/* Manuscript Preview Card */}
               {selectedArticle && (
-                <div className="bg-white p-5 rounded-xl border border-academic-200 shadow-sm space-y-4">
-                  <div className="flex justify-between items-center border-b border-academic-100 pb-2">
-                    <h3 className="font-serif font-bold text-sm text-academic-900">Manuskrip Artikel</h3>
-                    {selectedArticle.manuscript_file && (
-                      <a 
-                        href={selectedArticle.manuscript_file}
-                        target="_blank"
-                        rel="noopener noreferrer" 
-                        className="inline-flex items-center gap-1 text-[10px] font-bold text-brand-700 bg-brand-50 hover:bg-brand-100 border border-brand-200 px-2 py-1 rounded transition-colors"
-                      >
-                        Download
-                      </a>
-                    )}
-                  </div>
-                  
-                  {selectedArticle.manuscript_file ? (() => {
-                    const url = selectedArticle.manuscript_file;
-                    const isPdf = url.toLowerCase().endsWith('.pdf') || url.includes('/pdf/') || url.includes('dummy.pdf');
-                    const isWord = url.toLowerCase().endsWith('.docx') || url.toLowerCase().endsWith('.doc');
+                <div className="space-y-4">
+                  {/* Anonymous Manuscript (For Reviewer) */}
+                  <div className="bg-white p-5 rounded-xl border border-academic-200 shadow-sm space-y-4">
+                    <div className="flex justify-between items-center border-b border-academic-100 pb-2">
+                      <div>
+                        <h3 className="font-serif font-bold text-sm text-academic-900">Naskah Tanpa Nama</h3>
+                        <p className="text-[10px] text-academic-500">File yang akan dilihat oleh Reviewer</p>
+                      </div>
+                      {selectedArticle.anonymous_manuscript_file && (
+                        <a 
+                          href={selectedArticle.anonymous_manuscript_file}
+                          target="_blank"
+                          rel="noopener noreferrer" 
+                          className="inline-flex items-center gap-1 text-[10px] font-bold text-brand-700 bg-brand-50 hover:bg-brand-100 border border-brand-200 px-2 py-1 rounded transition-colors"
+                        >
+                          Download
+                        </a>
+                      )}
+                    </div>
                     
-                    let embedUrl = '';
-                    if (isPdf) {
-                      embedUrl = url;
-                    } else if (isWord) {
-                      embedUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(url)}`;
-                    }
+                    {selectedArticle.anonymous_manuscript_file ? (() => {
+                      const url = selectedArticle.anonymous_manuscript_file;
+                      const isPdf = url.toLowerCase().endsWith('.pdf') || url.includes('/pdf/') || url.includes('dummy.pdf');
+                      const isWord = url.toLowerCase().endsWith('.docx') || url.toLowerCase().endsWith('.doc');
+                      
+                      let embedUrl = '';
+                      if (isPdf) {
+                        embedUrl = url;
+                      } else if (isWord) {
+                        embedUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(url)}`;
+                      }
 
-                    if (!embedUrl) {
+                      if (!embedUrl) {
+                        return (
+                          <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg text-center text-xs">
+                            <p className="text-academic-500">Pratinjau tidak didukung untuk tipe file ini.</p>
+                          </div>
+                        );
+                      }
+
                       return (
-                        <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg text-center text-xs">
-                          <p className="text-academic-500">Pratinjau tidak didukung untuk tipe file ini.</p>
+                        <div className="w-full border border-slate-200 rounded-lg overflow-hidden bg-slate-100 shadow-inner">
+                          <iframe
+                            src={embedUrl}
+                            className="w-full border-0 block"
+                            title="Pratinjau Manuskrip Anonim"
+                            style={{ height: '300px', minHeight: '300px', overflow: 'hidden' }}
+                          />
                         </div>
                       );
-                    }
-
-                    return (
-                      <div className="w-full border border-slate-200 rounded-lg overflow-hidden bg-slate-100 shadow-inner">
-                        <iframe
-                          src={embedUrl}
-                          className="w-full border-0 block"
-                          title="Pratinjau Manuskrip"
-                          style={{ height: '500px', minHeight: '500px', overflow: 'hidden' }}
-                        />
+                    })() : selectedArticle.manuscript_file ? (
+                      <div className="p-4 bg-rose-50 border border-rose-200 rounded-lg text-center text-xs space-y-2">
+                        <p className="font-bold text-rose-700">⚠️ Perhatian: File Anonim Belum Ada</p>
+                        <p className="text-rose-600">Penulis menggunakan format lama. Reviewer mungkin dapat melihat nama penulis di dalam file ini.</p>
+                        <a href={selectedArticle.manuscript_file} target="_blank" rel="noopener noreferrer" className="inline-flex text-brand-700 font-bold border border-brand-200 bg-white px-3 py-1 rounded">
+                          Lihat Naskah Lama
+                        </a>
                       </div>
-                    );
-                  })() : (
-                    <div className="p-6 bg-slate-50 border border-dashed border-slate-200 rounded-lg text-center text-xs space-y-1">
-                      <FileText className="w-8 h-8 mx-auto text-slate-400 mb-1" />
-                      <p className="font-bold text-academic-700">Tidak ada naskah terunggah</p>
-                      <p className="text-academic-500 text-[10px]">Hanya menampilkan abstrak:</p>
-                      <p className="text-academic-600 bg-white p-2.5 rounded border border-slate-100 leading-relaxed font-serif italic text-left max-h-[200px] overflow-y-auto mt-2">
-                        "{selectedArticle.abstract || 'Tidak ada abstrak.'}"
-                      </p>
+                    ) : (
+                      <div className="p-4 bg-slate-50 border border-dashed border-slate-200 rounded-lg text-center text-xs space-y-1">
+                        <FileText className="w-6 h-6 mx-auto text-slate-400 mb-1" />
+                        <p className="font-bold text-academic-700">Tidak ada naskah terunggah</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Title Page (For Editor) */}
+                  <div className="bg-white p-5 rounded-xl border border-academic-200 shadow-sm space-y-4">
+                    <div className="flex justify-between items-center border-b border-academic-100 pb-2">
+                      <div>
+                        <h3 className="font-serif font-bold text-sm text-academic-900">Halaman Judul (Title Page)</h3>
+                        <p className="text-[10px] text-academic-500">Info lengkap identitas penulis</p>
+                      </div>
+                      {selectedArticle.title_page_file && (
+                        <a 
+                          href={selectedArticle.title_page_file}
+                          target="_blank"
+                          rel="noopener noreferrer" 
+                          className="inline-flex items-center gap-1 text-[10px] font-bold text-slate-700 bg-slate-50 hover:bg-slate-100 border border-slate-200 px-2 py-1 rounded transition-colors"
+                        >
+                          Download
+                        </a>
+                      )}
                     </div>
-                  )}
+                    {!selectedArticle.title_page_file && (
+                      <div className="p-4 bg-slate-50 border border-dashed border-slate-200 rounded-lg text-center text-xs space-y-1">
+                        <p className="font-bold text-academic-700">Tidak ada title page terunggah</p>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
