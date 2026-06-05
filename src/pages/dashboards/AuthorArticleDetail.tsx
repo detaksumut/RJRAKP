@@ -25,7 +25,7 @@ export default function AuthorArticleDetail() {
 
   // Edit metadata states
   const [isEditing, setIsEditing] = useState(false);
-  const [editForm, setEditForm] = useState({ title: '', abstract: '', bibliography: '' });
+  const [editForm, setEditForm] = useState({ title: '', abstract: '', abstract_en: '', bibliography: '' });
   const [savingMetadata, setSavingMetadata] = useState(false);
   const [metadataSuccess, setMetadataSuccess] = useState('');
 
@@ -127,6 +127,7 @@ export default function AuthorArticleDetail() {
         .update({
           title: editForm.title,
           abstract: editForm.abstract,
+          abstract_en: editForm.abstract_en,
           bibliography: editForm.bibliography,
         })
         .eq('id', article.id);
@@ -338,14 +339,25 @@ export default function AuthorArticleDetail() {
                 </div>
               </div>
               
-              <div>
-                <label className="block text-xs font-bold text-academic-700 uppercase tracking-widest mb-1">Abstrak</label>
-                <textarea 
-                  value={editForm.abstract}
-                  onChange={e => setEditForm({...editForm, abstract: e.target.value})}
-                  className="w-full border border-academic-300 rounded-lg p-3 text-sm text-academic-700 leading-relaxed text-justify focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all"
-                  rows={6}
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-academic-700 uppercase tracking-widest mb-1">Abstrak (Bahasa Indonesia)</label>
+                  <textarea 
+                    value={editForm.abstract}
+                    onChange={e => setEditForm({...editForm, abstract: e.target.value})}
+                    className="w-full border border-academic-300 rounded-lg p-3 text-sm text-academic-700 leading-relaxed text-justify focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all"
+                    rows={6}
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-academic-700 uppercase tracking-widest mb-1">Abstract (English)</label>
+                  <textarea 
+                    value={editForm.abstract_en || ''}
+                    onChange={e => setEditForm({...editForm, abstract_en: e.target.value})}
+                    className="w-full border border-academic-300 rounded-lg p-3 text-sm text-academic-700 leading-relaxed text-justify focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all"
+                    rows={6}
+                  />
+                </div>
               </div>
 
               <div>
@@ -362,7 +374,7 @@ export default function AuthorArticleDetail() {
                 <button 
                   onClick={() => {
                     setIsEditing(false);
-                    setEditForm({ title: article.title, abstract: article.abstract, bibliography: article.bibliography || '' });
+                    setEditForm({ title: article.title, abstract: article.abstract, abstract_en: article.abstract_en || '', bibliography: article.bibliography || '' });
                   }}
                   className="px-4 py-2 text-academic-600 hover:bg-academic-100 rounded-lg font-bold text-sm transition-colors flex items-center gap-1.5"
                 >
@@ -420,9 +432,15 @@ export default function AuthorArticleDetail() {
                 </div>
               </div>
               
-              <div>
-                <span className="block text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Abstrak</span>
-                <p className="text-sm text-academic-700 leading-relaxed text-justify mb-4">{article.abstract}</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                <div>
+                  <span className="block text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Abstrak (Bahasa Indonesia)</span>
+                  <p className="text-sm text-academic-700 leading-relaxed text-justify">{article.abstract}</p>
+                </div>
+                <div>
+                  <span className="block text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Abstract (English)</span>
+                  <p className="text-sm text-academic-700 leading-relaxed text-justify italic">{article.abstract_en || <span className="text-academic-400">Tidak ada abstrak bahasa inggris.</span>}</p>
+                </div>
               </div>
 
               {article.funding_source && (

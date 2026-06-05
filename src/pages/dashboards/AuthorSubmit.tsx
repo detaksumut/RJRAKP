@@ -28,6 +28,7 @@ export default function AuthorSubmit() {
     journal_id: '',
     title: '',
     abstract: '',
+    abstract_en: '',
     keywords: '',
     cover_letter: '',
     bibliography: '',
@@ -148,6 +149,14 @@ export default function AuthorSubmit() {
         throw new Error("Daftar Pustaka wajib diisi dengan format yang benar (minimal 50 karakter).");
       }
 
+      // Validasi Abstrak Dwibahasa
+      if (!formData.abstract || formData.abstract.trim().length < 50) {
+        throw new Error("Abstrak (Bahasa Indonesia) wajib diisi dengan benar.");
+      }
+      if (!formData.abstract_en || formData.abstract_en.trim().length < 50) {
+        throw new Error("Abstract (English) wajib diisi dengan benar.");
+      }
+
       // 1. Upload Manuscript Files
       const tpExt = titlePageFile.name.split('.').pop();
       const tpFileName = `titlepage_${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${tpExt}`;
@@ -179,6 +188,7 @@ export default function AuthorSubmit() {
           submitter_id: user.id,
           title: formData.title,
           abstract: formData.abstract,
+          abstract_en: formData.abstract_en,
           keywords: formData.keywords,
           cover_letter: formData.cover_letter,
           bibliography: formData.bibliography,
@@ -284,10 +294,33 @@ export default function AuthorSubmit() {
                     placeholder="Masukkan judul artikel Anda..."
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-bold text-academic-900 mb-2">Abstrak <span className="text-red-500">*</span></label>
-                  <textarea name="abstract" required value={formData.abstract} onChange={handleChange} rows={6} className="w-full border border-academic-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-brand-500 line-clamp" placeholder="Tuliskan abstrak artikel..."></textarea>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-bold text-academic-900 mb-2">Abstrak (Bahasa Indonesia) <span className="text-red-500">*</span></label>
+                    <textarea 
+                      name="abstract" 
+                      required 
+                      value={formData.abstract} 
+                      onChange={handleChange} 
+                      rows={6} 
+                      className="w-full border border-academic-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-brand-500" 
+                      placeholder="Tuliskan abstrak berbahasa Indonesia di sini..."
+                    ></textarea>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-academic-900 mb-2">Abstract (English) <span className="text-red-500">*</span></label>
+                    <textarea 
+                      name="abstract_en" 
+                      required 
+                      value={formData.abstract_en} 
+                      onChange={handleChange} 
+                      rows={6} 
+                      className="w-full border border-academic-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-brand-500" 
+                      placeholder="Write your English abstract here..."
+                    ></textarea>
+                  </div>
                 </div>
+
                 <div>
                   <label className="block text-sm font-bold text-academic-900 mb-2">Kata Kunci (Keywords) <span className="text-red-500">*</span></label>
                   <input type="text" name="keywords" required value={formData.keywords} onChange={handleChange} className="w-full border border-academic-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-brand-500" placeholder="Contoh: pendidikan, evaluasi, kebijakan (pisahkan dengan koma)" />
