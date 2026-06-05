@@ -378,6 +378,28 @@ export default function AuthorSubmit() {
                 </div>
               </div>
 
+              {/* SECTION 4: KETENTUAN JURNAL */}
+              <div className="p-6 md:p-8 space-y-4 border-t border-academic-100 bg-amber-50/30">
+                <div className="flex items-start gap-3">
+                  <div className="mt-0.5">
+                    <input 
+                      type="checkbox" 
+                      id="agreement" 
+                      required
+                      className="w-5 h-5 rounded border-academic-300 text-brand-600 focus:ring-brand-500 cursor-pointer"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="agreement" className="text-sm font-bold text-academic-900 cursor-pointer">
+                      Pernyataan Kesesuaian Naskah Jurnal <span className="text-red-500">*</span>
+                    </label>
+                    <p className="text-sm text-academic-700 mt-1">
+                      Saya menyatakan bahwa naskah jurnal yang dikirimkan ini <strong>WAJIB berjumlah minimal 5000 kata (termasuk Daftar Pustaka)</strong>. Naskah ini telah dilengkapi dengan Daftar Pustaka yang sesuai dengan standar penulisan akademik.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
               {/* ACTION BUTTONS */}
               <div className="p-6 md:p-8 bg-academic-50 border-t border-academic-200 flex flex-col gap-4 items-end">
                 {error && (

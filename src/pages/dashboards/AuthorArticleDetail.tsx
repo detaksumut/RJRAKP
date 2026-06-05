@@ -449,7 +449,29 @@ export default function AuthorArticleDetail() {
                 </label>
               </div>
 
-              <div className="flex justify-end">
+              {/* SECTION 4: KETENTUAN REVISI */}
+              <div className="p-4 mt-4 space-y-3 border border-academic-200 rounded-lg bg-amber-50/50">
+                <div className="flex items-start gap-3">
+                  <div className="mt-0.5">
+                    <input 
+                      type="checkbox" 
+                      id="agreement" 
+                      required
+                      className="w-5 h-5 rounded border-academic-300 text-brand-600 focus:ring-brand-500 cursor-pointer"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="agreement" className="text-sm font-bold text-academic-900 cursor-pointer">
+                      Pernyataan Kesesuaian Naskah <span className="text-red-500">*</span>
+                    </label>
+                    <p className="text-xs text-academic-700 mt-1">
+                      Saya mengonfirmasi bahwa naskah jurnal (termasuk hasil revisi ini) <strong>WAJIB berjumlah minimal 5000 kata (termasuk Daftar Pustaka)</strong>. Naskah telah dilengkapi dengan Daftar Pustaka yang sesuai standar akademik.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end mt-4">
                 <button 
                   type="submit" 
                   disabled={uploading}
