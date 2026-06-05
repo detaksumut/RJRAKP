@@ -30,6 +30,7 @@ import AuthorSubmit from './pages/dashboards/AuthorSubmit';
 import AuthorReviewStatus from './pages/dashboards/AuthorReviewStatus';
 import AuthorLoa from './pages/dashboards/AuthorLoa';
 import AuthorCertificates from './pages/dashboards/AuthorCertificates';
+import AuthorArticleDetail from './pages/dashboards/AuthorArticleDetail';
 
 import ReviewerDashboard from './pages/dashboards/ReviewerDashboard';
 import ReviewerAssignments from './pages/dashboards/ReviewerAssignments';
@@ -92,6 +93,7 @@ export default function App() {
             <Route element={<ProtectedRoute allowedRoles={['author']} />}>
               <Route path="/dashboard/author" element={<AuthorDashboard />} />
               <Route path="/dashboard/author/articles" element={<AuthorArticles />} />
+              <Route path="/dashboard/author/articles/:id" element={<AuthorArticleDetail />} />
               <Route path="/dashboard/author/submit" element={<AuthorSubmit />} />
               <Route path="/dashboard/author/review-status" element={<AuthorReviewStatus />} />
               <Route path="/dashboard/author/loa" element={<AuthorLoa />} />

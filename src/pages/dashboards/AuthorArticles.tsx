@@ -74,9 +74,9 @@ export default function AuthorArticles() {
                            <span className="text-xs font-bold uppercase tracking-wider text-academic-600">Status</span>
                            <div className="text-sm font-bold capitalize text-amber-600">{article.status}</div>
                         </div>
-                        <button className="p-2 text-academic-400 hover:bg-academic-200 hover:text-academic-700 rounded-lg transition-colors tooltip" aria-label="Lihat Detail">
+                        <Link to={`/dashboard/author/articles/${article.id}`} className="p-2 text-academic-400 hover:bg-academic-200 hover:text-academic-700 rounded-lg transition-colors tooltip" aria-label="Lihat Detail">
                            <Eye className="w-5 h-5" />
-                        </button>
+                        </Link>
                      </div>
                   </div>
                 ))}

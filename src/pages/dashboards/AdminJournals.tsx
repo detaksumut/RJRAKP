@@ -405,8 +405,8 @@ export default function AdminJournals() {
         </div>
 
         {/* Journals Table */}
-        <div className="bg-white rounded-xl border border-academic-200 shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
+        <div className="bg-white rounded-xl border border-academic-200 shadow-sm overflow-hidden w-full">
+          <div className="overflow-x-auto w-full">
             {loading ? (
               <div className="text-center py-12 text-academic-500 font-medium">Memuat data jurnal...</div>
             ) : filtered.length === 0 ? (
