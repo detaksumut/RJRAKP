@@ -51,6 +51,7 @@ import AdminEditors from './pages/dashboards/AdminEditors';
 import AdminLogs from './pages/dashboards/AdminLogs';
 import AdminSettings from './pages/dashboards/AdminSettings';
 import AdminJournals from './pages/dashboards/AdminJournals';
+import AdminIssues from './pages/dashboards/AdminIssues';
 import AdminArticles from './pages/dashboards/AdminArticles';
 import AdminBoardMembers from './pages/dashboards/AdminBoardMembers';
 import Unauthorized from './pages/dashboards/Unauthorized';
@@ -123,6 +124,7 @@ export default function App() {
               <Route path="/dashboard/admin/editors" element={<AdminEditors />} />
               <Route path="/dashboard/admin/board-members" element={<AdminBoardMembers />} />
               <Route path="/dashboard/admin/journals" element={<AdminJournals />} />
+              <Route path="/dashboard/admin/issues" element={<AdminIssues />} />
               <Route path="/dashboard/admin/articles" element={<AdminArticles />} />
               <Route path="/dashboard/admin/logs" element={<AdminLogs />} />
               <Route path="/dashboard/admin/settings" element={<AdminSettings />} />

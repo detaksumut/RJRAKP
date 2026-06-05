@@ -12,6 +12,7 @@ export default function AdminArticles() {
   const { user } = useAuth();
   const [articles, setArticles] = useState<any[]>([]);
   const [journals, setJournals] = useState<any[]>([]);
+  const [issuesList, setIssuesList] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -26,6 +27,7 @@ export default function AdminArticles() {
   const [updatingStatus, setUpdatingStatus] = useState(false);
   const [newStatus, setNewStatus] = useState('');
   const [uploadingManuscript, setUploadingManuscript] = useState(false);
+  const [selectedIssueId, setSelectedIssueId] = useState('');
 
   const handleUploadManuscriptFromAdmin = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!selectedArticle || !e.target.files || e.target.files.length === 0) return;
@@ -88,6 +90,43 @@ export default function AdminArticles() {
     }
   };
 
+  const handleUploadProductionFile = async (e: React.ChangeEvent<HTMLInputElement>, field: 'copyedited_file' | 'layout_file') => {
+    if (!selectedArticle || !e.target.files || e.target.files.length === 0) return;
+    const file = e.target.files[0];
+    setError('');
+    setSuccess('');
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${field}_${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
+      
+      const { error: uploadError } = await supabase.storage
+        .from('manuscripts')
+        .upload(fileName, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: urlData } = supabase.storage
+        .from('manuscripts')
+        .getPublicUrl(fileName);
+
+      const publicUrl = urlData?.publicUrl || '';
+
+      const { error: updateErr } = await supabase
+        .from('articles')
+        .update({ [field]: publicUrl })
+        .eq('id', selectedArticle.id);
+
+      if (updateErr) throw updateErr;
+
+      setSuccess(`File ${field === 'copyedited_file' ? 'Copyediting' : 'Layout'} berhasil diunggah.`);
+      await fetchArticles();
+      setSelectedArticle(prev => prev ? { ...prev, [field]: publicUrl } : null);
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || `Gagal mengunggah file ${field}.`);
+    }
+  };
+
   useEffect(() => {
     fetchInitialData();
   }, []);
@@ -105,6 +144,12 @@ export default function AdminArticles() {
 
       // 2. Fetch all articles
       await fetchArticles();
+      
+      // 3. Fetch all issues
+      const { data: issuesData } = await supabase
+        .from('issues')
+        .select('id, volume, issue_number, year, title');
+      setIssuesList(issuesData || []);
     } catch (err: any) {
       console.error(err);
       setError(err.message || 'Gagal memuat data awal.');
@@ -119,6 +164,7 @@ export default function AdminArticles() {
       .select(`
         *,
         journals (id, name, slug),
+        issues (id, volume, issue_number, year),
         users!submitter_id (id, full_name, email, institution),
         article_authors (*),
         review_assignments (
@@ -185,7 +231,7 @@ export default function AdminArticles() {
       // 2. Update Article Status
       const { error: updateErr } = await supabase
         .from('articles')
-        .update({ status: newStatus })
+        .update({ status: newStatus, issue_id: selectedIssueId || null })
         .eq('id', articleId);
 
       if (updateErr) throw updateErr;
@@ -206,7 +252,7 @@ export default function AdminArticles() {
       // Update selected article reference
       const updated = articles.find(a => a.id === articleId);
       if (updated) {
-        setSelectedArticle({ ...selectedArticle, status: newStatus });
+        setSelectedArticle({ ...selectedArticle, status: newStatus, issue_id: selectedIssueId || null });
       }
     } catch (err: any) {
       console.error(err);
@@ -272,6 +318,8 @@ export default function AdminArticles() {
     under_review: 'bg-amber-50 text-amber-700 border-amber-200',
     revised: 'bg-purple-50 text-purple-700 border-purple-200',
     accepted: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    copyediting: 'bg-purple-50 text-purple-700 border-purple-200',
+    layouting: 'bg-indigo-50 text-indigo-700 border-indigo-200',
     published: 'bg-emerald-100 text-emerald-800 border-emerald-300',
     rejected: 'bg-rose-50 text-rose-700 border-rose-200'
   };
@@ -282,6 +330,8 @@ export default function AdminArticles() {
     under_review: 'Sedang Direview',
     revised: 'Telah Direvisi',
     accepted: 'Diterima',
+    copyediting: 'Copyediting',
+    layouting: 'Layouting',
     published: 'Terbit',
     rejected: 'Ditolak'
   };
@@ -428,6 +478,57 @@ export default function AdminArticles() {
                 )}
               </div>
 
+              {/* Production Files Card (Copyediting & Layouting) */}
+              {['accepted', 'copyediting', 'layouting', 'published'].includes(selectedArticle.status.toLowerCase()) && (
+                <div className="bg-white p-6 rounded-xl border border-academic-200 shadow-sm space-y-4">
+                  <h3 className="font-serif font-bold text-lg text-academic-900 border-b border-academic-100 pb-2">File Produksi (Copyediting & Layouting)</h3>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Copyedited File */}
+                    <div className="p-4 bg-purple-50 rounded-lg border border-purple-100">
+                      <h4 className="text-xs font-bold text-purple-800 uppercase tracking-widest mb-2">File Copyediting</h4>
+                      {selectedArticle.copyedited_file ? (
+                        <div className="space-y-2">
+                          <p className="text-xs text-purple-600">File sudah diunggah.</p>
+                          <a href={selectedArticle.copyedited_file} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-purple-600 text-white text-xs font-bold rounded hover:bg-purple-700 transition-colors">
+                            <Download className="w-3 h-3" /> Unduh
+                          </a>
+                        </div>
+                      ) : (
+                        <div className="text-xs text-purple-600 italic mb-2">Belum ada file.</div>
+                      )}
+                      <div className="mt-3">
+                        <label className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white text-purple-700 border border-purple-300 text-xs font-bold rounded cursor-pointer hover:bg-purple-100 transition-colors">
+                          <Plus className="w-3 h-3" /> Unggah/Timpa File Copyediting
+                          <input type="file" accept=".doc,.docx,.pdf" className="hidden" onChange={(e) => handleUploadProductionFile(e, 'copyedited_file')} />
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* Layout File */}
+                    <div className="p-4 bg-indigo-50 rounded-lg border border-indigo-100">
+                      <h4 className="text-xs font-bold text-indigo-800 uppercase tracking-widest mb-2">File Layout (Galley PDF)</h4>
+                      {selectedArticle.layout_file ? (
+                        <div className="space-y-2">
+                          <p className="text-xs text-indigo-600">File sudah diunggah.</p>
+                          <a href={selectedArticle.layout_file} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 text-white text-xs font-bold rounded hover:bg-indigo-700 transition-colors">
+                            <Download className="w-3 h-3" /> Unduh
+                          </a>
+                        </div>
+                      ) : (
+                        <div className="text-xs text-indigo-600 italic mb-2">Belum ada file.</div>
+                      )}
+                      <div className="mt-3">
+                        <label className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white text-indigo-700 border border-indigo-300 text-xs font-bold rounded cursor-pointer hover:bg-indigo-100 transition-colors">
+                          <Plus className="w-3 h-3" /> Unggah/Timpa File Layout
+                          <input type="file" accept=".pdf" className="hidden" onChange={(e) => handleUploadProductionFile(e, 'layout_file')} />
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Authors List Card */}
               <div className="bg-white rounded-xl border border-academic-200 shadow-sm overflow-hidden">
                 <div className="px-6 py-4 border-b border-academic-100 bg-academic-50/50">
@@ -486,15 +587,38 @@ export default function AdminArticles() {
                       <option value="submitted">Baru Masuk (Submitted)</option>
                       <option value="in_review">Proses Review (In Review)</option>
                       <option value="accepted">Diterima (Accepted)</option>
+                      <option value="copyediting">Copyediting (Revisi Bahasa)</option>
+                      <option value="layouting">Layouting (Desain PDF)</option>
                       <option value="published">Diterbitkan (Published)</option>
                       <option value="rejected">Ditolak (Rejected)</option>
                     </select>
+                  </div>
+                  
+                  {['accepted', 'copyediting', 'layouting', 'published'].includes(newStatus) && (
+                    <div className="mt-3">
+                      <label className="block text-xs font-black text-academic-500 uppercase tracking-widest mb-1">Terbitan (Issue)</label>
+                      <select
+                        value={selectedIssueId}
+                        onChange={e => setSelectedIssueId(e.target.value)}
+                        className="w-full border border-academic-300 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white"
+                      >
+                        <option value="">-- Belum Ditentukan --</option>
+                        {issuesList.map(iss => (
+                          <option key={iss.id} value={iss.id}>
+                            Vol {iss.volume} No {iss.issue_number} ({iss.year}) {iss.title ? `- ${iss.title}` : ''}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+
+                  <div className="flex justify-end pt-2">
                     <button
                       onClick={() => handleUpdateStatus(selectedArticle.id)}
                       disabled={updatingStatus || !newStatus}
-                      className="bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs px-4 py-1.5 rounded-lg disabled:opacity-50 transition-colors"
+                      className="bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs px-4 py-1.5 rounded-lg disabled:opacity-50 transition-colors w-full"
                     >
-                      Simpan
+                      Simpan Status & Terbitan
                     </button>
                   </div>
                 </div>

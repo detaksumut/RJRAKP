@@ -575,7 +575,49 @@ export default function AuthorArticleDetail() {
           )}
         </div>
 
-        {/* 3. Upload Revision Form */}
+        {/* 4. Production Phase (Copyediting & Layouting) */}
+        {['copyediting', 'layouting', 'published'].includes(article.status.toLowerCase()) && (
+          <div className="bg-white p-6 rounded-xl border border-academic-200 shadow-sm mb-6">
+            <h3 className="font-serif font-bold text-lg text-academic-900 flex items-center gap-2 mb-4">
+              <FileText className="w-5 h-5 text-brand-600" /> Tahap Produksi
+            </h3>
+            <p className="text-xs text-academic-500 mb-4">Artikel Anda sedang dalam tahap akhir sebelum publikasi. Silakan periksa file dari Editor.</p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Copyediting File */}
+              <div className={`p-4 rounded-lg border ${['copyediting', 'layouting', 'published'].includes(article.status.toLowerCase()) ? 'bg-purple-50 border-purple-100' : 'bg-academic-50 border-academic-100 opacity-50'}`}>
+                <h4 className="text-xs font-bold text-purple-800 uppercase tracking-widest mb-2">1. Hasil Copyediting</h4>
+                {article.copyedited_file ? (
+                  <div className="space-y-3">
+                    <p className="text-xs text-purple-700">Editor telah melakukan penyuntingan bahasa.</p>
+                    <a href={article.copyedited_file} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 px-4 py-2 bg-purple-600 text-white font-bold text-xs rounded hover:bg-purple-700 transition-colors">
+                      Unduh & Periksa Berkas
+                    </a>
+                  </div>
+                ) : (
+                  <p className="text-xs text-academic-500 italic">Sedang dikerjakan oleh Editor.</p>
+                )}
+              </div>
+
+              {/* Layouting File */}
+              <div className={`p-4 rounded-lg border ${['layouting', 'published'].includes(article.status.toLowerCase()) ? 'bg-indigo-50 border-indigo-100' : 'bg-academic-50 border-academic-100 opacity-50'}`}>
+                <h4 className="text-xs font-bold text-indigo-800 uppercase tracking-widest mb-2">2. Galley Final (PDF)</h4>
+                {article.layout_file ? (
+                  <div className="space-y-3">
+                    <p className="text-xs text-indigo-700">Desain akhir artikel PDF (Galley) telah siap.</p>
+                    <a href={article.layout_file} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-600 text-white font-bold text-xs rounded hover:bg-indigo-700 transition-colors">
+                      Unduh Galley Final
+                    </a>
+                  </div>
+                ) : (
+                  <p className="text-xs text-academic-500 italic">Sedang dikerjakan oleh Editor Layout.</p>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 5. Upload Revision Form */}
         {['revised', 'in_review', 'under_review'].includes(article.status) && (
           <div className="bg-white p-6 rounded-xl border border-brand-200 shadow-md">
             <h3 className="font-serif font-bold text-lg text-academic-900 mb-2 flex items-center gap-2">
