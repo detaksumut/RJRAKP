@@ -516,7 +516,7 @@ export default function AuthorSubmit() {
                           <p className="text-sm text-academic-600 font-semibold">Pilih File Pendukung</p>
                         )}
                       </div>
-                      <input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.zip,.rar" onChange={(e) => e.target.files && setSupportingFile(e.target.files[0])} className="hidden" />
+                      <input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.zip,.rar,.jpg,.jpeg,.png" onChange={(e) => e.target.files && setSupportingFile(e.target.files[0])} className="hidden" />
                     </label>
                   </div>
                 </div>
