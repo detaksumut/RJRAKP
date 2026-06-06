@@ -92,7 +92,7 @@ export default function Hero() {
               </a>
 
               {/* ORCID Logo */}
-              <a href="https://orcid.org" target="_blank" rel="noopener noreferrer" className="flex items-center transition-all duration-300 transform hover:scale-110 cursor-pointer">
+              <a href="https://orcid.org/0009-0006-8416-6156" target="_blank" rel="noopener noreferrer" className="flex items-center transition-all duration-300 transform hover:scale-110 cursor-pointer">
                 <img 
                   src="https://upload.wikimedia.org/wikipedia/commons/0/06/ORCID_iD.svg" 
                   alt="ORCID Logo" 
