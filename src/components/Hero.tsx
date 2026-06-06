@@ -41,6 +41,34 @@ export default function Hero() {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="lg:col-span-6 flex flex-col justify-center text-left"
           >
+            {/* Indexed By / Supported By Band (Moved to Top) */}
+            <div className="flex flex-wrap items-center gap-6 sm:gap-8 opacity-80 hover:opacity-100 transition-opacity duration-500 mb-8 border-b border-white/10 pb-6 w-max pr-12">
+              <span className="text-[9px] uppercase tracking-[0.2em] text-brand-300/50 font-black">Indexed By</span>
+              {/* Scopus Logo */}
+              <img 
+                src="https://upload.wikimedia.org/wikipedia/commons/2/26/Scopus_logo.svg" 
+                alt="Scopus" 
+                className="h-5 md:h-6 grayscale hover:grayscale-0 brightness-200 hover:brightness-100 transition-all duration-300 transform hover:scale-110 cursor-pointer" 
+              />
+              
+              {/* Crossref Logo */}
+              <img 
+                src="https://upload.wikimedia.org/wikipedia/commons/b/b5/Crossref_logo.svg" 
+                alt="Crossref" 
+                className="h-4 md:h-5 grayscale hover:grayscale-0 brightness-200 hover:brightness-100 transition-all duration-300 transform hover:scale-110 cursor-pointer" 
+              />
+
+              {/* Google Scholar Logo */}
+              <div className="flex items-center gap-1.5 grayscale hover:grayscale-0 brightness-200 hover:brightness-100 transition-all duration-300 transform hover:scale-110 cursor-pointer">
+                <img 
+                  src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Google_Scholar_logo.svg" 
+                  alt="Google Scholar Logo" 
+                  className="h-5 md:h-6" 
+                />
+                <span className="text-white font-bold text-sm font-sans tracking-tight">Google Scholar</span>
+              </div>
+            </div>
+
             {/* Top Badges / Actions */}
             <div className="flex flex-wrap items-center gap-3 mb-6">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-accent-400 text-[10px] sm:text-xs font-bold tracking-wider uppercase shadow-inner backdrop-blur-md">
@@ -147,47 +175,6 @@ export default function Hero() {
             </div>
           </motion.div>
         </div>
-        
-        {/* Indexed By / Supported By Band */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
-          className="mt-16 lg:mt-24 pt-8 border-t border-white/10 flex flex-col items-center justify-center"
-        >
-          <p className="text-[10px] md:text-xs uppercase tracking-[0.2em] text-brand-300/50 font-black mb-8 text-center">Infrastruktur Jurnal Internasional</p>
-          <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-16 opacity-70 hover:opacity-100 transition-opacity duration-500">
-            {/* Scopus Logo */}
-            <div className="flex items-center group">
-              <img 
-                src="https://upload.wikimedia.org/wikipedia/commons/2/26/Scopus_logo.svg" 
-                alt="Scopus" 
-                className="h-8 md:h-10 grayscale group-hover:grayscale-0 brightness-200 group-hover:brightness-100 transition-all duration-300 transform group-hover:scale-110" 
-              />
-            </div>
-            
-            {/* Crossref Logo */}
-            <div className="flex items-center group">
-              <img 
-                src="https://upload.wikimedia.org/wikipedia/commons/1/14/Crossref_logo.svg" 
-                alt="Crossref" 
-                className="h-7 md:h-8 grayscale group-hover:grayscale-0 brightness-200 group-hover:brightness-100 transition-all duration-300 transform group-hover:scale-110" 
-              />
-            </div>
-
-            {/* Google Scholar Logo */}
-            <div className="flex items-center group">
-              <div className="flex items-center gap-2 grayscale group-hover:grayscale-0 brightness-200 group-hover:brightness-100 transition-all duration-300 transform group-hover:scale-110">
-                <img 
-                  src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Google_Scholar_logo.svg" 
-                  alt="Google Scholar Logo" 
-                  className="h-8 md:h-10" 
-                />
-                <span className="text-white font-bold text-lg md:text-xl font-sans tracking-tight">Google Scholar</span>
-              </div>
-            </div>
-          </div>
-        </motion.div>
       </div>
     </div>
   );
