@@ -41,9 +41,9 @@ export default function Hero() {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="lg:col-span-6 flex flex-col justify-center text-left"
           >
-            {/* Connected With Band (Moved to Top) */}
+            {/* Connected Band (Moved to Top) */}
             <div className="flex flex-wrap items-center gap-6 sm:gap-8 opacity-80 hover:opacity-100 transition-opacity duration-500 mb-8 border-b border-white/10 pb-6 w-max pr-12">
-              <span className="text-[9px] uppercase tracking-[0.2em] text-brand-300/50 font-black">Connected With</span>
+              <span className="text-[9px] uppercase tracking-[0.2em] text-brand-300/50 font-black">Connected</span>
               {/* Scopus Logo */}
               <img 
                 src="https://upload.wikimedia.org/wikipedia/commons/2/26/Scopus_logo.svg" 
