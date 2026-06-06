@@ -45,11 +45,13 @@ export default function Hero() {
             <div className="flex flex-wrap items-center gap-6 sm:gap-8 opacity-80 hover:opacity-100 transition-opacity duration-500 mb-8 border-b border-white/10 pb-6 w-max pr-12">
               <span className="text-[10px] md:text-xs uppercase tracking-[0.2em] text-white font-black">Connected</span>
               {/* Scopus Logo */}
-              <img 
-                src="https://upload.wikimedia.org/wikipedia/commons/2/26/Scopus_logo.svg" 
-                alt="Scopus" 
-                className="h-5 md:h-6 transition-all duration-300 transform hover:scale-110 cursor-pointer" 
-              />
+              <a href="https://www.scopus.com/dashboard.uri?origin=&zone=TopNavBar" target="_blank" rel="noopener noreferrer">
+                <img 
+                  src="https://upload.wikimedia.org/wikipedia/commons/2/26/Scopus_logo.svg" 
+                  alt="Scopus" 
+                  className="h-5 md:h-6 transition-all duration-300 transform hover:scale-110 cursor-pointer" 
+                />
+              </a>
               
               {/* Crossref Logo */}
               <img 
