@@ -90,6 +90,24 @@ export default function Hero() {
                   className="h-10 md:h-14" 
                 />
               </a>
+
+              {/* ORCID Logo */}
+              <a href="https://orcid.org" target="_blank" rel="noopener noreferrer" className="flex items-center transition-all duration-300 transform hover:scale-110 cursor-pointer">
+                <img 
+                  src="https://upload.wikimedia.org/wikipedia/commons/0/06/ORCID_iD.svg" 
+                  alt="ORCID Logo" 
+                  className="h-10 md:h-14" 
+                />
+              </a>
+
+              {/* OpenAIRE Logo */}
+              <a href="https://explore.openaire.eu/" target="_blank" rel="noopener noreferrer" className="flex items-center transition-all duration-300 transform hover:scale-110 cursor-pointer">
+                <img 
+                  src="https://www.openaire.eu/images/logo.png" 
+                  alt="OpenAIRE Logo" 
+                  className="h-10 md:h-14 bg-white/90 rounded-md px-2 py-1" 
+                />
+              </a>
             </div>
 
             {/* Top Badges / Actions */}
