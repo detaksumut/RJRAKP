@@ -106,9 +106,9 @@ export default function Footer() {
             </div>
 
             <div className="bg-white/10 border border-white/20 rounded-xl p-4 max-w-2xl text-center backdrop-blur-sm">
-              <h4 className="text-yellow-400 text-[11px] md:text-xs uppercase tracking-widest font-black mb-2">Kebijakan Pengarsipan (Archiving Policy)</h4>
+              <h4 className="text-accent-500 text-[11px] md:text-xs uppercase tracking-widest font-black mb-2">Kebijakan Pengarsipan (Archiving Policy)</h4>
               <p className="text-white text-xs leading-relaxed font-medium">
-                Jurnal ini menggunakan sistem <strong className="text-yellow-400">LOCKSS</strong> (Lots of Copies Keep Stuff Safe) dan <strong className="text-yellow-400">PKP Preservation Network (PN)</strong> untuk membuat sistem pengarsipan terdistribusi di antara perpustakaan yang berpartisipasi dan mengizinkan perpustakaan tersebut untuk membuat arsip permanen dari jurnal untuk tujuan pelestarian dan pemulihan.
+                Jurnal ini menggunakan sistem <strong className="text-accent-500">LOCKSS</strong> (Lots of Copies Keep Stuff Safe) dan <strong className="text-accent-500">PKP Preservation Network (PN)</strong> untuk membuat sistem pengarsipan terdistribusi di antara perpustakaan yang berpartisipasi dan mengizinkan perpustakaan tersebut untuk membuat arsip permanen dari jurnal untuk tujuan pelestarian dan pemulihan.
               </p>
             </div>
           </div>
