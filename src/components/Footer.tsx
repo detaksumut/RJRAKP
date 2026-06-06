@@ -92,7 +92,7 @@ export default function Footer() {
           </div>
 
           <div className="flex flex-col items-center mb-6">
-            <div className="grid grid-cols-2 gap-x-0 gap-y-1 w-full max-w-lg mx-auto relative">
+            <div className="grid grid-cols-2 gap-x-0 gap-y-1 w-full max-w-lg mx-auto relative mb-6">
                {/* Center vertical divider */}
                <div className="absolute left-1/2 top-0 bottom-0 w-px bg-white/20 -translate-x-1/2"></div>
                
@@ -104,8 +104,15 @@ export default function Footer() {
                <div className="text-right text-xs md:text-sm font-bold text-white pr-4 md:pr-6">PT. Bernas Sumut Jaya</div>
                <div className="text-left text-xs md:text-sm font-bold text-white pl-4 md:pl-6">BeritaIndonesia.News</div>
             </div>
+
+            <div className="bg-white/5 border border-white/10 rounded-xl p-4 max-w-2xl text-center backdrop-blur-sm">
+              <h4 className="text-accent-400 text-[10px] uppercase tracking-widest font-bold mb-2">Kebijakan Pengarsipan (Archiving Policy)</h4>
+              <p className="text-white/70 text-xs leading-relaxed">
+                Jurnal ini menggunakan sistem <strong>LOCKSS</strong> (Lots of Copies Keep Stuff Safe) dan <strong>PKP Preservation Network (PN)</strong> untuk membuat sistem pengarsipan terdistribusi di antara perpustakaan yang berpartisipasi dan mengizinkan perpustakaan tersebut untuk membuat arsip permanen dari jurnal untuk tujuan pelestarian dan pemulihan.
+              </p>
+            </div>
           </div>
-          <p className="text-[10px] text-white/70 font-medium tracking-widest uppercase">
+          <p className="text-[10px] text-white/50 font-medium tracking-widest uppercase mt-8">
             &copy; {new Date().getFullYear()} Rumah Jurnal Riset, Analisis dan Keadilan Publik. Hak Cipta Dilindungi.
           </p>
         </div>

@@ -256,12 +256,15 @@ export default function AuthorSubmit() {
       if (authorError) throw authorError;
 
       // Kirim Notifikasi WhatsApp ke Author
-      const userPhone = user.user_metadata?.phone;
+      const { data: userData } = await supabase.from('users').select('phone, full_name').eq('id', user.id).single();
+      const userPhone = userData?.phone || user.user_metadata?.phone;
+      const userName = userData?.full_name || user.user_metadata?.full_name || 'Penulis';
+      
       if (userPhone) {
         supabase.functions.invoke('send-wa', {
           body: {
             target: userPhone,
-            message: `*Notifikasi RJRAKP*\n\nHalo ${user.user_metadata?.full_name || 'Penulis'},\n\nArtikel Anda dengan judul *"${formData.title}"* telah berhasil disubmit dan masuk ke antrean Editorial.\n\nAnda dapat memantau status artikel di dashboard Anda.\n\nTerima kasih.`
+            message: `*Notifikasi RJRAKP*\n\nHalo ${userName},\n\nArtikel Anda dengan judul *"${formData.title}"* telah berhasil disubmit dan masuk ke antrean Editorial.\n\nAnda dapat memantau status artikel di dashboard Anda.\n\nTerima kasih.`
           }
         }).catch(err => console.error("Gagal mengirim WA:", err));
       }

@@ -276,10 +276,29 @@ export default function ArticleDetail() {
               {/* Publication Meta */}
               {pub && (
                 <div className="flex flex-wrap items-center gap-4 text-sm bg-academic-50 p-4 rounded-xl border border-academic-100">
-                  {pub.publication_date && (
+                  {article.submission_date && (
                     <div className="flex items-center gap-1.5 text-academic-700">
-                      <Calendar className="w-4 h-4 text-academic-500" />
-                      <span className="font-medium">Diterbitkan:</span> {pubDate}
+                      <span className="font-medium text-xs uppercase tracking-wider">Received:</span> 
+                      <span className="text-xs">{new Date(article.submission_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                    </div>
+                  )}
+                  {(article as any).revised_date && (
+                    <div className="flex items-center gap-1.5 text-academic-700">
+                      <span className="font-medium text-xs uppercase tracking-wider">Revised:</span> 
+                      <span className="text-xs">{new Date((article as any).revised_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                    </div>
+                  )}
+                  {(article as any).accepted_date && (
+                    <div className="flex items-center gap-1.5 text-academic-700">
+                      <span className="font-medium text-xs uppercase tracking-wider">Accepted:</span> 
+                      <span className="text-xs">{new Date((article as any).accepted_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                    </div>
+                  )}
+                  {pub.publication_date && (
+                    <div className="flex items-center gap-1.5 text-brand-700 font-semibold bg-brand-50 px-2 py-0.5 rounded border border-brand-100">
+                      <Calendar className="w-3.5 h-3.5 text-brand-500" />
+                      <span className="font-bold text-xs uppercase tracking-wider">Published:</span> 
+                      <span className="text-xs">{pubDate}</span>
                     </div>
                   )}
                   {pub.volume_number && (
@@ -375,11 +394,37 @@ export default function ArticleDetail() {
                       );
                     })}
                   </div>
+                  
+                  <div className="mt-6 flex flex-wrap gap-3 border-t border-brand-100 pt-4">
+                    <span className="text-xs font-bold text-academic-500 uppercase tracking-widest flex items-center mr-2">Download:</span>
+                    <button onClick={() => {
+                      const ris = `TY  - JOUR\nT1  - ${article.title}\nAU  - ${authors.map((a: any) => a.full_name).join('\nAU  - ')}\nJO  - ${journal?.name || 'RJRAKP'}\nVL  - ${pub?.volume_number || ''}\nIS  - ${pub?.issue_number || ''}\nPY  - ${pubYear || ''}\nDO  - ${pub?.doi || ''}\nUR  - ${window.location.href}\nER  - `;
+                      const blob = new Blob([ris], { type: 'application/x-research-info-systems' });
+                      const a = document.createElement('a');
+                      a.href = URL.createObjectURL(blob);
+                      a.download = `citation_${article.id}.ris`;
+                      a.click();
+                    }} className="text-xs bg-white hover:bg-academic-50 text-academic-700 font-bold py-1.5 px-3 rounded border border-academic-200 transition-colors">.RIS (EndNote, Mendeley)</button>
+                    
+                    <button onClick={() => {
+                      const bib = `@article{${authors[0]?.full_name.split(' ').pop()?.toLowerCase() || 'author'}${pubYear},\n  title={${article.title}},\n  author={${authors.map((a: any) => a.full_name).join(' and ')}},\n  journal={${journal?.name || 'RJRAKP'}},\n  volume={${pub?.volume_number || ''}},\n  number={${pub?.issue_number || ''}},\n  year={${pubYear || ''}},\n  doi={${pub?.doi || ''}}\n}`;
+                      const blob = new Blob([bib], { type: 'application/x-bibtex' });
+                      const a = document.createElement('a');
+                      a.href = URL.createObjectURL(blob);
+                      a.download = `citation_${article.id}.bib`;
+                      a.click();
+                    }} className="text-xs bg-white hover:bg-academic-50 text-academic-700 font-bold py-1.5 px-3 rounded border border-academic-200 transition-colors">.BibTeX (Zotero, LaTeX)</button>
+                  </div>
                 </div>
               )}
 
               <div className="prose prose-academic max-w-none">
-                <h3 className="text-xl font-bold text-academic-900 border-b-2 border-academic-100 pb-2 mb-4">Abstrak</h3>
+                <div className="flex items-center justify-between border-b-2 border-academic-100 pb-2 mb-4">
+                  <h3 className="text-xl font-bold text-academic-900 m-0">Abstrak</h3>
+                  <a href="https://www.turnitin.com/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold border border-emerald-200 hover:bg-emerald-100 transition-colors">
+                    <Check className="w-3.5 h-3.5" /> Similarity Check
+                  </a>
+                </div>
                 <div className="text-academic-700 leading-relaxed text-justify whitespace-pre-wrap">
                   {article.abstract || 'Abstrak tidak tersedia untuk artikel ini.'}
                 </div>
@@ -399,10 +444,23 @@ export default function ArticleDetail() {
               </div>
             </div>
             
-            {/* Footer Meta */}
-            <div className="bg-academic-900 text-academic-300 p-6 text-sm text-center">
-              <p>&copy; {pubYear || new Date().getFullYear()} {journal?.name || 'RJRAKP'}. Hak Cipta Dilindungi Undang-Undang.</p>
-              <p className="mt-1 text-xs opacity-60">Artikel ini didistribusikan di bawah lisensi akses terbuka (Open Access).</p>
+            {/* Footer Meta & Creative Commons */}
+            <div className="bg-slate-50 border-t border-academic-200 p-8 text-sm flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="flex-1">
+                <h4 className="font-bold text-academic-900 mb-2">Copyright & Licensing</h4>
+                <p className="text-academic-600 mb-4">&copy; {pubYear || new Date().getFullYear()} {authors.map((a: any) => a.full_name).join(', ')}. Hak cipta dipegang oleh penulis.</p>
+                <div className="flex items-start gap-4">
+                  <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer" className="shrink-0">
+                    <img src="https://mirrors.creativecommons.org/presskit/buttons/88x31/png/by-sa.png" alt="CC BY-SA 4.0" className="h-8" />
+                  </a>
+                  <p className="text-xs text-academic-500 leading-relaxed max-w-lg">
+                    Artikel ini merupakan artikel akses terbuka (Open Access) yang didistribusikan di bawah syarat dan ketentuan 
+                    <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer" className="text-brand-600 font-semibold hover:underline ml-1">
+                      Creative Commons Attribution-ShareAlike 4.0 International License (CC BY-SA 4.0)
+                    </a>.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
 

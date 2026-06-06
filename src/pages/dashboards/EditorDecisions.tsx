@@ -170,9 +170,16 @@ export default function EditorDecisions() {
       }
 
       // 2. Update status of article
+      const updatePayload: any = { status: targetStatus };
+      if (targetStatus === 'accepted') {
+        updatePayload.accepted_date = new Date().toISOString();
+      } else if (targetStatus === 'revised') {
+        updatePayload.revised_date = new Date().toISOString();
+      }
+
       const { error: artUpdateError } = await supabase
         .from('articles')
-        .update({ status: targetStatus })
+        .update(updatePayload)
         .eq('id', selectedArticle.id);
 
       if (artUpdateError) throw artUpdateError;
