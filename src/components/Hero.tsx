@@ -43,7 +43,7 @@ export default function Hero() {
           >
             {/* Connected Band (Moved to Top) */}
             <div className="flex flex-wrap items-center gap-6 sm:gap-8 opacity-80 hover:opacity-100 transition-opacity duration-500 mb-8 border-b border-white/10 pb-6 w-max pr-12">
-              <span className="text-[10px] md:text-xs uppercase tracking-[0.2em] text-accent-400 font-black">Connected</span>
+              <span className="text-[10px] md:text-xs uppercase tracking-[0.2em] text-white font-black">Connected</span>
               {/* Scopus Logo */}
               <img 
                 src="https://upload.wikimedia.org/wikipedia/commons/2/26/Scopus_logo.svg" 
