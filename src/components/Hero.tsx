@@ -75,7 +75,7 @@ export default function Hero() {
                 <img 
                   src="https://upload.wikimedia.org/wikipedia/commons/2/28/Zenodo.svg" 
                   alt="Zenodo Logo" 
-                  className="h-5 md:h-6 bg-white rounded px-1 py-0.5" 
+                  className="h-5 md:h-6 brightness-0 invert" 
                 />
               </a>
 
