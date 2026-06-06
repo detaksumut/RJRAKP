@@ -211,7 +211,7 @@ export default function AdminArticles() {
 
           const journalsData = artDetails.journals;
           const journalSlug = (Array.isArray(journalsData) ? journalsData[0]?.slug : (journalsData as any)?.slug) || 'journal';
-          const generatedDoi = `10.47822/rjrakp.${journalSlug}.v1i1.${articleId.substring(0, 8)}`;
+          const generatedDoi = customDoi || `10.47822/rjrakp.${journalSlug}.v1i1.${articleId.substring(0, 8)}`;
 
           const { error: pubInsertErr } = await supabase
             .from('publications')
@@ -226,6 +226,20 @@ export default function AdminArticles() {
             });
 
           if (pubInsertErr) throw pubInsertErr;
+        } else if (customDoi) {
+          // Update existing publication with custom DOI
+          const { error: pubUpdateErr } = await supabase
+            .from('publications')
+            .update({ doi: customDoi })
+            .eq('id', pubData.id);
+          
+          if (pubUpdateErr) throw pubUpdateErr;
+        }
+      } else if (customDoi) {
+        // If status is not published but admin inputs DOI, update it anyway if pub exists
+        const { data: pubData } = await supabase.from('publications').select('id').eq('article_id', articleId).maybeSingle();
+        if (pubData) {
+          await supabase.from('publications').update({ doi: customDoi }).eq('id', pubData.id);
         }
       }
 
@@ -599,20 +613,34 @@ export default function AdminArticles() {
                   </div>
                   
                   {['accepted', 'copyediting', 'layouting', 'published'].includes(newStatus) && (
-                    <div className="mt-3">
-                      <label className="block text-xs font-black text-academic-500 uppercase tracking-widest mb-1">Terbitan (Issue)</label>
-                      <select
-                        value={selectedIssueId}
-                        onChange={e => setSelectedIssueId(e.target.value)}
-                        className="w-full border border-academic-300 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white"
-                      >
-                        <option value="">-- Belum Ditentukan --</option>
-                        {issuesList.map(iss => (
-                          <option key={iss.id} value={iss.id}>
-                            Vol {iss.volume} No {iss.issue_number} ({iss.year}) {iss.title ? `- ${iss.title}` : ''}
-                          </option>
-                        ))}
-                      </select>
+                    <div className="mt-3 space-y-3">
+                      <div>
+                        <label className="block text-xs font-black text-academic-500 uppercase tracking-widest mb-1">Terbitan (Issue)</label>
+                        <select
+                          value={selectedIssueId}
+                          onChange={e => setSelectedIssueId(e.target.value)}
+                          className="w-full border border-academic-300 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white"
+                        >
+                          <option value="">-- Belum Ditentukan --</option>
+                          {issuesList.map(iss => (
+                            <option key={iss.id} value={iss.id}>
+                              Vol {iss.volume} No {iss.issue_number} ({iss.year}) {iss.title ? `- ${iss.title}` : ''}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-black text-academic-500 uppercase tracking-widest mb-1">Nomor DOI (Opsional)</label>
+                        <input
+                          type="text"
+                          placeholder="Misal: 10.5281/zenodo.20570575"
+                          value={customDoi}
+                          onChange={e => setCustomDoi(e.target.value)}
+                          className="w-full border border-academic-300 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white"
+                        />
+                        <p className="text-[10px] text-academic-400 mt-1">Kosongkan jika ingin sistem membuatkan DOI otomatis, atau isi dengan DOI dari Zenodo/Crossref.</p>
+                      </div>
                     </div>
                   )}
 
