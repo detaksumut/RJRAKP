@@ -60,6 +60,9 @@ export default function Hero() {
                 className="h-9 md:h-12 transition-all duration-300 transform hover:scale-110 cursor-pointer" 
               />
 
+              {/* Force line break on mobile and tablet */}
+              <div className="basis-full h-0 lg:hidden"></div>
+
               {/* Google Scholar Logo */}
               <a href="https://scholar.google.com/citations?user=EoHXXg0AAAAJ&hl=en" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 transition-all duration-300 transform hover:scale-110 cursor-pointer">
                 <img 
