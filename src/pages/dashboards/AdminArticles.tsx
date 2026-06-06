@@ -29,6 +29,7 @@ export default function AdminArticles() {
   const [newStatus, setNewStatus] = useState('');
   const [uploadingManuscript, setUploadingManuscript] = useState(false);
   const [selectedIssueId, setSelectedIssueId] = useState('');
+  const [customDoi, setCustomDoi] = useState('');
 
   const handleUploadManuscriptFromAdmin = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!selectedArticle || !e.target.files || e.target.files.length === 0) return;
@@ -868,7 +869,7 @@ export default function AdminArticles() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-center space-x-1.5">
                           <button
-                            onClick={() => { setSelectedArticle(art); setNewStatus(art.status); }}
+                            onClick={() => { setSelectedArticle(art); setNewStatus(art.status || ''); setCustomDoi(''); }}
                             className="inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-brand-50 hover:bg-brand-100 text-brand-800 border border-brand-200 rounded-md font-semibold text-[10px] transition-colors"
                           >
                             <Eye className="w-3.5 h-3.5" /> Detail & Kelola
