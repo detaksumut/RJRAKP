@@ -53,8 +53,8 @@ export default function Hero() {
               
               {/* Crossref Logo */}
               <img 
-                src="https://upload.wikimedia.org/wikipedia/commons/b/b5/Crossref_logo.svg" 
-                alt="Crossref" 
+                src="https://assets.crossref.org/logo/crossref-logo-landscape-200.svg" 
+                alt="Crossref logo" 
                 className="h-4 md:h-5 grayscale hover:grayscale-0 brightness-200 hover:brightness-100 transition-all duration-300 transform hover:scale-110 cursor-pointer" 
               />
 
