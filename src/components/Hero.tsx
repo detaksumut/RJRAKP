@@ -69,6 +69,24 @@ export default function Hero() {
                 />
                 <span className="text-white font-bold text-sm font-sans tracking-tight">Google Scholar</span>
               </a>
+
+              {/* Zenodo Logo */}
+              <a href="https://zenodo.org" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 transition-all duration-300 transform hover:scale-110 cursor-pointer">
+                <img 
+                  src="https://upload.wikimedia.org/wikipedia/commons/2/28/Zenodo.svg" 
+                  alt="Zenodo Logo" 
+                  className="h-5 md:h-6 bg-white rounded px-1 py-0.5" 
+                />
+              </a>
+
+              {/* DOI Logo */}
+              <a href="https://www.doi.org" target="_blank" rel="noopener noreferrer" className="flex items-center transition-all duration-300 transform hover:scale-110 cursor-pointer">
+                <img 
+                  src="https://upload.wikimedia.org/wikipedia/commons/1/11/DOI_logo.svg" 
+                  alt="DOI Logo" 
+                  className="h-5 md:h-6" 
+                />
+              </a>
             </div>
 
             {/* Top Badges / Actions */}
