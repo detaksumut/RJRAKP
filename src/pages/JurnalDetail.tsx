@@ -5,7 +5,7 @@ import Footer from '../components/Footer';
 import { supabase } from '../lib/supabase';
 import { 
   ArrowLeft, BookOpen, Send, Users, FileText, 
-  Settings, ChevronRight, Download, Info
+  Settings, ChevronRight, Download, Info, BarChart2
 } from 'lucide-react';
 
 export default function JurnalDetail() {
@@ -203,6 +203,27 @@ export default function JurnalDetail() {
                   <Download className="w-4 h-4" />
                   Pedoman Penulisan
                 </Link>
+              </div>
+
+              <div className="bg-white rounded-xl p-6 border border-academic-200 shadow-sm">
+                <h3 className="font-bold text-academic-900 flex items-center gap-2 mb-4 border-b border-academic-100 pb-3">
+                  <BarChart2 className="w-5 h-5 text-brand-600" />
+                  Journal Metrics
+                </h3>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center py-1">
+                    <span className="text-sm font-medium text-academic-600">Scopus H-index</span>
+                    <span className="text-sm font-bold text-academic-900">{journal.metadata?.scopus_h_index || '0'}</span>
+                  </div>
+                  <div className="flex justify-between items-center py-1">
+                    <span className="text-sm font-medium text-academic-600">Google Scholar H-index</span>
+                    <span className="text-sm font-bold text-academic-900">{journal.metadata?.gs_h_index || '0'}</span>
+                  </div>
+                  <div className="flex justify-between items-center py-1">
+                    <span className="text-sm font-medium text-academic-600">SINTA Score</span>
+                    <span className="text-sm font-bold text-brand-600">{journal.metadata?.sinta_score || 'Not Yet Rated'}</span>
+                  </div>
+                </div>
               </div>
 
               <div className="bg-white rounded-xl p-6 border border-academic-200 shadow-sm">
