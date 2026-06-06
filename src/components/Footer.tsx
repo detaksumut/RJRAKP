@@ -58,21 +58,21 @@ export default function Footer() {
               <li className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 text-accent-600 shrink-0 mt-0.5" />
                 <span className="text-academic-600 text-xs leading-relaxed font-semibold">
-                  Gedung Rektorat Lt. 3<br />
-                  Jalan Pendidikan No. 123<br />
-                  DKI Jakarta, Indonesia 10110
+                  Gedung LSM MSRI<br />
+                  Jalan HM Joni No. 11 Kode Pos 20216<br />
+                  Medan, Provinsi Sumatera Utara
                 </span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="w-4 h-4 text-accent-600 shrink-0" />
                 <span className="text-academic-600 text-xs font-semibold">
-                  +62 21 555 1234
+                  WA HP : +62 811665212
                 </span>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-accent-600 shrink-0" />
                 <span className="text-academic-600 text-xs font-semibold">
-                  admin@rjrakp.ac.id
+                  rjrakp@rj.beritaindonesia.news
                 </span>
               </li>
             </ul>
