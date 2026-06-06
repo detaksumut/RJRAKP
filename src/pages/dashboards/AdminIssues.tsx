@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
 import DashboardLayout from '../../components/DashboardLayout';
@@ -20,8 +20,10 @@ export default function AdminIssues() {
     year: new Date().getFullYear().toString(),
     title: '',
     description: '',
-    status: 'draft'
+    status: 'draft',
+    cover_image_url: ''
   });
+  const [coverFile, setCoverFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -61,6 +63,15 @@ export default function AdminIssues() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
+      let uploadedUrl = formData.cover_image_url;
+      if (coverFile) {
+        const fileExt = coverFile.name.split('.').pop();
+        const fileName = `issues_cover_${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
+        const { error: uploadError } = await supabase.storage.from('manuscripts').upload(fileName, coverFile);
+        if (uploadError) throw new Error(`Gagal mengunggah cover: ${uploadError.message}`);
+        uploadedUrl = supabase.storage.from('manuscripts').getPublicUrl(fileName).data.publicUrl;
+      }
+
       const issueData = {
         journal_id: formData.journal_id,
         volume: parseInt(formData.volume),
@@ -69,6 +80,7 @@ export default function AdminIssues() {
         title: formData.title,
         description: formData.description,
         status: formData.status,
+        cover_image_url: uploadedUrl,
         published_at: formData.status === 'published' ? new Date().toISOString() : null
       };
 
@@ -80,6 +92,7 @@ export default function AdminIssues() {
       
       setShowForm(false);
       setEditingId(null);
+      setCoverFile(null);
       setFormData({
         journal_id: '',
         volume: '',
@@ -87,12 +100,13 @@ export default function AdminIssues() {
         year: new Date().getFullYear().toString(),
         title: '',
         description: '',
-        status: 'draft'
+        status: 'draft',
+        cover_image_url: ''
       });
       fetchData();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving issue:', error);
-      alert('Gagal menyimpan terbitan');
+      alert('Gagal menyimpan terbitan: ' + error.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -106,8 +120,10 @@ export default function AdminIssues() {
       year: issue.year.toString(),
       title: issue.title || '',
       description: issue.description || '',
-      status: issue.status
+      status: issue.status,
+      cover_image_url: issue.cover_image_url || ''
     });
+    setCoverFile(null);
     setEditingId(issue.id);
     setShowForm(true);
   };
@@ -128,9 +144,52 @@ export default function AdminIssues() {
       const newStatus = issue.status === 'published' ? 'draft' : 'published';
       const publishedAt = newStatus === 'published' ? new Date().toISOString() : null;
       await supabase.from('issues').update({ status: newStatus, published_at: publishedAt }).eq('id', issue.id);
+
+      if (newStatus === 'published') {
+        // Bulk publish logic: Update all accepted articles in this issue
+        const { data: articlesToPublish } = await supabase.from('articles')
+          .select('id, manuscript_file, journals(slug)')
+          .eq('issue_id', issue.id)
+          .in('status', ['accepted']);
+          
+        if (articlesToPublish && articlesToPublish.length > 0) {
+          const articleIds = articlesToPublish.map(a => a.id);
+          // Update status to 'published'
+          await supabase.from('articles').update({ status: 'published' }).in('id', articleIds);
+          
+          // Create publications if not exist
+          const { data: existingPubs } = await supabase.from('publications').select('article_id').in('article_id', articleIds);
+          const existingIds = existingPubs?.map(p => p.article_id) || [];
+          
+          const newPubs = articlesToPublish
+            .filter(a => !existingIds.includes(a.id))
+            .map(a => {
+              const journalSlug = (Array.isArray(a.journals) ? a.journals[0]?.slug : (a.journals as any)?.slug) || 'journal';
+              const generatedDoi = `10.47822/rjrakp.${journalSlug}.v${issue.volume}i${issue.issue_number}.${a.id.substring(0, 8)}`;
+              
+              return {
+                article_id: a.id,
+                volume_number: `Vol. ${issue.volume}`,
+                issue_number: `No. ${issue.issue_number}`,
+                publication_date: publishedAt,
+                doi: generatedDoi,
+                pdf_url: a.manuscript_file || '',
+                doi_status: 'registered'
+              };
+            });
+            
+          if (newPubs.length > 0) {
+             await supabase.from('publications').insert(newPubs);
+          }
+          
+          alert(`Berhasil mempublikasikan ${articlesToPublish.length} artikel di Issue ini!`);
+        }
+      }
+
       fetchData();
     } catch (error) {
       console.error('Error updating status:', error);
+      alert('Gagal memperbarui status');
     }
   };
 
@@ -209,6 +268,22 @@ export default function AdminIssues() {
                 <textarea name="description" value={formData.description} onChange={handleInputChange} className="w-full border border-academic-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-brand-500" rows={3}></textarea>
               </div>
 
+              <div>
+                <label className="block text-xs font-bold text-academic-700 uppercase mb-1">Cover Image (Opsional)</label>
+                {formData.cover_image_url && !coverFile && (
+                  <div className="mb-2">
+                    <img src={formData.cover_image_url} alt="Cover" className="h-32 object-contain rounded border border-academic-200" />
+                  </div>
+                )}
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  onChange={(e) => setCoverFile(e.target.files ? e.target.files[0] : null)}
+                  className="w-full border border-academic-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500" 
+                />
+                <p className="text-[10px] text-academic-500 mt-1">Pilih gambar untuk mengganti atau menambahkan cover edisi jurnal.</p>
+              </div>
+
               <div className="flex justify-end gap-2 pt-4">
                 <button type="button" onClick={() => setShowForm(false)} className="px-4 py-2 text-academic-600 hover:bg-academic-100 rounded-lg text-sm font-bold transition-colors">Batal</button>
                 <button type="submit" disabled={isSubmitting} className="px-6 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-sm font-bold shadow-sm transition-colors disabled:opacity-50">
@@ -235,8 +310,19 @@ export default function AdminIssues() {
                 {issues.map((issue) => (
                   <tr key={issue.id} className="hover:bg-academic-50/50 transition-colors group">
                     <td className="p-4">
-                      <div className="font-bold text-academic-900">Vol {issue.volume}, No {issue.issue_number}</div>
-                      {issue.title && <div className="text-xs text-academic-500 mt-0.5">{issue.title}</div>}
+                      <div className="flex items-center gap-3">
+                        {issue.cover_image_url ? (
+                          <img src={issue.cover_image_url} alt="Cover" className="w-10 h-14 object-cover rounded shadow-sm border border-academic-200" />
+                        ) : (
+                          <div className="w-10 h-14 bg-academic-100 flex items-center justify-center rounded shadow-sm border border-academic-200 text-academic-400">
+                            <BookOpen className="w-5 h-5" />
+                          </div>
+                        )}
+                        <div>
+                          <div className="font-bold text-academic-900">Vol {issue.volume}, No {issue.issue_number}</div>
+                          {issue.title && <div className="text-xs text-academic-500 mt-0.5">{issue.title}</div>}
+                        </div>
+                      </div>
                     </td>
                     <td className="p-4 font-medium text-brand-700">{issue.journals?.name || '-'}</td>
                     <td className="p-4 font-medium text-academic-700">{issue.year}</td>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
+import { generateCrossrefXML } from '../../lib/crossref';
 import { 
   FileText, Trash2, Eye, ArrowLeft, Download, 
   Search, Filter, Calendar, User, ExternalLink, 
@@ -293,6 +294,18 @@ export default function AdminArticles() {
     }
   };
 
+  const handleDownloadCrossref = () => {
+    if (!selectedArticle) return;
+    const xml = generateCrossrefXML(selectedArticle);
+    const blob = new Blob([xml], { type: 'application/xml' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `crossref_${selectedArticle.id}.xml`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   // Filtered articles selector
   const getFilteredArticles = () => {
     return articles.filter(art => {
@@ -388,6 +401,8 @@ export default function AdminArticles() {
                 <div className="flex flex-wrap gap-y-2 gap-x-6 text-xs text-academic-500 pt-1">
                   <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> Ditransfer: {new Date(selectedArticle.submission_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
                   <span className="flex items-center gap-1"><User className="w-3.5 h-3.5" /> Submitter: {selectedArticle.users?.full_name}</span>
+                  <span className="flex items-center gap-1"><Eye className="w-3.5 h-3.5 text-brand-500" /> {selectedArticle.view_count || 0} Dilihat</span>
+                  <span className="flex items-center gap-1"><Download className="w-3.5 h-3.5 text-brand-500" /> {selectedArticle.download_count || 0} Diunduh</span>
                 </div>
 
                 <div className="border-t border-academic-100 pt-4">
@@ -611,6 +626,18 @@ export default function AdminArticles() {
                     </button>
                   </div>
                 </div>
+
+                {/* Crossref Export button */}
+                {selectedArticle.status === 'published' && (
+                  <div className="pt-4 border-t border-academic-100">
+                    <button
+                      onClick={handleDownloadCrossref}
+                      className="w-full inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 font-bold text-xs rounded-lg transition-colors"
+                    >
+                      <Download className="w-4 h-4" /> Unduh XML Crossref (DOI)
+                    </button>
+                  </div>
+                )}
 
                 {/* Delete button */}
                 <div className="pt-4 border-t border-academic-100">

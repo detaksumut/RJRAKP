@@ -13,6 +13,10 @@ export default function ReviewerDashboard() {
   const [selectedAssignment, setSelectedAssignment] = useState<any | null>(null);
   const [reviewForm, setReviewForm] = useState({
     recommendation: '',
+    score_originality: '3',
+    score_methodology: '3',
+    score_readability: '3',
+    score_contribution: '3',
     comments_for_author: '',
     comments_for_editor: ''
   });
@@ -75,13 +79,15 @@ export default function ReviewerDashboard() {
 
     setSubmitting(true);
     try {
+      const formattedEditorComments = `[SKOR REVIEW]\n- Orisinalitas & Kebaruan: ${reviewForm.score_originality}/5\n- Metodologi & Analisis: ${reviewForm.score_methodology}/5\n- Kejelasan & Tata Bahasa: ${reviewForm.score_readability}/5\n- Kontribusi terhadap Ilmu: ${reviewForm.score_contribution}/5\n\n[CATATAN RAHASIA UNTUK EDITOR]\n${reviewForm.comments_for_editor}`;
+
       const { error: reviewError } = await supabase
         .from('reviews')
         .insert({
           assignment_id: selectedAssignment.id,
           recommendation: reviewForm.recommendation,
           comments_for_author: reviewForm.comments_for_author,
-          comments_for_editor: reviewForm.comments_for_editor
+          comments_for_editor: formattedEditorComments
         });
       
       if (reviewError) throw reviewError;
@@ -226,6 +232,41 @@ export default function ReviewerDashboard() {
               </div>
 
               <div className="space-y-4 pt-4 border-t border-academic-200 shrink-0 text-xs">
+                
+                {/* Scoring Section */}
+                <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                  <h4 className="font-bold text-academic-900 mb-3 text-sm flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-brand-600" />
+                    Penilaian Artikel (Skala 1 - 5)
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-academic-700 mb-1">Orisinalitas & Kebaruan</label>
+                      <select value={reviewForm.score_originality} onChange={(e) => setReviewForm({ ...reviewForm, score_originality: e.target.value })} className="w-full border border-academic-300 rounded shadow-sm text-xs py-1 px-2">
+                        <option value="1">1 - Sangat Buruk</option><option value="2">2 - Buruk</option><option value="3">3 - Cukup</option><option value="4">4 - Baik</option><option value="5">5 - Sangat Baik</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-academic-700 mb-1">Metodologi & Analisis</label>
+                      <select value={reviewForm.score_methodology} onChange={(e) => setReviewForm({ ...reviewForm, score_methodology: e.target.value })} className="w-full border border-academic-300 rounded shadow-sm text-xs py-1 px-2">
+                        <option value="1">1 - Sangat Buruk</option><option value="2">2 - Buruk</option><option value="3">3 - Cukup</option><option value="4">4 - Baik</option><option value="5">5 - Sangat Baik</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-academic-700 mb-1">Kejelasan & Tata Bahasa</label>
+                      <select value={reviewForm.score_readability} onChange={(e) => setReviewForm({ ...reviewForm, score_readability: e.target.value })} className="w-full border border-academic-300 rounded shadow-sm text-xs py-1 px-2">
+                        <option value="1">1 - Sangat Buruk</option><option value="2">2 - Buruk</option><option value="3">3 - Cukup</option><option value="4">4 - Baik</option><option value="5">5 - Sangat Baik</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-academic-700 mb-1">Kontribusi terhadap Ilmu</label>
+                      <select value={reviewForm.score_contribution} onChange={(e) => setReviewForm({ ...reviewForm, score_contribution: e.target.value })} className="w-full border border-academic-300 rounded shadow-sm text-xs py-1 px-2">
+                        <option value="1">1 - Sangat Buruk</option><option value="2">2 - Buruk</option><option value="3">3 - Cukup</option><option value="4">4 - Baik</option><option value="5">5 - Sangat Baik</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
                 <div>
                   <label className="block text-xs font-bold text-academic-900 mb-1">Rekomendasi Keputusan *</label>
                   <select

@@ -20,6 +20,8 @@ export default function LatestArticles() {
           publication_date,
           doi,
           pdf_url,
+          view_count,
+          download_count,
           articles (
             title,
             slug,
@@ -89,10 +91,10 @@ export default function LatestArticles() {
                 <div className="px-5 py-3 bg-academic-50 border-t border-academic-100 mt-auto flex justify-between items-center shrink-0">
                   <div className="flex gap-4 text-xs font-semibold text-academic-400">
                     <span className="flex items-center gap-1">
-                      <Eye className="w-4 h-4 shrink-0" /> -
+                      <Eye className="w-4 h-4 shrink-0" /> {pub.view_count || 0}
                     </span>
                     <span className="flex items-center gap-1">
-                      <Download className="w-4 h-4 shrink-0" /> -
+                      <Download className="w-4 h-4 shrink-0" /> {pub.download_count || 0}
                     </span>
                   </div>
                   {pub.pdf_url && (

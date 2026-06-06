@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { Helmet } from 'react-helmet-async';
-import { BookOpen, Calendar, Download, FileText, ArrowLeft, Building2, User } from 'lucide-react';
+import { BookOpen, Calendar, Download, FileText, ArrowLeft, Building2, User, Eye, Quote, Check, Copy } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
@@ -11,6 +11,8 @@ export default function ArticleDetail() {
   const [article, setArticle] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [copiedCitation, setCopiedCitation] = useState(false);
+  const [showCitation, setShowCitation] = useState(false);
 
   useEffect(() => {
     async function fetchArticle() {
@@ -61,6 +63,53 @@ export default function ArticleDetail() {
     fetchArticle();
   }, [slug]);
 
+  // Track View Count once article is loaded
+  useEffect(() => {
+    if (article?.publications?.[0]?.id) {
+      const pubId = article.publications[0].id;
+      // Increment view_count using an rpc or a direct update if RLS allows. 
+      // Since unauthenticated users can't typically update, we might need a workaround or just an optimistic fetch if an RPC doesn't exist.
+      // For now, we'll try to just call an RPC if it existed, but since we just added the column, we'll try a direct update.
+      // NOTE: Direct update by anon might fail due to RLS, but we'll include the logic.
+      const incrementView = async () => {
+        try {
+          const currentViews = article.publications[0].view_count || 0;
+          await supabase.from('publications').update({ view_count: currentViews + 1 }).eq('id', pubId);
+          // Update articles table as well
+          const currentArticleViews = article.view_count || 0;
+          await supabase.from('articles').update({ view_count: currentArticleViews + 1 }).eq('id', article.id);
+        } catch(e) {
+          console.error(e);
+        }
+      };
+      // Prevent multiple increments in dev mode strict effects
+      const timer = setTimeout(incrementView, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [article?.publications, article?.id, article?.view_count]);
+
+  const handleDownloadClick = async () => {
+    if (pub?.id) {
+      try {
+        const currentDownloads = pub.download_count || 0;
+        await supabase.from('publications').update({ download_count: currentDownloads + 1 }).eq('id', pub.id);
+        
+        // Update articles table as well
+        const currentArticleDownloads = article.download_count || 0;
+        await supabase.from('articles').update({ download_count: currentArticleDownloads + 1 }).eq('id', article.id);
+
+        // Optimistically update local state so the user sees it go up
+        setArticle((prev: any) => ({
+          ...prev,
+          download_count: currentArticleDownloads + 1,
+          publications: [{ ...prev.publications[0], download_count: currentDownloads + 1 }]
+        }));
+      } catch(e) {
+        console.error(e);
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col bg-slate-50">
@@ -101,6 +150,43 @@ export default function ArticleDetail() {
 
   // Prepare keywords
   const keywordsList = article.keywords ? article.keywords.split(',').map((k: string) => k.trim()).filter((k: string) => k) : [];
+
+  // Generate Citations
+  const generateCitation = (format: 'apa' | 'mla' | 'chicago') => {
+    const authorNamesAPA = authors.map((a: any) => {
+      const parts = a.full_name.split(' ');
+      const last = parts.pop();
+      const firstInitials = parts.map((n: string) => n[0] + '.').join(' ');
+      return `${last}, ${firstInitials}`;
+    }).join(', & ');
+
+    const authorNamesMLA = authors.length > 0 ? 
+      `${authors[0].full_name.split(' ').reverse().join(', ')}${authors.length > 1 ? ', et al.' : '.'}` 
+      : '';
+
+    const title = article.title;
+    const jName = journal?.name || 'RJRAKP';
+    const vol = pub?.volume_number || '';
+    const iss = pub?.issue_number || '';
+    const url = pub?.doi ? `https://doi.org/${pub.doi}` : window.location.href;
+
+    switch (format) {
+      case 'apa':
+        return `${authorNamesAPA || 'Author'} (${pubYear || 'n.d.'}). ${title}. ${jName}, ${vol}(${iss}). ${url}`;
+      case 'mla':
+        return `${authorNamesMLA || 'Author.'} "${title}." ${jName}, vol. ${vol}, no. ${iss}, ${pubYear || 'n.d.'}, ${url}.`;
+      case 'chicago':
+        return `${authorNamesMLA || 'Author'}. "${title}." ${jName} ${vol}, no. ${iss} (${pubYear || 'n.d.'}). ${url}.`;
+      default:
+        return '';
+    }
+  };
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedCitation(true);
+    setTimeout(() => setCopiedCitation(false), 2000);
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
@@ -209,33 +295,86 @@ export default function ArticleDetail() {
                   )}
                 </div>
               )}
+              
+              {/* Statistics */}
+              {pub && (
+                <div className="mt-4 flex gap-6 text-sm text-academic-500 font-bold uppercase tracking-wider">
+                  <span className="flex items-center gap-2">
+                    <Eye className="w-4 h-4 text-brand-600" /> {pub.view_count || 0} Dilihat
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <Download className="w-4 h-4 text-brand-600" /> {pub.download_count || 0} Diunduh
+                  </span>
+                </div>
+              )}
             </div>
 
             {/* Content Section */}
             <div className="p-8 md:p-10">
               
-              {/* PDF Action */}
-              {pub?.pdf_url && (
-                <div className="mb-10 flex gap-4">
-                  <a 
-                    href={pub.pdf_url} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-700 text-white px-6 py-3.5 rounded-xl font-bold transition-colors shadow-sm"
-                  >
-                    <FileText className="w-5 h-5" />
-                    Lihat PDF Artikel
-                  </a>
-                  <a 
-                    href={pub.pdf_url} 
-                    download
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-academic-100 hover:bg-academic-200 text-academic-800 px-6 py-3.5 rounded-xl font-bold transition-colors"
-                  >
-                    <Download className="w-5 h-5 text-academic-600" />
-                    Unduh
-                  </a>
+              {/* PDF & Citation Actions */}
+              <div className="mb-10 flex flex-wrap gap-4">
+                {pub?.pdf_url && (
+                  <>
+                    <a 
+                      href={pub.pdf_url} 
+                      onClick={handleDownloadClick}
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-700 text-white px-6 py-3.5 rounded-xl font-bold transition-colors shadow-sm"
+                    >
+                      <FileText className="w-5 h-5" />
+                      Lihat PDF Artikel
+                    </a>
+                    <a 
+                      href={pub.pdf_url} 
+                      onClick={handleDownloadClick}
+                      download
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-academic-100 hover:bg-academic-200 text-academic-800 px-6 py-3.5 rounded-xl font-bold transition-colors"
+                    >
+                      <Download className="w-5 h-5 text-academic-600" />
+                      Unduh
+                    </a>
+                  </>
+                )}
+                <button 
+                  onClick={() => setShowCitation(!showCitation)}
+                  className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-brand-50 hover:bg-brand-100 border border-brand-200 text-brand-800 px-6 py-3.5 rounded-xl font-bold transition-colors shadow-sm"
+                >
+                  <Quote className="w-5 h-5" />
+                  Kutip Artikel (Cite)
+                </button>
+              </div>
+
+              {/* Citation Box */}
+              {showCitation && (
+                <div className="mb-10 bg-brand-50/50 border border-brand-100 rounded-2xl p-6 animate-fadeIn">
+                  <h3 className="text-sm font-bold text-brand-900 mb-4 uppercase tracking-widest flex items-center gap-2">
+                    <Quote className="w-4 h-4 text-brand-500" /> Format Sitasi
+                  </h3>
+                  
+                  <div className="space-y-4">
+                    {['apa', 'mla', 'chicago'].map((format) => {
+                      const citationText = generateCitation(format as 'apa' | 'mla' | 'chicago');
+                      return (
+                        <div key={format} className="relative group">
+                          <div className="absolute left-3 top-3 text-[10px] font-black text-brand-400 uppercase">{format}</div>
+                          <div className="bg-white p-4 pl-12 pr-12 rounded-lg border border-brand-100 text-sm text-academic-800 font-serif leading-relaxed shadow-sm">
+                            {citationText}
+                          </div>
+                          <button 
+                            onClick={() => copyToClipboard(citationText)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-academic-400 hover:text-brand-600 bg-white hover:bg-brand-50 rounded-md transition-colors"
+                            title="Salin ke Clipboard"
+                          >
+                            {copiedCitation ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               )}
 

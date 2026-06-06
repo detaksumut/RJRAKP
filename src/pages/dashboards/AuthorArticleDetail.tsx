@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import DashboardLayout from '../../components/DashboardLayout';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
-import { FileText, ArrowLeft, Upload, Send, Clock, MessageSquare, AlertCircle, CheckCircle, Edit3, Save, X } from 'lucide-react';
+import { FileText, ArrowLeft, Upload, Send, Clock, MessageSquare, AlertCircle, CheckCircle, Edit3, Save, X, Eye, Download } from 'lucide-react';
 
 export default function AuthorArticleDetail() {
   const { id } = useParams<{ id: string }>();
@@ -350,6 +350,13 @@ export default function AuthorArticleDetail() {
                   </p>
                 </div>
                 <div>
+                  <span className="block text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Statistik</span>
+                  <p className="font-medium text-academic-800">
+                    <span className="inline-flex items-center gap-1.5 mr-4 text-brand-600"><Eye className="w-4 h-4" /> {article.view_count || 0}</span>
+                    <span className="inline-flex items-center gap-1.5 text-brand-600"><Download className="w-4 h-4" /> {article.download_count || 0}</span>
+                  </p>
+                </div>
+                <div>
                   <span className="block text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Title Page</span>
                   {article.title_page_file ? (
                     <a href={article.title_page_file} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-brand-600 hover:text-brand-800 font-medium">
@@ -450,6 +457,13 @@ export default function AuthorArticleDetail() {
                     ) : (
                       <span className="text-academic-400 italic">Belum diperiksa</span>
                     )}
+                  </p>
+                </div>
+                <div>
+                  <span className="block text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Statistik</span>
+                  <p className="font-medium text-academic-800">
+                    <span className="inline-flex items-center gap-1.5 mr-4 text-brand-600"><Eye className="w-4 h-4" /> {article.view_count || 0}</span>
+                    <span className="inline-flex items-center gap-1.5 text-brand-600"><Download className="w-4 h-4" /> {article.download_count || 0}</span>
                   </p>
                 </div>
                 <div>

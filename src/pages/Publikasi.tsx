@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { FileText, Eye, Download, Calendar, ArrowRight, Filter, BookOpen, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
@@ -91,7 +91,11 @@ function JournalCover({ name, slug, volume, issue, year, eIssn, pIssn, articles 
 }
 
 export default function Publikasi() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialQuery = searchParams.get('q') || '';
+  
   const [selectedJournal, setSelectedJournal] = useState('all');
+  const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [journals, setJournals] = useState<any[]>([]);
   const [articles, setArticles] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -105,7 +109,16 @@ export default function Publikasi() {
 
   useEffect(() => {
     fetchLatest();
-  }, [selectedJournal]);
+  }, [selectedJournal, searchParams]);
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      setSearchParams({ q: searchQuery.trim() });
+    } else {
+      setSearchParams({});
+    }
+  };
 
   const fetchLatest = async () => {
     setLoading(true);
@@ -119,6 +132,8 @@ export default function Publikasi() {
           pdf_url,
           volume_number,
           issue_number,
+          view_count,
+          download_count,
           articles!inner (
             id,
             title,
@@ -139,7 +154,22 @@ export default function Publikasi() {
       const { data, error } = await query;
         
       if (error) throw error;
-      setArticles(data || []);
+
+      let filteredData = data || [];
+
+      // Filter based on search query
+      const currentQ = searchParams.get('q');
+      if (currentQ) {
+        const lowerQ = currentQ.toLowerCase();
+        filteredData = filteredData.filter((pub: any) => {
+          const titleMatch = pub.articles?.title?.toLowerCase().includes(lowerQ);
+          const keywordMatch = pub.articles?.keywords?.toLowerCase().includes(lowerQ);
+          const authorMatch = pub.articles?.article_authors?.some((a: any) => a.full_name?.toLowerCase().includes(lowerQ));
+          return titleMatch || keywordMatch || authorMatch;
+        });
+      }
+
+      setArticles(filteredData);
     } catch (err) {
       console.error(err);
     } finally {
@@ -167,21 +197,36 @@ export default function Publikasi() {
           <p className="text-academic-600 text-lg">Eksplorasi artikel dan riset terbaru yang diterbitkan oleh Rumah Jurnal RJRAKP dari berbagai disiplin ilmu.</p>
         </div>
 
-        {/* Dropdown Filter */}
+        {/* Filters and Search Bar */}
         <div className="bg-white p-4 rounded-xl border border-academic-200 shadow-sm flex flex-col md:flex-row md:items-center gap-4 mb-10">
-          <div className="flex items-center gap-2 text-academic-700 font-bold text-sm shrink-0">
-            <Filter className="w-4 h-4 text-brand-600" /> Filter Jurnal:
+          <div className="flex-1 flex flex-col sm:flex-row gap-4 items-center">
+            <div className="flex items-center gap-2 text-academic-700 font-bold text-sm shrink-0">
+              <Filter className="w-4 h-4 text-brand-600" /> Jurnal:
+            </div>
+            <select 
+              value={selectedJournal} 
+              onChange={e => setSelectedJournal(e.target.value)}
+              className="w-full sm:w-auto flex-1 border border-academic-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 bg-academic-50 cursor-pointer font-medium"
+            >
+              <option value="all">Semua Jurnal (Seluruh Artikel)</option>
+              {journals.map(j => (
+                <option key={j.id} value={j.id}>{j.name}</option>
+              ))}
+            </select>
           </div>
-          <select 
-            value={selectedJournal} 
-            onChange={e => setSelectedJournal(e.target.value)}
-            className="flex-1 border border-academic-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 bg-academic-50 cursor-pointer font-medium"
-          >
-            <option value="all">Semua Jurnal (Tampilkan Seluruh Artikel)</option>
-            {journals.map(j => (
-              <option key={j.id} value={j.id}>{j.name}</option>
-            ))}
-          </select>
+
+          <form onSubmit={handleSearchSubmit} className="flex-1 flex w-full relative">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              placeholder="Cari artikel, penulis..."
+              className="w-full border border-academic-300 rounded-lg pl-4 pr-12 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 bg-academic-50 font-medium"
+            />
+            <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-brand-600 hover:bg-brand-700 text-white rounded shadow-sm transition-colors">
+              <ExternalLink className="w-4 h-4" />
+            </button>
+          </form>
         </div>
 
         {/* Dynamic Cover Section ("Baju Jurnal") */}
@@ -368,7 +413,15 @@ export default function Publikasi() {
                     </div>
 
                     {/* PDF Download Button & Actions */}
-                    <div className="flex sm:flex-row md:flex-col items-stretch gap-2 shrink-0 md:w-32">
+                    <div className="flex flex-col sm:flex-row md:flex-col items-stretch gap-2 shrink-0 md:w-32">
+                      <div className="flex gap-4 justify-between md:justify-end text-[10px] font-bold text-academic-400 uppercase tracking-widest px-1">
+                        <span className="flex items-center gap-1" title="Jumlah Pembaca">
+                          <Eye className="w-3.5 h-3.5 shrink-0" /> {pub.view_count || 0}
+                        </span>
+                        <span className="flex items-center gap-1" title="Jumlah Unduhan PDF">
+                          <Download className="w-3.5 h-3.5 shrink-0" /> {pub.download_count || 0}
+                        </span>
+                      </div>
                       {pub.pdf_url && (
                         <a 
                           href={pub.pdf_url} 

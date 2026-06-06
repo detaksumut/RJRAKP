@@ -96,6 +96,26 @@ export default function AdminReviewers() {
     }
   };
 
+  const updateBackupStatus = async (userId: string, profileId: string | undefined, isActive: boolean) => {
+    try {
+      if (!profileId) return;
+      const { error } = await supabase
+        .from('reviewer_profiles')
+        .update({ is_backup_active: isActive })
+        .eq('id', profileId);
+        
+      if (error) throw error;
+      
+      fetchUsers();
+      if (selectedUser && selectedUser.id === userId) {
+        setSelectedUser({...selectedUser, is_backup_active: isActive});
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Gagal merubah status aktif asisten.');
+    }
+  };
+
   const getFilteredUsers = () => {
     return users.filter(u => u.status === activeTab);
   };
@@ -193,19 +213,40 @@ export default function AdminReviewers() {
                 </div>
 
                 {selectedUser.status === 'APPROVED' && selectedUser.id !== undefined && (
-                  <div className="bg-slate-50 border border-slate-200 p-3 rounded-lg w-full mt-4 flex items-center justify-between">
-                    <div>
-                      <p className="text-xs font-bold text-academic-900">Level Hak Akses Reviewer</p>
-                      <p className="text-[10px] text-academic-500">Tentukan apakah dia Reviewer Spesialis/Utama atau Cadangan.</p>
+                  <div className="w-full">
+                    <div className="bg-slate-50 border border-slate-200 p-3 rounded-lg w-full mt-4 flex items-center justify-between">
+                      <div>
+                        <p className="text-xs font-bold text-academic-900">Level Hak Akses Reviewer</p>
+                        <p className="text-[10px] text-academic-500">Tentukan apakah dia Reviewer Spesialis/Utama atau Cadangan.</p>
+                      </div>
+                      <select
+                        value={selectedUser.reviewer_type || 'CO_REVIEWER'}
+                        onChange={(e) => updateReviewerType(selectedUser.id, selectedUser.reviewer_profiles?.[0]?.id || selectedUser.id, e.target.value)}
+                        className="border border-academic-300 rounded px-3 py-1.5 text-xs font-bold"
+                      >
+                        <option value="CO_REVIEWER">Co-Reviewer (Cadangan)</option>
+                        <option value="PRIMARY">Reviewer Utama (Spesialis)</option>
+                      </select>
                     </div>
-                    <select
-                      value={selectedUser.reviewer_type || 'CO_REVIEWER'}
-                      onChange={(e) => updateReviewerType(selectedUser.id, selectedUser.reviewer_profiles?.[0]?.id || selectedUser.id /* fallback for now */, e.target.value)}
-                      className="border border-academic-300 rounded px-3 py-1.5 text-xs font-bold"
-                    >
-                      <option value="CO_REVIEWER">Co-Reviewer (Cadangan)</option>
-                      <option value="PRIMARY">Reviewer Utama (Spesialis)</option>
-                    </select>
+
+                    {(!selectedUser.reviewer_type || selectedUser.reviewer_type === 'CO_REVIEWER') && (
+                      <div className="bg-rose-50 border border-rose-200 p-3 rounded-lg w-full mt-2 flex items-center justify-between">
+                        <div>
+                          <p className="text-xs font-bold text-rose-900">Status Operasional Co-Reviewer</p>
+                          <p className="text-[10px] text-rose-700">Aktifkan kapan saja jika Reviewer Utama berhalangan atau kewalahan.</p>
+                        </div>
+                        <button
+                          onClick={() => updateBackupStatus(selectedUser.id, selectedUser.reviewer_profiles?.[0]?.id || selectedUser.id, !selectedUser.is_backup_active)}
+                          className={`px-4 py-1.5 rounded text-xs font-bold border transition-colors ${
+                            selectedUser.is_backup_active 
+                              ? 'bg-emerald-600 text-white border-emerald-700 hover:bg-emerald-700' 
+                              : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-50'
+                          }`}
+                        >
+                          {selectedUser.is_backup_active ? 'ON (AKTIF)' : 'OFF (MATI)'}
+                        </button>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -274,9 +315,16 @@ export default function AdminReviewers() {
                         {u.status}
                       </span>
                     ) : (
-                      <span className={`px-2.5 py-1 text-[10px] font-black uppercase tracking-wider rounded border ${u.reviewer_type === 'PRIMARY' ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-slate-50 text-slate-600 border-slate-200'}`}>
-                        {u.reviewer_type === 'PRIMARY' ? '⭐ UTAMA' : 'CO-REVIEWER'}
-                      </span>
+                      <div className="flex flex-col gap-1 items-center">
+                        <span className={`px-2.5 py-1 text-[10px] font-black uppercase tracking-wider rounded border ${u.reviewer_type === 'PRIMARY' ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-slate-50 text-slate-600 border-slate-200'}`}>
+                          {u.reviewer_type === 'PRIMARY' ? '⭐ UTAMA' : 'CO-REVIEWER'}
+                        </span>
+                        {(!u.reviewer_type || u.reviewer_type === 'CO_REVIEWER') && (
+                          <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded ${u.is_backup_active ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}`}>
+                            {u.is_backup_active ? 'AKTIF' : 'MATI'}
+                          </span>
+                        )}
+                      </div>
                     )}
                   </td>
                   <td className="p-4 text-center">

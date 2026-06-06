@@ -255,6 +255,17 @@ export default function AuthorSubmit() {
       const { error: authorError } = await supabase.from('article_authors').insert(authorsToInsert);
       if (authorError) throw authorError;
 
+      // Kirim Notifikasi WhatsApp ke Author
+      const userPhone = user.user_metadata?.phone;
+      if (userPhone) {
+        supabase.functions.invoke('send-wa', {
+          body: {
+            target: userPhone,
+            message: `*Notifikasi RJRAKP*\n\nHalo ${user.user_metadata?.full_name || 'Penulis'},\n\nArtikel Anda dengan judul *"${formData.title}"* telah berhasil disubmit dan masuk ke antrean Editorial.\n\nAnda dapat memantau status artikel di dashboard Anda.\n\nTerima kasih.`
+          }
+        }).catch(err => console.error("Gagal mengirim WA:", err));
+      }
+
       // Sukses
       localStorage.removeItem('manuscript_draft');
       setSuccess(true);

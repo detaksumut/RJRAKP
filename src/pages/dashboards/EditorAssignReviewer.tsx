@@ -22,6 +22,9 @@ export default function EditorAssignReviewer() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState({ text: '', type: '' });
+  
+  const [reviewerWorkloads, setReviewerWorkloads] = useState<Record<string, number>>({});
+  const [editorDailyCount, setEditorDailyCount] = useState(0);
 
   useEffect(() => {
     fetchInitialData();
@@ -65,6 +68,34 @@ export default function EditorAssignReviewer() {
         .eq('role', 'reviewer')
         .eq('status', 'APPROVED');
       if (revData) setReviewers(revData);
+
+      // 3. Workload Limits Calculation
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
+
+      const { data: assignmentsData } = await supabase
+        .from('review_assignments')
+        .select('reviewer_id')
+        .gte('assigned_date', todayStart.toISOString());
+      
+      const counts: Record<string, number> = {};
+      if (assignmentsData) {
+        assignmentsData.forEach((a: any) => {
+          counts[a.reviewer_id] = (counts[a.reviewer_id] || 0) + 1;
+        });
+      }
+      setReviewerWorkloads(counts);
+
+      if (user?.id) {
+        const { data: editorLogs } = await supabase
+          .from('activity_logs')
+          .select('id')
+          .eq('user_id', user.id)
+          .gte('created_at', todayStart.toISOString())
+          .ilike('action', 'Assigned reviewer%');
+        
+        setEditorDailyCount(editorLogs?.length || 0);
+      }
       
       // Set default due date (2 weeks from now)
       const twoWeeks = new Date();
@@ -163,6 +194,17 @@ export default function EditorAssignReviewer() {
       return;
     }
 
+    if (editorDailyCount >= 20) {
+      setMessage({ text: 'Batas harian penugasan editor Anda telah tercapai (20/20). Harap hubungi Admin.', type: 'error' });
+      return;
+    }
+
+    const reviewerCount = reviewerWorkloads[selectedReviewerId] || 0;
+    if (reviewerCount >= 5) {
+      setMessage({ text: 'Reviewer ini telah mencapai batas penugasan harian maksimal (5/5).', type: 'error' });
+      return;
+    }
+
     // Check if reviewer is already assigned
     const alreadyAssigned = assignedReviewers.some(a => a.reviewer_id === selectedReviewerId);
     if (alreadyAssigned) {
@@ -204,6 +246,8 @@ export default function EditorAssignReviewer() {
 
       setMessage({ text: 'Reviewer berhasil ditugaskan!', type: 'success' });
       setSelectedReviewerId('');
+      setEditorDailyCount(prev => prev + 1);
+      setReviewerWorkloads(prev => ({ ...prev, [selectedReviewerId]: (prev[selectedReviewerId] || 0) + 1 }));
       fetchActiveAssignments(selectedArticle.id);
     } catch (err: any) {
       console.error(err);
@@ -244,6 +288,16 @@ export default function EditorAssignReviewer() {
             {/* Left/Main Column - Assignment Form */}
             <div className="lg:col-span-2 space-y-6">
               
+              {editorDailyCount >= 20 && (
+                <div className="bg-rose-50 border border-rose-200 p-4 rounded-xl flex items-start gap-3 text-rose-800">
+                  <ShieldAlert className="w-5 h-5 shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-bold text-sm">Batas Kerja Harian Tercapai (20/20)</h4>
+                    <p className="text-xs mt-1">Anda tidak dapat menugaskan reviewer lagi hari ini. Sistem telah memberitahukan Administrator. Co-Editor akan segera diaktifkan jika diperlukan.</p>
+                  </div>
+                </div>
+              )}
+
               {/* Form Card */}
               <div className="bg-white p-6 rounded-xl border border-academic-200 shadow-sm">
                 {message.text && (
@@ -292,31 +346,43 @@ export default function EditorAssignReviewer() {
                       
                       {matchingReviewers.filter(r => r.reviewerType === 'PRIMARY').length > 0 && (
                         <optgroup label="⭐ Reviewer Utama (Spesialis)">
-                          {matchingReviewers.filter(r => r.reviewerType === 'PRIMARY').map(r => (
-                            <option key={r.id} value={r.id}>
-                              {r.academicTitle ? `${r.academicTitle} ` : ''}{r.full_name} [{r.expertiseArea}]
-                            </option>
-                          ))}
+                          {matchingReviewers.filter(r => r.reviewerType === 'PRIMARY').map(r => {
+                            const count = reviewerWorkloads[r.id] || 0;
+                            const isFull = count >= 5;
+                            return (
+                              <option key={r.id} value={r.id} disabled={isFull}>
+                                {r.academicTitle ? `${r.academicTitle} ` : ''}{r.full_name} [{r.expertiseArea}] {isFull ? '(KUOTA PENUH)' : ''}
+                              </option>
+                            );
+                          })}
                         </optgroup>
                       )}
 
                       {matchingReviewers.filter(r => r.reviewerType !== 'PRIMARY' && r.matchScore > 0).length > 0 && (
                         <optgroup label="👥 Co-Reviewer (Sesuai Bidang)">
-                          {matchingReviewers.filter(r => r.reviewerType !== 'PRIMARY' && r.matchScore > 0).map(r => (
-                            <option key={r.id} value={r.id}>
-                              {r.academicTitle ? `${r.academicTitle} ` : ''}{r.full_name} [{r.expertiseArea}]
-                            </option>
-                          ))}
+                          {matchingReviewers.filter(r => r.reviewerType !== 'PRIMARY' && r.matchScore > 0).map(r => {
+                            const count = reviewerWorkloads[r.id] || 0;
+                            const isFull = count >= 5;
+                            return (
+                              <option key={r.id} value={r.id} disabled={isFull}>
+                                {r.academicTitle ? `${r.academicTitle} ` : ''}{r.full_name} [{r.expertiseArea}] {isFull ? '(KUOTA PENUH)' : ''}
+                              </option>
+                            );
+                          })}
                         </optgroup>
                       )}
 
                       {matchingReviewers.filter(r => r.reviewerType !== 'PRIMARY' && r.matchScore === 0).length > 0 && (
                         <optgroup label="⚠️ Co-Reviewer (Lainnya)">
-                          {matchingReviewers.filter(r => r.reviewerType !== 'PRIMARY' && r.matchScore === 0).map(r => (
-                            <option key={r.id} value={r.id}>
-                              {r.academicTitle ? `${r.academicTitle} ` : ''}{r.full_name} [{r.expertiseArea}]
-                            </option>
-                          ))}
+                          {matchingReviewers.filter(r => r.reviewerType !== 'PRIMARY' && r.matchScore === 0).map(r => {
+                            const count = reviewerWorkloads[r.id] || 0;
+                            const isFull = count >= 5;
+                            return (
+                              <option key={r.id} value={r.id} disabled={isFull}>
+                                {r.academicTitle ? `${r.academicTitle} ` : ''}{r.full_name} [{r.expertiseArea}] {isFull ? '(KUOTA PENUH)' : ''}
+                              </option>
+                            );
+                          })}
                         </optgroup>
                       )}
                     </select>
@@ -349,10 +415,10 @@ export default function EditorAssignReviewer() {
 
                   <button
                     type="submit"
-                    disabled={submitting || !selectedReviewerId}
+                    disabled={submitting || !selectedReviewerId || editorDailyCount >= 20}
                     className="w-full bg-brand-700 hover:bg-brand-800 text-white font-bold py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
                   >
-                    {submitting ? 'Memproses...' : (
+                    {submitting ? 'Memproses...' : editorDailyCount >= 20 ? 'Batas Harian Tercapai' : (
                       <>Kirim Penugasan <Send className="w-3.5 h-3.5" /></>
                     )}
                   </button>
@@ -412,16 +478,23 @@ export default function EditorAssignReviewer() {
                   {matchingReviewers.map(rev => {
                     const isRec = rev.matchScore > 0;
                     const isPrimary = rev.reviewerType === 'PRIMARY';
+                    const revCount = reviewerWorkloads[rev.id] || 0;
+                    const isFull = revCount >= 5;
                     return (
-                      <div key={rev.id} className={`p-3 rounded-lg border text-xs transition-colors ${isPrimary ? 'bg-amber-50/50 border-amber-200 shadow-sm' : isRec ? 'bg-emerald-50/30 border-emerald-200' : 'bg-slate-50/50 border-slate-200'}`}>
+                      <div key={rev.id} className={`p-3 rounded-lg border text-xs transition-colors ${isPrimary ? 'bg-amber-50/50 border-amber-200 shadow-sm' : isRec ? 'bg-emerald-50/30 border-emerald-200' : 'bg-slate-50/50 border-slate-200'} ${isFull ? 'opacity-50' : ''}`}>
                         <div className="font-bold text-academic-800 flex justify-between items-start gap-1">
                           <div className="flex items-center gap-1.5">
                             {isPrimary && <span title="Reviewer Utama"><Award className="w-4 h-4 text-amber-500" /></span>}
                             <span>{rev.academicTitle ? `${rev.academicTitle} ` : ''}{rev.full_name}</span>
                           </div>
-                          {isRec && (
-                            <span className="px-1.5 py-0.2 bg-emerald-100 text-emerald-800 text-[8px] font-black uppercase tracking-wider rounded shrink-0">Cocok</span>
-                          )}
+                          <div className="flex flex-col gap-1 items-end">
+                            {isRec && (
+                              <span className="px-1.5 py-0.2 bg-emerald-100 text-emerald-800 text-[8px] font-black uppercase tracking-wider rounded shrink-0">Cocok</span>
+                            )}
+                            {isFull && (
+                              <span className="px-1.5 py-0.2 bg-rose-100 text-rose-800 text-[8px] font-black uppercase tracking-wider rounded shrink-0">PENUH</span>
+                            )}
+                          </div>
                         </div>
                         <div className="text-[10px] text-academic-500 mt-1">{rev.affiliation}</div>
                         <div className="mt-2 pt-2 border-t border-dashed border-academic-200">

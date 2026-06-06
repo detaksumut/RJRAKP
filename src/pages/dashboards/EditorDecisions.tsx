@@ -5,7 +5,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
 import { 
   FileText, CheckSquare, Eye, ArrowLeft, Download, 
-  MessageSquare, User, Calendar, Award, Send, X
+  MessageSquare, User, Calendar, Award, Send, X, AlertCircle
 } from 'lucide-react';
 
 export default function EditorDecisions() {
@@ -27,6 +27,8 @@ export default function EditorDecisions() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  
+  const [editorDailyCount, setEditorDailyCount] = useState(0);
 
   useEffect(() => {
     fetchArticles();
@@ -47,7 +49,8 @@ export default function EditorDecisions() {
           manuscript_file,
           status,
           submission_date,
-          journals (name, slug)
+          journals (name, slug),
+          users!submitter_id(full_name, phone)
         `)
         .in('status', ['submitted', 'in_review', 'under_review', 'revised'])
         .order('submission_date', { ascending: false });
@@ -64,6 +67,20 @@ export default function EditorDecisions() {
       } else if (data && data.length > 0) {
         setSelectedArticle(data[0]);
         fetchReviews(data[0].id);
+      }
+
+      if (user?.id) {
+        const todayStart = new Date();
+        todayStart.setHours(0, 0, 0, 0);
+        
+        const { data: editorLogs } = await supabase
+          .from('activity_logs')
+          .select('id')
+          .eq('user_id', user.id)
+          .gte('created_at', todayStart.toISOString())
+          .or('action.ilike.Assigned reviewer%,action.ilike.Submitted editorial decision%');
+        
+        setEditorDailyCount(editorLogs?.length || 0);
       }
     } catch (err: any) {
       console.error(err);
@@ -89,7 +106,7 @@ export default function EditorDecisions() {
 
       if (revError) throw revError;
       setReviewAssignments(data || []);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error fetching reviews:', err);
     }
   };
@@ -115,6 +132,11 @@ export default function EditorDecisions() {
       return;
     }
 
+    if (editorDailyCount >= 20) {
+      setError('Batas harian penanganan editor Anda telah tercapai (20/20).');
+      return;
+    }
+
     setSubmitting(true);
     setError('');
     setSuccess('');
@@ -135,12 +157,16 @@ export default function EditorDecisions() {
       // Map choice to database status column values
       // db check constraint is: 'submitted', 'in_review', 'revised', 'accepted', 'published', 'rejected'
       let targetStatus = 'submitted';
+      let statusLabel = '';
       if (decisionForm.decision === 'accept') {
         targetStatus = 'accepted';
+        statusLabel = 'DITERIMA';
       } else if (decisionForm.decision === 'revision') {
         targetStatus = 'revised';
+        statusLabel = 'PERLU REVISI';
       } else if (decisionForm.decision === 'reject') {
         targetStatus = 'rejected';
+        statusLabel = 'DITOLAK';
       }
 
       // 2. Update status of article
@@ -159,8 +185,20 @@ export default function EditorDecisions() {
         entity_id: selectedArticle.id
       });
 
-      setSuccess('Keputusan editorial berhasil disimpan!');
+      // 4. Send WhatsApp Notification
+      const submitterPhone = selectedArticle.users?.phone;
+      if (submitterPhone) {
+        supabase.functions.invoke('send-wa', {
+          body: {
+            target: submitterPhone,
+            message: `*Keputusan Editorial RJRAKP*\n\nHalo ${selectedArticle.users?.full_name || 'Penulis'},\n\nArtikel Anda dengan judul *"${selectedArticle.title}"* telah melalui tahap peninjauan. Keputusan akhir: *${statusLabel}*.\n\nCatatan Editor:\n${decisionForm.comments || '-'}\n\nSilakan cek dashboard Anda untuk informasi lebih lanjut.`
+          }
+        }).catch(err => console.error("Gagal mengirim WA:", err));
+      }
+
+      setSuccess(`Keputusan berhasil disimpan sebagai: ${targetStatus.toUpperCase()}`);
       setDecisionForm({ decision: '', comments: '' });
+      setEditorDailyCount(prev => prev + 1);
       fetchArticles();
     } catch (err: any) {
       console.error(err);
@@ -222,10 +260,6 @@ export default function EditorDecisions() {
                           {selectedArticle.journals?.name}
                         </span>
                         <h2 className="font-serif font-bold text-academic-900 text-lg leading-snug">{selectedArticle.title}</h2>
-                        <div>
-                          <h4 className="text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Abstrak</h4>
-                          <p className="text-xs text-academic-700 leading-relaxed text-justify">{selectedArticle.abstract || 'Tidak ada abstrak.'}</p>
-                        </div>
                       </div>
                     )}
                   </div>
@@ -401,18 +435,31 @@ export default function EditorDecisions() {
                     </div>
                   </div>
                   
-                  {/* Form Card */}
-                  <div className="bg-white p-5 rounded-xl border border-academic-200 shadow-sm space-y-4">
-                    <h3 className="font-serif font-bold text-academic-900 border-b border-academic-100 pb-2">Buat Keputusan Editorial</h3>
-                    
+                  {/* Submission Form */}
+                  <div className="bg-white p-6 rounded-xl border border-academic-200 shadow-sm mt-6">
+                    <h3 className="text-lg font-bold text-academic-900 mb-4 flex items-center gap-2">
+                      <CheckSquare className="w-5 h-5 text-brand-600" />
+                      Form Keputusan Editor
+                    </h3>
+
+                    {editorDailyCount >= 20 && (
+                      <div className="bg-rose-50 border border-rose-200 p-4 rounded-xl flex items-start gap-3 text-rose-800 mb-6">
+                        <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
+                        <div>
+                          <h4 className="font-bold text-sm">Batas Kerja Harian Tercapai (20/20)</h4>
+                          <p className="text-xs mt-1">Anda tidak dapat memberikan keputusan lagi hari ini. Sistem telah memberitahukan Administrator. Co-Editor akan diaktifkan jika diperlukan.</p>
+                        </div>
+                      </div>
+                    )}
+
                     {error && (
-                      <div className="bg-rose-50 border border-rose-200 text-rose-700 px-3 py-2 rounded text-xs font-semibold">
+                      <div className="bg-rose-50 border border-rose-200 text-rose-700 px-3 py-2 rounded text-xs font-semibold mb-4">
                         {error}
                       </div>
                     )}
 
                     {success && (
-                      <div className="bg-emerald-50 border border-emerald-200 text-emerald-700 px-3 py-2 rounded text-xs font-semibold">
+                      <div className="bg-emerald-50 border border-emerald-200 text-emerald-700 px-3 py-2 rounded text-xs font-semibold mb-4">
                         {success}
                       </div>
                     )}
@@ -424,6 +471,7 @@ export default function EditorDecisions() {
                           value={decisionForm.decision}
                           onChange={e => setDecisionForm({ ...decisionForm, decision: e.target.value })}
                           required
+                          disabled={editorDailyCount >= 20}
                           className="w-full border border-academic-300 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white cursor-pointer font-medium"
                         >
                           <option value="">-- Pilih Keputusan --</option>
@@ -439,6 +487,7 @@ export default function EditorDecisions() {
                           rows={6}
                           value={decisionForm.comments}
                           onChange={e => setDecisionForm({ ...decisionForm, comments: e.target.value })}
+                          disabled={editorDailyCount >= 20}
                           placeholder="Masukkan masukan penyempurnaan, catatan revisi, atau alasan penolakan naskah..."
                           className="w-full border border-academic-300 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white"
                         />
@@ -446,10 +495,12 @@ export default function EditorDecisions() {
 
                       <button
                         type="submit"
-                        disabled={submitting || !selectedArticle}
-                        className="w-full bg-brand-700 hover:bg-brand-800 text-white font-bold py-2.5 rounded-lg text-xs transition-colors flex items-center justify-center gap-1.5 shadow-sm disabled:opacity-50"
+                        disabled={submitting || !decisionForm.decision || editorDailyCount >= 20}
+                        className="w-full bg-brand-700 hover:bg-brand-800 text-white font-bold py-3 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
                       >
-                        <Send className="w-3.5 h-3.5" /> Kirim Keputusan
+                        {submitting ? 'Menyimpan Keputusan...' : editorDailyCount >= 20 ? 'Batas Harian Tercapai' : (
+                          <>Simpan Keputusan Final <Send className="w-4 h-4" /></>
+                        )}
                       </button>
                     </form>
                   </div>

@@ -1,10 +1,20 @@
 import { ArrowRight, Search, BookOpen, Sparkles, ShieldCheck, Globe, Users } from 'lucide-react';
 import { motion } from 'motion/react';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import BoardModal from './BoardModal';
 
 export default function Hero() {
   const [isBoardModalOpen, setIsBoardModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/publikasi?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
 
   return (
     <div className="relative bg-gradient-to-b from-[#061122] via-[#091b35] to-[#040d1a] min-h-[650px] lg:min-h-[750px] overflow-hidden flex items-center py-16 lg:py-24">
@@ -77,21 +87,23 @@ export default function Hero() {
             </div>
 
             {/* Advanced AI-like Search Bar */}
-            <div className="mt-10 bg-white/5 p-2 rounded-2xl shadow-2xl border border-white/10 max-w-xl flex backdrop-blur-md focus-within:border-accent-500/40 focus-within:ring-4 focus-within:ring-accent-500/10 transition-all duration-300">
+            <form onSubmit={handleSearch} className="mt-10 bg-white/5 p-2 rounded-2xl shadow-2xl border border-white/10 max-w-xl flex backdrop-blur-md focus-within:border-accent-500/40 focus-within:ring-4 focus-within:ring-accent-500/10 transition-all duration-300">
               <div className="flex bg-brand-950/50 flex-1 rounded-xl border border-white/5 overflow-hidden items-center">
                 <div className="pl-4">
                   <Search className="h-5 w-5 text-brand-300/40" />
                 </div>
                 <input
                   type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   className="block w-full pl-3 pr-3 py-3.5 border-0 focus:ring-0 text-sm text-white placeholder-brand-200/40 rounded-xl outline-none bg-transparent"
-                  placeholder="Cari artikel, kata kunci penulis, atau DOI..."
+                  placeholder="Cari artikel, penulis, atau kata kunci..."
                 />
-                <button className="bg-gradient-to-r from-accent-500 to-accent-600 hover:from-accent-600 hover:to-accent-700 text-brand-950 font-black px-6 py-2.5 text-xs uppercase tracking-widest hover:shadow-lg transition-all duration-300 m-1.5 rounded-lg active:scale-95">
+                <button type="submit" className="bg-gradient-to-r from-accent-500 to-accent-600 hover:from-accent-600 hover:to-accent-700 text-brand-950 font-black px-6 py-2.5 text-xs uppercase tracking-widest hover:shadow-lg transition-all duration-300 m-1.5 rounded-lg active:scale-95">
                   Cari
                 </button>
               </div>
-            </div>
+            </form>
           </motion.div>
 
           {/* Right Column: Premium Academic/Research Image Frame */}
