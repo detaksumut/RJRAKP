@@ -146,8 +146,48 @@ export default function Hero() {
               </div>
             </div>
           </motion.div>
-          
         </div>
+        
+        {/* Indexed By / Supported By Band */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+          className="mt-16 lg:mt-24 pt-8 border-t border-white/10 flex flex-col items-center justify-center"
+        >
+          <p className="text-[10px] md:text-xs uppercase tracking-[0.2em] text-brand-300/50 font-black mb-8 text-center">Infrastruktur Jurnal Internasional</p>
+          <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-16 opacity-70 hover:opacity-100 transition-opacity duration-500">
+            {/* Scopus Logo */}
+            <div className="flex items-center group">
+              <img 
+                src="https://upload.wikimedia.org/wikipedia/commons/2/26/Scopus_logo.svg" 
+                alt="Scopus" 
+                className="h-8 md:h-10 grayscale group-hover:grayscale-0 brightness-200 group-hover:brightness-100 transition-all duration-300 transform group-hover:scale-110" 
+              />
+            </div>
+            
+            {/* Crossref Logo */}
+            <div className="flex items-center group">
+              <img 
+                src="https://upload.wikimedia.org/wikipedia/commons/1/14/Crossref_logo.svg" 
+                alt="Crossref" 
+                className="h-7 md:h-8 grayscale group-hover:grayscale-0 brightness-200 group-hover:brightness-100 transition-all duration-300 transform group-hover:scale-110" 
+              />
+            </div>
+
+            {/* Google Scholar Logo */}
+            <div className="flex items-center group">
+              <div className="flex items-center gap-2 grayscale group-hover:grayscale-0 brightness-200 group-hover:brightness-100 transition-all duration-300 transform group-hover:scale-110">
+                <img 
+                  src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Google_Scholar_logo.svg" 
+                  alt="Google Scholar Logo" 
+                  className="h-8 md:h-10" 
+                />
+                <span className="text-white font-bold text-lg md:text-xl font-sans tracking-tight">Google Scholar</span>
+              </div>
+            </div>
+          </div>
+        </motion.div>
       </div>
     </div>
   );
