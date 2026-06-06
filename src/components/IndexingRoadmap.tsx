@@ -20,8 +20,8 @@ export default function IndexingRoadmap() {
     const data: IndexingItem[] = [
       { id: 1, index_name: "Persiapan OJS", status: "active", description: "", website_url: "", display_order: 1 },
       { id: 2, index_name: "Pengajuan e-ISSN", status: "active", description: "", website_url: "", display_order: 2 },
-      { id: 3, index_name: "Registrasi Crossref DOI", status: "active", description: "", website_url: "", display_order: 3 },
-      { id: 4, index_name: "Indeksasi GARUDA", status: "target", description: "", website_url: "", display_order: 4 },
+      { id: 3, index_name: "Registrasi Crossref & Zenodo DOI", status: "active", description: "", website_url: "", display_order: 3 },
+      { id: 4, index_name: "Indeksasi Google Search Console", status: "active", description: "", website_url: "", display_order: 4 },
       { id: 5, index_name: "Akreditasi SINTA", status: "target", description: "", website_url: "", display_order: 5 },
       { id: 6, index_name: "Indeksasi DOAJ", status: "target", description: "", website_url: "", display_order: 6 },
     ];
