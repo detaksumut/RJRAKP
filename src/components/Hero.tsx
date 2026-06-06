@@ -48,18 +48,18 @@ export default function Hero() {
               <img 
                 src="https://upload.wikimedia.org/wikipedia/commons/2/26/Scopus_logo.svg" 
                 alt="Scopus" 
-                className="h-5 md:h-6 grayscale hover:grayscale-0 brightness-200 hover:brightness-100 transition-all duration-300 transform hover:scale-110 cursor-pointer" 
+                className="h-5 md:h-6 transition-all duration-300 transform hover:scale-110 cursor-pointer" 
               />
               
               {/* Crossref Logo */}
               <img 
                 src="https://assets.crossref.org/logo/crossref-logo-landscape-200.svg" 
                 alt="Crossref logo" 
-                className="h-4 md:h-5 grayscale hover:grayscale-0 brightness-200 hover:brightness-100 transition-all duration-300 transform hover:scale-110 cursor-pointer" 
+                className="h-4 md:h-5 transition-all duration-300 transform hover:scale-110 cursor-pointer" 
               />
 
               {/* Google Scholar Logo */}
-              <div className="flex items-center gap-1.5 grayscale hover:grayscale-0 brightness-200 hover:brightness-100 transition-all duration-300 transform hover:scale-110 cursor-pointer">
+              <div className="flex items-center gap-1.5 transition-all duration-300 transform hover:scale-110 cursor-pointer">
                 <img 
                   src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Google_Scholar_logo.svg" 
                   alt="Google Scholar Logo" 
