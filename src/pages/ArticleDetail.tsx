@@ -316,26 +316,42 @@ export default function ArticleDetail() {
                 {article.title}
               </h1>
 
-              {/* Authors */}
+              {/* Authors & Article Identifiers */}
               <div className="mb-8">
-                <div className="flex flex-wrap gap-x-6 gap-y-3">
-                  {authors.map((author: any, idx: number) => (
-                    <div key={idx} className="flex flex-col">
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-academic-900 text-lg">{author.full_name} {author.is_corresponding && '*'}</span>
+                <div className="flex flex-col gap-5">
+                  <div className="flex flex-wrap gap-x-8 gap-y-6">
+                    {authors.map((author: any, idx: number) => (
+                      <div key={idx} className="flex flex-col gap-1.5">
+                        <span className="font-bold text-academic-900 text-xl">{author.full_name} {author.is_corresponding && '*'}</span>
+                        
+                        {(author.affiliation || author.country) && (
+                          <span className="text-sm text-academic-600 flex items-center gap-1.5 mt-0.5">
+                            <Building2 className="w-4 h-4 text-academic-400" /> {author.affiliation}{author.country ? `, ${author.country}` : ''}
+                          </span>
+                        )}
+
                         {(author.orcid || author.orcid_id) && (
-                          <a href={author.orcid || author.orcid_id} target="_blank" rel="noopener noreferrer" className="text-brand-600 hover:text-brand-800 transition-colors" title="Lihat profil ORCID">
-                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zM7.369 4.378c.525 0 .947.431.947.947s-.422.947-.947.947a.95.95 0 0 1-.947-.947c0-.525.422-.947.947-.947zm-.722 3.038h1.444v10.041H6.647V7.416zm3.562 0h3.9c3.712 0 5.344 2.653 5.344 5.025 0 2.578-2.016 5.025-5.325 5.025h-3.919V7.416zm1.444 1.303v7.444h2.297c3.272 0 4.022-2.484 4.022-3.722 0-2.016-1.284-3.722-4.097-3.722h-2.222z"/></svg>
-                          </a>
+                          <div className="flex items-center gap-2 mt-1">
+                            <svg className="w-5 h-5 text-[#A6CE39]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zM7.369 4.378c.525 0 .947.431.947.947s-.422.947-.947.947a.95.95 0 0 1-.947-.947c0-.525.422-.947.947-.947zm-.722 3.038h1.444v10.041H6.647V7.416zm3.562 0h3.9c3.712 0 5.344 2.653 5.344 5.025 0 2.578-2.016 5.025-5.325 5.025h-3.919V7.416zm1.444 1.303v7.444h2.297c3.272 0 4.022-2.484 4.022-3.722 0-2.016-1.284-3.722-4.097-3.722h-2.222z"/></svg>
+                            <span className="text-[15px] font-bold text-academic-700">ORCID:</span>
+                            <a href={author.orcid || author.orcid_id} target="_blank" rel="noopener noreferrer" className="text-[15px] font-mono text-brand-600 hover:text-brand-800 hover:underline transition-colors">
+                              {(author.orcid || author.orcid_id).replace('https://orcid.org/', '')}
+                            </a>
+                          </div>
                         )}
                       </div>
-                      {(author.affiliation || author.country) && (
-                        <span className="text-sm text-academic-600 flex items-center gap-1.5 mt-0.5">
-                          <Building2 className="w-3 h-3 text-academic-400" /> {author.affiliation}{author.country ? `, ${author.country}` : ''}
-                        </span>
-                      )}
+                    ))}
+                  </div>
+
+                  {/* DOI cleanly stacked under the authors */}
+                  {pub?.doi && (
+                    <div className="flex items-center gap-2 pt-4 border-t border-academic-100">
+                      <span className="text-[15px] font-bold text-academic-700">DOI:</span>
+                      <a href={`https://doi.org/${pub.doi}`} target="_blank" rel="noopener noreferrer" className="text-[15px] font-mono text-brand-600 hover:text-brand-800 hover:underline transition-colors">
+                        {pub.doi}
+                      </a>
                     </div>
-                  ))}
+                  )}
                 </div>
               </div>
 
@@ -371,11 +387,6 @@ export default function ArticleDetail() {
                     <div className="flex items-center gap-1.5 text-academic-700">
                       <BookOpen className="w-4 h-4 text-academic-500" />
                       <span className="font-medium">{pub.volume_number}, {pub.issue_number}</span>
-                    </div>
-                  )}
-                  {pub.doi && (
-                    <div className="flex items-center gap-1.5 text-brand-700 ml-auto bg-brand-50 px-3 py-1 rounded-md border border-brand-100 font-mono text-xs font-semibold">
-                      DOI: <a href={`https://doi.org/${pub.doi}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{pub.doi}</a>
                     </div>
                   )}
                 </div>
