@@ -42,7 +42,7 @@ export default function Hero() {
             className="lg:col-span-6 flex flex-col justify-center text-left"
           >
             {/* Connected Band (Moved to Top) */}
-            <div className="flex flex-wrap items-center gap-6 sm:gap-8 opacity-80 hover:opacity-100 transition-opacity duration-500 mb-8 border-b border-white/10 pb-6 w-full">
+            <div className="flex flex-wrap xl:flex-nowrap items-center gap-5 sm:gap-6 xl:gap-8 opacity-80 hover:opacity-100 transition-opacity duration-500 mb-8 border-b border-white/10 pb-6 w-full xl:w-max xl:pr-12">
               <span className="text-[10px] md:text-xs uppercase tracking-[0.2em] text-white font-black">Connected</span>
               {/* Scopus Logo */}
               <a href="https://www.scopus.com/dashboard.uri?origin=&zone=TopNavBar" target="_blank" rel="noopener noreferrer">
