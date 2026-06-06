@@ -49,7 +49,7 @@ export default function Hero() {
                 <img 
                   src="https://upload.wikimedia.org/wikipedia/commons/2/26/Scopus_logo.svg" 
                   alt="Scopus" 
-                  className="h-5 md:h-6 transition-all duration-300 transform hover:scale-110 cursor-pointer" 
+                  className="h-8 md:h-10 transition-all duration-300 transform hover:scale-110 cursor-pointer" 
                 />
               </a>
               
@@ -57,17 +57,17 @@ export default function Hero() {
               <img 
                 src="https://assets.crossref.org/logo/crossref-logo-landscape-200.svg" 
                 alt="Crossref logo" 
-                className="h-4 md:h-5 transition-all duration-300 transform hover:scale-110 cursor-pointer" 
+                className="h-7 md:h-9 transition-all duration-300 transform hover:scale-110 cursor-pointer" 
               />
 
               {/* Google Scholar Logo */}
-              <a href="https://scholar.google.com/citations?user=EoHXXg0AAAAJ&hl=en" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 transition-all duration-300 transform hover:scale-110 cursor-pointer">
+              <a href="https://scholar.google.com/citations?user=EoHXXg0AAAAJ&hl=en" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 transition-all duration-300 transform hover:scale-110 cursor-pointer">
                 <img 
                   src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Google_Scholar_logo.svg" 
                   alt="Google Scholar Logo" 
-                  className="h-5 md:h-6" 
+                  className="h-8 md:h-10" 
                 />
-                <span className="text-white font-bold text-sm font-sans tracking-tight">Google Scholar</span>
+                <span className="text-white font-bold text-base md:text-lg font-sans tracking-tight">Google Scholar</span>
               </a>
 
               {/* Zenodo Logo */}
@@ -75,7 +75,7 @@ export default function Hero() {
                 <img 
                   src="/zenodo.png" 
                   alt="Zenodo Logo" 
-                  className="h-5 md:h-6 rounded" 
+                  className="h-8 md:h-10 rounded" 
                 />
               </a>
 
@@ -84,7 +84,7 @@ export default function Hero() {
                 <img 
                   src="https://upload.wikimedia.org/wikipedia/commons/1/11/DOI_logo.svg" 
                   alt="DOI Logo" 
-                  className="h-5 md:h-6" 
+                  className="h-8 md:h-10" 
                 />
               </a>
             </div>
