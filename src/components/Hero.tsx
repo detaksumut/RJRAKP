@@ -101,7 +101,7 @@ export default function Hero() {
               </a>
 
               {/* OpenAIRE Logo */}
-              <a href="https://explore.openaire.eu/" target="_blank" rel="noopener noreferrer" className="flex items-center transition-all duration-300 transform hover:scale-110 cursor-pointer">
+              <a href="https://explore.openaire.eu/search/advanced/research-outcomes?f0=resultauthor&fv0=Muhibbuddin%20Mr" target="_blank" rel="noopener noreferrer" className="flex items-center transition-all duration-300 transform hover:scale-110 cursor-pointer">
                 <img 
                   src="https://www.openaire.eu/images/logo.png" 
                   alt="OpenAIRE Logo" 
