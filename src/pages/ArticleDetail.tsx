@@ -13,6 +13,7 @@ export default function ArticleDetail() {
   const [error, setError] = useState('');
   const [copiedCitation, setCopiedCitation] = useState(false);
   const [showCitation, setShowCitation] = useState(false);
+  const [scopusCitations, setScopusCitations] = useState<number | null>(null);
 
   useEffect(() => {
     async function fetchArticle() {
@@ -62,6 +63,41 @@ export default function ArticleDetail() {
 
     fetchArticle();
   }, [slug]);
+
+  // Scopus API Fetch
+  useEffect(() => {
+    async function fetchScopusCitations() {
+      const doi = article?.publications?.[0]?.doi;
+      if (!doi) return;
+
+      try {
+        const apiKey = import.meta.env.VITE_SCOPUS_API_KEY;
+        if (!apiKey) return;
+
+        const res = await fetch(`https://api.elsevier.com/content/search/scopus?query=DOI(${doi})`, {
+          headers: {
+            'X-ELS-APIKey': apiKey,
+            'Accept': 'application/json'
+          }
+        });
+        
+        if (!res.ok) return;
+        
+        const data = await res.json();
+        const count = data['search-results']?.entry?.[0]?.['citedby-count'];
+        
+        if (count !== undefined && count !== null) {
+          setScopusCitations(parseInt(count, 10));
+        }
+      } catch (err) {
+        console.error("Error fetching Scopus data:", err);
+      }
+    }
+
+    if (article) {
+      fetchScopusCitations();
+    }
+  }, [article]);
 
   // Track View Count once article is loaded
   useEffect(() => {
@@ -317,13 +353,19 @@ export default function ArticleDetail() {
               
               {/* Statistics */}
               {pub && (
-                <div className="mt-4 flex gap-6 text-sm text-academic-500 font-bold uppercase tracking-wider">
+                <div className="mt-4 flex flex-wrap gap-6 text-sm text-academic-500 font-bold uppercase tracking-wider">
                   <span className="flex items-center gap-2">
                     <Eye className="w-4 h-4 text-brand-600" /> {pub.view_count || 0} Dilihat
                   </span>
                   <span className="flex items-center gap-2">
                     <Download className="w-4 h-4 text-brand-600" /> {pub.download_count || 0} Diunduh
                   </span>
+                  {scopusCitations !== null && (
+                    <span className="flex items-center gap-2 bg-orange-50 text-orange-700 px-3 py-1 rounded-full border border-orange-200">
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M11.666 0v23.957a11.966 11.966 0 0 0 11.966-11.978C23.632 5.372 18.261 0 11.666 0zM.368 11.978c0 6.607 5.371 11.979 11.978 11.979V0C5.739 0 .368 5.372.368 11.978z"/></svg> 
+                      Scopus: {scopusCitations} Citations
+                    </span>
+                  )}
                 </div>
               )}
             </div>
