@@ -103,7 +103,7 @@ export default function Hero() {
               {/* OpenAIRE Logo */}
               <a href="https://explore.openaire.eu/search/advanced/research-outcomes?f0=resultauthor&fv0=Muhibbuddin%20Mr" target="_blank" rel="noopener noreferrer" className="flex items-center transition-all duration-300 transform hover:scale-110 cursor-pointer">
                 <img 
-                  src="https://explore.openaire.eu/assets/common-assets/common/openaire-logo.png" 
+                  src="/OpenAIRE.png" 
                   alt="OpenAIRE Logo" 
                   className="h-9 md:h-12 bg-white/95 rounded-lg px-2.5 py-1.5 shadow-sm" 
                 />
