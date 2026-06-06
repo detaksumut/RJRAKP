@@ -55,6 +55,8 @@ export default function JurnalList() {
                     return 'https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=800&q=80';
                   case 'ekonomi-dan-bisnis':
                     return 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=800&q=80';
+                  case 'ilmu-pertanian-dan-agribisnis':
+                    return 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=800&q=80';
                   default:
                     return 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=800&q=80';
                 }
