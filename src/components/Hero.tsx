@@ -61,14 +61,14 @@ export default function Hero() {
               />
 
               {/* Google Scholar Logo */}
-              <div className="flex items-center gap-1.5 transition-all duration-300 transform hover:scale-110 cursor-pointer">
+              <a href="https://scholar.google.com/citations?user=EoHXXg0AAAAJ&hl=en" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 transition-all duration-300 transform hover:scale-110 cursor-pointer">
                 <img 
                   src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Google_Scholar_logo.svg" 
                   alt="Google Scholar Logo" 
                   className="h-5 md:h-6" 
                 />
                 <span className="text-white font-bold text-sm font-sans tracking-tight">Google Scholar</span>
-              </div>
+              </a>
             </div>
 
             {/* Top Badges / Actions */}
