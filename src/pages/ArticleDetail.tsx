@@ -14,6 +14,7 @@ export default function ArticleDetail() {
   const [copiedCitation, setCopiedCitation] = useState(false);
   const [showCitation, setShowCitation] = useState(false);
   const [scopusCitations, setScopusCitations] = useState<number | null>(null);
+  const [crossrefCitations, setCrossrefCitations] = useState<number | null>(null);
 
   useEffect(() => {
     async function fetchArticle() {
@@ -96,6 +97,35 @@ export default function ArticleDetail() {
 
     if (article) {
       fetchScopusCitations();
+    }
+  }, [article]);
+
+  // Crossref API Fetch
+  useEffect(() => {
+    async function fetchCrossrefCitations() {
+      const doi = article?.publications?.[0]?.doi;
+      if (!doi) return;
+
+      try {
+        // Politeness practice for Crossref API
+        const email = 'rjrakp@rj.beritaindonesia.news'; 
+        const res = await fetch(`https://api.crossref.org/works/${doi}?mailto=${email}`);
+        
+        if (!res.ok) return;
+        
+        const data = await res.json();
+        const count = data?.message?.['is-referenced-by-count'];
+        
+        if (count !== undefined && count !== null) {
+          setCrossrefCitations(count);
+        }
+      } catch (err) {
+        console.error("Error fetching Crossref data:", err);
+      }
+    }
+
+    if (article) {
+      fetchCrossrefCitations();
     }
   }, [article]);
 
@@ -364,6 +394,12 @@ export default function ArticleDetail() {
                     <span className="flex items-center gap-2 bg-orange-50 text-orange-700 px-3 py-1 rounded-full border border-orange-200">
                       <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M11.666 0v23.957a11.966 11.966 0 0 0 11.966-11.978C23.632 5.372 18.261 0 11.666 0zM.368 11.978c0 6.607 5.371 11.979 11.978 11.979V0C5.739 0 .368 5.372.368 11.978z"/></svg> 
                       Scopus: {scopusCitations} Citations
+                    </span>
+                  )}
+                  {crossrefCitations !== null && (
+                    <span className="flex items-center gap-2 bg-blue-50 text-blue-700 px-3 py-1 rounded-full border border-blue-200">
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg> 
+                      Crossref: {crossrefCitations} Citations
                     </span>
                   )}
                 </div>
