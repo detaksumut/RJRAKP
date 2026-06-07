@@ -134,9 +134,9 @@ export default function Hero() {
               Publik Indonesia
             </h1>
 
-            {/* Subtitle */}
-            <p className="mt-6 text-base sm:text-lg text-brand-100/80 max-w-2xl leading-relaxed font-medium">
-              Mewujudkan keterbukaan ilmiah dan tata kelola pemerintahan yang bersih melalui publikasi riset terapan di bidang kebijakan publik, hukum, teknologi, pendidikan, dan kebudayaan Islam.
+            {/* Subtitle - Bold Manifesto */}
+            <p className="mt-6 text-[15px] sm:text-base text-brand-100/90 max-w-2xl leading-relaxed font-medium">
+              Kami menentang keras komersialisasi ilmu pengetahuan dan jebakan biaya siluman berjenjang. RJRAKP hadir dengan revolusi <strong>Satu Harga Transparan</strong>. Sekali bayar untuk operasional murni (tanpa biaya tersembunyi), dan kami dedikasikan komitmen penuh untuk menyebarkan serta mengindeks karya Anda ke seluruh lembaga sains global bergengsi.
             </p>
             
             {/* Action Buttons */}
