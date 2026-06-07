@@ -42,8 +42,15 @@ export default function Hero() {
             className="lg:col-span-6 flex flex-col justify-center text-left"
           >
             {/* Connected Band (Moved to Top) */}
-            <div className="flex flex-wrap xl:flex-nowrap items-center gap-5 sm:gap-6 xl:gap-8 opacity-80 hover:opacity-100 transition-opacity duration-500 mb-8 border-b border-white/10 pb-6 w-full xl:w-max xl:pr-12">
-              <span className="text-[10px] md:text-xs uppercase tracking-[0.2em] text-white font-black">Connected</span>
+            <div className="mb-8 border-b border-white/10 pb-6 w-full xl:w-max xl:pr-12">
+              <div className="flex justify-center w-full mb-5">
+                <div className="inline-flex bg-brand-950/90 backdrop-blur-md px-4 py-2 rounded-xl text-[10px] sm:text-xs font-bold text-accent-400 shadow-[0_0_15px_rgba(245,158,11,0.2)] border border-accent-500/30 items-center gap-2 uppercase tracking-widest">
+                  <ShieldCheck className="w-4 h-4 text-accent-500" />
+                  <span>OJS 3 Verified</span>
+                </div>
+              </div>
+              <div className="flex flex-wrap xl:flex-nowrap items-center justify-center xl:justify-start gap-5 sm:gap-6 xl:gap-8 opacity-80 hover:opacity-100 transition-opacity duration-500">
+                <span className="text-[10px] md:text-xs uppercase tracking-[0.2em] text-white font-black">Connected</span>
               {/* Scopus Logo */}
               <a href="https://www.scopus.com/dashboard.uri?origin=&zone=TopNavBar" target="_blank" rel="noopener noreferrer">
                 <img 
@@ -108,6 +115,7 @@ export default function Hero() {
                   className="h-9 md:h-12 bg-white/95 rounded-lg px-2.5 py-1.5 shadow-sm" 
                 />
               </a>
+              </div>
             </div>
 
             {/* Top Badges / Actions */}
@@ -196,11 +204,7 @@ export default function Hero() {
                 <div className="absolute inset-0 bg-gradient-to-t from-brand-950/60 via-transparent to-transparent pointer-events-none" />
               </div>
 
-              {/* Floating Badge 1 - Top Left */}
-              <div className="absolute -top-1 -left-1 bg-brand-950/90 backdrop-blur-md px-3.5 py-1.5 rounded-xl text-[9px] font-bold text-accent-400 shadow-lg border border-white/10 flex items-center gap-1.5 uppercase tracking-widest">
-                <ShieldCheck className="w-3.5 h-3.5 text-accent-500" />
-                <span>OJS 3 Verified</span>
-              </div>
+              {/* Floating Badge 1 - Top Left (Moved) */}
 
               {/* Floating Badge 2 - Bottom Right */}
               <div className="absolute bottom-6 right-6 bg-brand-950/90 backdrop-blur-md px-4 py-2 rounded-xl text-[9px] font-bold text-white shadow-lg border border-white/10 flex items-center gap-1.5 uppercase tracking-widest">
