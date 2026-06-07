@@ -139,8 +139,8 @@ export default function ReviewerDashboard() {
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <div className="p-6 flex flex-col flex-1 min-h-0 overflow-hidden">
-              <div className="mb-6 bg-slate-50 p-5 rounded-lg border border-slate-200 overflow-y-auto flex-1 min-h-0 shadow-inner">
+            <div className="p-6 flex flex-col lg:flex-row gap-6 flex-1 min-h-0 overflow-hidden">
+              <div className="bg-slate-50 p-5 rounded-lg border border-slate-200 overflow-y-auto flex-1 min-h-0 shadow-inner">
                 <h4 className="font-bold text-sm text-brand-600 uppercase tracking-wide mb-1">
                   {selectedAssignment.articles?.journals?.name || 'Jurnal Tidak Diketahui'}
                 </h4>
@@ -231,7 +231,7 @@ export default function ReviewerDashboard() {
                 )}
               </div>
 
-              <div className="space-y-4 pt-4 border-t border-academic-200 shrink-0 text-xs">
+              <div className="lg:w-[450px] shrink-0 overflow-y-auto space-y-4 text-xs lg:pr-2 pb-2">
                 
                 {/* Scoring Section */}
                 <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
@@ -239,7 +239,7 @@ export default function ReviewerDashboard() {
                     <CheckCircle className="w-4 h-4 text-brand-600" />
                     Penilaian Artikel (Skala 1 - 5)
                   </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-3">
                     <div>
                       <label className="block text-xs font-bold text-academic-700 mb-1">Orisinalitas & Kebaruan</label>
                       <select value={reviewForm.score_originality} onChange={(e) => setReviewForm({ ...reviewForm, score_originality: e.target.value })} className="w-full border border-academic-300 rounded shadow-sm text-xs py-1 px-2">
