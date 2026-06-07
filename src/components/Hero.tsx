@@ -74,7 +74,7 @@ export default function Hero() {
               </a>
 
               {/* Zenodo Logo */}
-              <a href="https://zenodo.org/records/20570575" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 transition-all duration-300 transform hover:scale-110 cursor-pointer">
+              <a href="https://zenodo.org/me/uploads?q=&f=shared_with_me%3Afalse&l=list&p=1&s=10&sort=newest" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 transition-all duration-300 transform hover:scale-110 cursor-pointer">
                 <img 
                   src="/zenodo.png" 
                   alt="Zenodo Logo" 
