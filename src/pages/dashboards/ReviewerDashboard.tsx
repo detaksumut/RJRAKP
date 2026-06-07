@@ -131,8 +131,8 @@ export default function ReviewerDashboard() {
   return (
     <DashboardLayout>
       {selectedAssignment && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-xl max-w-6xl w-full max-h-[95vh] shadow-2xl border border-academic-100 flex flex-col">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-xl max-w-[95vw] w-full max-h-[95vh] shadow-2xl border border-academic-100 flex flex-col">
             <div className="px-6 py-4 border-b border-academic-100 flex justify-between items-center bg-academic-50/50 rounded-t-xl shrink-0">
               <h3 className="text-lg font-bold text-academic-900 font-serif">Form Review Artikel</h3>
               <button onClick={() => setSelectedAssignment(null)} className="text-academic-400 hover:text-rose-500 transition-colors">
@@ -231,7 +231,7 @@ export default function ReviewerDashboard() {
                 )}
               </div>
 
-              <div className="lg:w-[450px] shrink-0 overflow-y-auto space-y-4 text-xs lg:pr-2 pb-2">
+              <div className="lg:w-[320px] shrink-0 overflow-y-auto space-y-4 text-xs lg:pr-2 pb-2">
                 
                 {/* Scoring Section */}
                 <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
