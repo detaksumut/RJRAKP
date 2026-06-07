@@ -136,7 +136,7 @@ export default function Hero() {
 
             {/* Subtitle - Bold Manifesto */}
             <p className="mt-6 text-[15px] sm:text-base text-brand-100/90 max-w-2xl leading-relaxed font-medium">
-              Kami menentang keras komersialisasi ilmu pengetahuan dan jebakan biaya siluman berjenjang. RJRAKP hadir dengan revolusi <strong>Satu Harga Transparan</strong>. Sekali bayar untuk operasional murni (tanpa biaya tersembunyi), dan kami dedikasikan komitmen penuh untuk menyebarkan serta mengindeks karya Anda ke seluruh lembaga akademik global bergengsi.
+              Kami menentang keras komersialisasi ilmu pengetahuan dan jebakan biaya siluman berjenjang. RJRAKP hadir dengan revolusi <strong>Satu Harga Transparan</strong>. Sekali bayar untuk operasional murni (tanpa biaya tersembunyi), dan kami dedikasikan komitmen penuh untuk menyebarkan serta mengindeks karya Anda ke seluruh <strong>Lembaga Akademik Global</strong> bergengsi.
             </p>
             
             {/* Action Buttons */}
