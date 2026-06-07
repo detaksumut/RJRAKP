@@ -134,9 +134,9 @@ export default function Hero() {
               Publik Indonesia
             </h1>
 
-            {/* Subtitle - Bold Manifesto */}
+            {/* Subtitle - Professional Academic Description */}
             <p className="mt-6 text-[15px] sm:text-base text-brand-100/90 max-w-2xl leading-relaxed font-medium">
-              Kami menentang keras praktik <strong>Ilegal Komersial (biaya terselubung)</strong> dalam ilmu pengetahuan dan jebakan biaya siluman berjenjang di balik <strong>KEDOK AKREDITASI</strong>. RJRAKP hadir dengan revolusi <strong>Satu Harga Transparan</strong>. Sekali bayar untuk operasional murni (tanpa biaya tersembunyi), dan kami dedikasikan komitmen penuh untuk menyebarkan serta mengindeks karya Anda ke seluruh <strong>Lembaga Akademik Global</strong> bergengsi.
+              RJRAKP berkomitmen menyediakan platform publikasi ilmiah bertaraf internasional melalui sistem <strong>Open Journal Systems (OJS)</strong> yang transparan. Melalui proses <strong>Double-Blind Peer Review</strong> yang ketat, kami menjamin kualitas akademis setiap naskah. Kami mendedikasikan komitmen penuh untuk kemajuan ilmu pengetahuan terbuka (Open Access) dan penyebaran karya Anda ke berbagai lembaga pengindeks global bergengsi.
             </p>
             
             {/* Action Buttons */}
