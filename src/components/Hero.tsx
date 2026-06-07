@@ -112,9 +112,9 @@ export default function Hero() {
 
             {/* Top Badges / Actions */}
             <div className="flex flex-wrap items-center gap-3 mb-6">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-accent-400 text-[10px] sm:text-xs font-bold tracking-wider uppercase shadow-inner backdrop-blur-md">
-                <Sparkles className="w-3.5 h-3.5 text-accent-500 animate-spin-slow" />
-                <span>Sistem Informasi Publikasi Ilmiah Terakreditasi</span>
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-white text-[10px] sm:text-xs font-bold tracking-wider uppercase shadow-inner backdrop-blur-md">
+                <Sparkles className="w-3.5 h-3.5 text-amber-500 animate-spin-slow" />
+                <span>Sistem Informasi Publikasi Ilmiah</span>
               </div>
               <button 
                 onClick={() => setIsBoardModalOpen(true)}
