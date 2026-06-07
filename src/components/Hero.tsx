@@ -64,7 +64,7 @@ export default function Hero() {
               <div className="basis-full h-0 lg:hidden"></div>
 
               {/* Google Scholar Logo */}
-              <a href="https://scholar.google.com/citations?user=EoHXXg0AAAAJ&hl=en" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 transition-all duration-300 transform hover:scale-110 cursor-pointer">
+              <a href="https://scholar.google.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 transition-all duration-300 transform hover:scale-110 cursor-pointer">
                 <img 
                   src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Google_Scholar_logo.svg" 
                   alt="Google Scholar Logo" 
@@ -74,7 +74,7 @@ export default function Hero() {
               </a>
 
               {/* Zenodo Logo */}
-              <a href="https://zenodo.org/records/20570575" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 transition-all duration-300 transform hover:scale-110 cursor-pointer">
+              <a href="https://zenodo.org" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 transition-all duration-300 transform hover:scale-110 cursor-pointer">
                 <img 
                   src="/zenodo.png" 
                   alt="Zenodo Logo" 
@@ -92,7 +92,7 @@ export default function Hero() {
               </a>
 
               {/* ORCID Logo */}
-              <a href="https://orcid.org/0009-0006-8416-6156" target="_blank" rel="noopener noreferrer" className="flex items-center transition-all duration-300 transform hover:scale-110 cursor-pointer">
+              <a href="https://orcid.org" target="_blank" rel="noopener noreferrer" className="flex items-center transition-all duration-300 transform hover:scale-110 cursor-pointer">
                 <img 
                   src="https://upload.wikimedia.org/wikipedia/commons/0/06/ORCID_iD.svg" 
                   alt="ORCID Logo" 
@@ -101,7 +101,7 @@ export default function Hero() {
               </a>
 
               {/* OpenAIRE Logo */}
-              <a href="https://explore.openaire.eu/search/advanced/research-outcomes?f0=resultauthor&fv0=Muhibbuddin%20Mr" target="_blank" rel="noopener noreferrer" className="flex items-center transition-all duration-300 transform hover:scale-110 cursor-pointer">
+              <a href="https://explore.openaire.eu" target="_blank" rel="noopener noreferrer" className="flex items-center transition-all duration-300 transform hover:scale-110 cursor-pointer">
                 <img 
                   src="/OpenAIRE.png" 
                   alt="OpenAIRE Logo" 
