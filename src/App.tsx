@@ -75,12 +75,9 @@ export default function App() {
               title="Powered by Open Journal Systems"
             >
               <img 
-                src="https://docs.pkp.sfu.ca/learning-ojs/en/assets/ojs_logo.png" 
+                src="/logojs3.png" 
                 alt="Open Journal Systems" 
                 className="w-16 sm:w-20 h-auto object-contain"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = 'https://pkp.sfu.ca/wp-content/uploads/2021/01/ojs-logo.png';
-                }}
               />
             </a>
 
