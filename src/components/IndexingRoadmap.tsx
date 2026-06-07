@@ -22,7 +22,7 @@ export default function IndexingRoadmap() {
       { id: 2, index_name: "Pengajuan e-ISSN", status: "active", description: "", website_url: "", display_order: 2 },
       { id: 3, index_name: "Registrasi Crossref & Zenodo DOI", status: "active", description: "", website_url: "", display_order: 3 },
       { id: 4, index_name: "Indeksasi Google Search Console", status: "active", description: "", website_url: "", display_order: 4 },
-      { id: 5, index_name: "Akreditasi SINTA", status: "target", description: "", website_url: "", display_order: 5 },
+      { id: 5, index_name: "Indeksasi Dimensions & Copernicus", status: "target", description: "", website_url: "", display_order: 5 },
       { id: 6, index_name: "Indeksasi DOAJ", status: "target", description: "", website_url: "", display_order: 6 },
     ];
     setItems(data);
