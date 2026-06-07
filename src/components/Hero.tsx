@@ -32,6 +32,49 @@ export default function Hero() {
       <div className="absolute inset-0 opacity-[0.07] bg-[linear-gradient(to_right,#ffffff_1px,transparent_1px),linear-gradient(to_bottom,#ffffff_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] z-0 pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10">
+        
+        {/* Top Banner: OJS & Connected (Moved right below top menu) */}
+        <div className="flex flex-col items-center justify-center w-full mb-10 lg:mb-16 border-b border-white/10 pb-8 pt-4">
+          <div className="mb-6">
+            <div className="inline-flex bg-slate-100/10 backdrop-blur-md px-5 py-2.5 rounded-full text-xs font-bold text-slate-200 shadow-[0_0_20px_rgba(255,255,255,0.05)] border border-slate-200/20 items-center gap-2 uppercase tracking-widest">
+              <ShieldCheck className="w-4 h-4 text-slate-300" />
+              <span>OJS 3 Verified</span>
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 opacity-80 hover:opacity-100 transition-opacity duration-500">
+            <span className="text-[10px] md:text-xs uppercase tracking-[0.2em] text-slate-300 font-black">Connected</span>
+            
+            <a href="https://www.scopus.com/dashboard.uri?origin=&zone=TopNavBar" target="_blank" rel="noopener noreferrer">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Scopus_logo.svg" alt="Scopus" className="h-10 md:h-14 transition-all duration-300 transform hover:scale-110 cursor-pointer" />
+            </a>
+            
+            <img src="https://assets.crossref.org/logo/crossref-logo-landscape-200.svg" alt="Crossref logo" className="h-9 md:h-12 transition-all duration-300 transform hover:scale-110 cursor-pointer" />
+
+            <div className="basis-full h-0 lg:hidden"></div>
+
+            <a href="https://scholar.google.com/citations?user=EoHXXg0AAAAJ&hl=en" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 transition-all duration-300 transform hover:scale-110 cursor-pointer">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Google_Scholar_logo.svg" alt="Google Scholar Logo" className="h-10 md:h-14" />
+              <span className="text-white font-bold text-lg md:text-2xl font-sans tracking-tight">Google Scholar</span>
+            </a>
+
+            <a href="https://zenodo.org/me/uploads?q=&f=shared_with_me%3Afalse&l=list&p=1&s=10&sort=newest" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 transition-all duration-300 transform hover:scale-110 cursor-pointer">
+              <img src="/zenodo.png" alt="Zenodo Logo" className="h-10 md:h-14 rounded-md" />
+            </a>
+
+            <a href="https://www.doi.org" target="_blank" rel="noopener noreferrer" className="flex items-center transition-all duration-300 transform hover:scale-110 cursor-pointer">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/1/11/DOI_logo.svg" alt="DOI Logo" className="h-10 md:h-14" />
+            </a>
+
+            <a href="https://orcid.org/0009-0006-8416-6156" target="_blank" rel="noopener noreferrer" className="flex items-center transition-all duration-300 transform hover:scale-110 cursor-pointer">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/0/06/ORCID_iD.svg" alt="ORCID Logo" className="h-10 md:h-14" />
+            </a>
+
+            <a href="https://explore.openaire.eu/search/advanced/research-outcomes?f0=resultauthor&fv0=Muhibbuddin%20Mr" target="_blank" rel="noopener noreferrer" className="flex items-center transition-all duration-300 transform hover:scale-110 cursor-pointer">
+              <img src="/OpenAIRE.png" alt="OpenAIRE Logo" className="h-9 md:h-12 bg-white/95 rounded-lg px-2.5 py-1.5 shadow-sm" />
+            </a>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           
           {/* Left Column: Typography & Search */}
@@ -41,82 +84,6 @@ export default function Hero() {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="lg:col-span-6 flex flex-col justify-center text-left"
           >
-            {/* Connected Band (Moved to Top) */}
-            <div className="mb-8 border-b border-white/10 pb-6 w-full xl:w-max xl:pr-12">
-              <div className="flex justify-center w-full mb-5">
-                <div className="inline-flex bg-brand-950/90 backdrop-blur-md px-4 py-2 rounded-xl text-[10px] sm:text-xs font-bold text-accent-400 shadow-[0_0_15px_rgba(245,158,11,0.2)] border border-accent-500/30 items-center gap-2 uppercase tracking-widest">
-                  <ShieldCheck className="w-4 h-4 text-accent-500" />
-                  <span>OJS 3 Verified</span>
-                </div>
-              </div>
-              <div className="flex flex-wrap xl:flex-nowrap items-center justify-center xl:justify-start gap-5 sm:gap-6 xl:gap-8 opacity-80 hover:opacity-100 transition-opacity duration-500">
-                <span className="text-[10px] md:text-xs uppercase tracking-[0.2em] text-white font-black">Connected</span>
-              {/* Scopus Logo */}
-              <a href="https://www.scopus.com/dashboard.uri?origin=&zone=TopNavBar" target="_blank" rel="noopener noreferrer">
-                <img 
-                  src="https://upload.wikimedia.org/wikipedia/commons/2/26/Scopus_logo.svg" 
-                  alt="Scopus" 
-                  className="h-10 md:h-14 transition-all duration-300 transform hover:scale-110 cursor-pointer" 
-                />
-              </a>
-              
-              {/* Crossref Logo */}
-              <img 
-                src="https://assets.crossref.org/logo/crossref-logo-landscape-200.svg" 
-                alt="Crossref logo" 
-                className="h-9 md:h-12 transition-all duration-300 transform hover:scale-110 cursor-pointer" 
-              />
-
-              {/* Force line break on mobile and tablet */}
-              <div className="basis-full h-0 lg:hidden"></div>
-
-              {/* Google Scholar Logo */}
-              <a href="https://scholar.google.com/citations?user=EoHXXg0AAAAJ&hl=en" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 transition-all duration-300 transform hover:scale-110 cursor-pointer">
-                <img 
-                  src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Google_Scholar_logo.svg" 
-                  alt="Google Scholar Logo" 
-                  className="h-10 md:h-14" 
-                />
-                <span className="text-white font-bold text-lg md:text-2xl font-sans tracking-tight">Google Scholar</span>
-              </a>
-
-              {/* Zenodo Logo */}
-              <a href="https://zenodo.org/me/uploads?q=&f=shared_with_me%3Afalse&l=list&p=1&s=10&sort=newest" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 transition-all duration-300 transform hover:scale-110 cursor-pointer">
-                <img 
-                  src="/zenodo.png" 
-                  alt="Zenodo Logo" 
-                  className="h-10 md:h-14 rounded-md" 
-                />
-              </a>
-
-              {/* DOI Logo */}
-              <a href="https://www.doi.org" target="_blank" rel="noopener noreferrer" className="flex items-center transition-all duration-300 transform hover:scale-110 cursor-pointer">
-                <img 
-                  src="https://upload.wikimedia.org/wikipedia/commons/1/11/DOI_logo.svg" 
-                  alt="DOI Logo" 
-                  className="h-10 md:h-14" 
-                />
-              </a>
-
-              {/* ORCID Logo */}
-              <a href="https://orcid.org/0009-0006-8416-6156" target="_blank" rel="noopener noreferrer" className="flex items-center transition-all duration-300 transform hover:scale-110 cursor-pointer">
-                <img 
-                  src="https://upload.wikimedia.org/wikipedia/commons/0/06/ORCID_iD.svg" 
-                  alt="ORCID Logo" 
-                  className="h-10 md:h-14" 
-                />
-              </a>
-
-              {/* OpenAIRE Logo */}
-              <a href="https://explore.openaire.eu/search/advanced/research-outcomes?f0=resultauthor&fv0=Muhibbuddin%20Mr" target="_blank" rel="noopener noreferrer" className="flex items-center transition-all duration-300 transform hover:scale-110 cursor-pointer">
-                <img 
-                  src="/OpenAIRE.png" 
-                  alt="OpenAIRE Logo" 
-                  className="h-9 md:h-12 bg-white/95 rounded-lg px-2.5 py-1.5 shadow-sm" 
-                />
-              </a>
-              </div>
-            </div>
 
             {/* Top Badges / Actions */}
             <div className="flex flex-wrap items-center gap-3 mb-6">
