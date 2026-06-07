@@ -65,6 +65,25 @@ export default function App() {
       <Router>
         <AuthProvider>
           <div className="min-h-screen bg-academic-50 font-sans text-academic-800 selection:bg-brand-100 selection:text-brand-900 flex flex-col overflow-x-hidden">
+            
+            {/* Global OJS Floating Badge - Bottom Right */}
+            <a 
+              href="https://pkp.sfu.ca/software/ojs/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="fixed bottom-6 right-6 z-[999] transition-all duration-300 hover:scale-105 hover:-translate-y-1 hover:shadow-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-2xl bg-white p-2 sm:p-3 border border-slate-100/50 backdrop-blur-sm"
+              title="Powered by Open Journal Systems"
+            >
+              <img 
+                src="https://docs.pkp.sfu.ca/learning-ojs/en/assets/ojs_logo.png" 
+                alt="Open Journal Systems" 
+                className="w-16 sm:w-20 h-auto object-contain"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = 'https://pkp.sfu.ca/wp-content/uploads/2021/01/ojs-logo.png';
+                }}
+              />
+            </a>
+
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/tentang" element={<About />} />
