@@ -77,7 +77,7 @@ export default function App() {
               <img 
                 src="/logoOJS_3.png" 
                 alt="Open Journal Systems" 
-                className="w-32 sm:w-48 h-auto object-contain"
+                className="w-48 sm:w-64 h-auto object-contain"
               />
             </a>
 
