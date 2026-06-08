@@ -35,7 +35,7 @@ export default function AuthorArticles() {
   return (
     <DashboardLayout>
       <div className="max-w-4xl">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex justify-between items-center mb-6">
           <div>
             <h1 className="text-2xl font-serif font-bold text-academic-900 mb-2">Artikel Saya</h1>
             <p className="text-academic-500">Daftar artikel yang pernah Anda submit.</p>
@@ -43,6 +43,23 @@ export default function AuthorArticles() {
           <Link to="/dashboard/author/submit" className="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg font-bold text-sm transition-colors shadow-sm">
             Tulis Artikel
           </Link>
+        </div>
+
+        <div className="bg-brand-50 border border-brand-200 rounded-xl p-5 mb-8 flex flex-col md:flex-row gap-4 items-start shadow-sm">
+          <div className="bg-brand-100 p-2.5 rounded-xl text-brand-600 shrink-0">
+            <FileText className="w-6 h-6" />
+          </div>
+          <div>
+            <h4 className="text-brand-900 font-bold mb-1.5">Informasi Biaya Review & Publikasi</h4>
+            <p className="text-sm text-brand-700 leading-relaxed mb-3">
+              Bagi artikel yang berstatus <strong>Baru Masuk (Submitted)</strong> atau sedang dalam proses, Penulis diminta untuk melakukan transfer <strong>Biaya Review</strong>. Biaya ini meliputi keseluruhan proses hingga penerbitan Sertifikat, nomor DOI yang valid, serta indeksasi lengkap ke lembaga internasional (Google Scholar, Zenodo, dll).
+            </p>
+            <div className="inline-flex flex-wrap items-center gap-3 bg-white px-4 py-2.5 rounded-lg border border-brand-200 shadow-sm">
+               <span className="text-[10px] uppercase font-bold text-brand-500 tracking-wider">Rekening Tujuan:</span>
+               <span className="font-black text-brand-900 text-lg tracking-wider">BRI 1341 0100 0081 562</span>
+               <span className="text-sm text-brand-700 font-bold md:border-l border-brand-200 md:pl-3">a.n. Muhibbuddin</span>
+            </div>
+          </div>
         </div>
 
         <div className="bg-white rounded-xl border border-academic-200 shadow-sm overflow-hidden">

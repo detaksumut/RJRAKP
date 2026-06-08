@@ -264,7 +264,7 @@ export default function AuthorSubmit() {
         supabase.functions.invoke('send-wa', {
           body: {
             target: userPhone,
-            message: `*Notifikasi RJRAKP*\n\nHalo ${userName},\n\nArtikel Anda dengan judul *"${formData.title}"* telah berhasil disubmit dan masuk ke antrean Editorial.\n\nAnda dapat memantau status artikel di dashboard Anda.\n\nTerima kasih.`
+            message: `*Notifikasi RJRAKP*\n\nHalo ${userName},\n\nArtikel Anda dengan judul *"${formData.title}"* telah berhasil disubmit dan masuk ke antrean Editorial.\n\n*PENTING (BIAYA PUBLIKASI):*\nMohon untuk melakukan transfer biaya Review & Publikasi agar proses dapat dilanjutkan sampai terbit sertifikat, nomor DOI, serta indeksasi internasional (Google Scholar, Zenodo).\n\nTransfer ke Rekening:\n*BRI 1341 0100 0081 562*\na.n *Muhibbuddin*\n\nAnda dapat memantau status artikel di dashboard Anda.\n\nTerima kasih.`
           }
         }).catch(err => console.error("Gagal mengirim WA:", err));
       }
@@ -303,6 +303,21 @@ export default function AuthorSubmit() {
             </div>
             <h3 className="text-xl font-bold mb-2">Submit Berhasil!</h3>
             <p className="text-emerald-700 mb-6">Manuskrip dan data metadata penulis telah berhasil dikirimkan ke tim editorial. Anda dapat memantau status artikel di Dashboard.</p>
+
+            <div className="bg-white border border-brand-200 rounded-xl p-6 text-left mb-8 shadow-sm">
+              <h4 className="text-brand-800 font-bold mb-2">Pemberitahuan Biaya Publikasi & Review</h4>
+              <p className="text-brand-700 text-sm mb-4 leading-relaxed">
+                Setiap jurnal yang disubmit, selain menerima notifikasi ini, penulis juga diminta untuk segera mentransfer <strong>Biaya Review</strong>. Biaya ini sudah mencakup keseluruhan proses hingga terbitnya sertifikat, penyematan nomor referensi <strong>DOI</strong> yang valid, serta indeksasi ke berbagai lembaga jurnal internasional terkemuka seperti <strong>Google Scholar</strong> dan <strong>Zenodo</strong>.
+              </p>
+              <div className="bg-brand-50 p-4 rounded-lg flex flex-col md:flex-row items-center gap-4 justify-between border border-brand-100">
+                <div>
+                  <span className="block text-[10px] font-bold uppercase tracking-widest text-brand-500 mb-1">Rekening Tujuan Pembayaran</span>
+                  <span className="block text-2xl font-black text-brand-900 tracking-wider">1341 0100 0081 562</span>
+                  <span className="block text-sm font-bold text-brand-700 mt-1">Bank BRI a.n. Muhibbuddin</span>
+                </div>
+              </div>
+            </div>
+
             <button onClick={() => setSuccess(false)} className="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-bold shadow-sm">
               Submit Artikel Lainnya
             </button>
