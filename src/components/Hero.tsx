@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BoardModal from './BoardModal';
+import ElsevierLogo from '../assets/logoelsevier.png';
 
 export default function Hero() {
   const [isBoardModalOpen, setIsBoardModalOpen] = useState(false);
@@ -73,7 +74,7 @@ export default function Hero() {
             </a>
 
             <a href="https://www.elsevier.com" target="_blank" rel="noopener noreferrer" className="flex items-center transition-all duration-300 transform hover:scale-110 cursor-pointer">
-              <img src="/logoelsevier.png" alt="Elsevier Logo" className="h-8 md:h-10 bg-white/95 rounded shadow-sm px-2 py-1" />
+              <img src={ElsevierLogo} alt="Elsevier Logo" className="h-8 md:h-10 bg-white/95 rounded shadow-sm px-2 py-1" />
             </a>
           </div>
         </div>
