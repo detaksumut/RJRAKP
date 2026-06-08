@@ -35,14 +35,14 @@ export default function Hero() {
         
         {/* Top Banner: OJS & Connected (Moved right below top menu) */}
         <div className="flex flex-col items-center justify-center w-full mb-10 lg:mb-16 border-b border-white/10 pb-8 pt-4">
-          <div className="mb-6">
+          <div className="mb-6 flex items-center justify-center gap-4">
+            <span className="text-[10px] md:text-xs uppercase tracking-[0.2em] text-slate-300 font-black">Connected</span>
             <div className="inline-flex bg-slate-100/10 backdrop-blur-md px-5 py-2.5 rounded-full text-xs font-bold text-slate-200 shadow-[0_0_20px_rgba(255,255,255,0.05)] border border-slate-200/20 items-center gap-2 uppercase tracking-widest">
               <ShieldCheck className="w-4 h-4 text-slate-300" />
               <span>OJS 3 Verified</span>
             </div>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 opacity-80 hover:opacity-100 transition-opacity duration-500">
-            <span className="text-[10px] md:text-xs uppercase tracking-[0.2em] text-slate-300 font-black">Connected</span>
             
             <a href="https://www.scopus.com/dashboard.uri?origin=&zone=TopNavBar" target="_blank" rel="noopener noreferrer">
               <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Scopus_logo.svg" alt="Scopus" className="h-10 md:h-14 transition-all duration-300 transform hover:scale-110 cursor-pointer" />
@@ -50,7 +50,6 @@ export default function Hero() {
             
             <img src="https://assets.crossref.org/logo/crossref-logo-landscape-200.svg" alt="Crossref logo" className="h-9 md:h-12 transition-all duration-300 transform hover:scale-110 cursor-pointer" />
 
-            <div className="basis-full h-0 lg:hidden"></div>
 
             <a href="https://scholar.google.com/citations?user=EoHXXg0AAAAJ&hl=en" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 transition-all duration-300 transform hover:scale-110 cursor-pointer">
               <img src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Google_Scholar_logo.svg" alt="Google Scholar Logo" className="h-10 md:h-14" />
