@@ -36,8 +36,8 @@ export default function Hero() {
         {/* Top Banner: OJS & Connected (Moved right below top menu) */}
         <div className="flex flex-col items-center justify-center w-full mb-10 lg:mb-16 border-b border-white/10 pb-8 pt-4">
           <div className="mb-6">
-            <div className="inline-flex bg-slate-100/10 backdrop-blur-md px-5 py-2.5 rounded-full text-xs font-bold text-slate-200 shadow-[0_0_20px_rgba(255,255,255,0.05)] border border-slate-200/20 items-center gap-2 uppercase tracking-widest">
-              <ShieldCheck className="w-4 h-4 text-slate-300" />
+            <div className="inline-flex bg-slate-100/10 backdrop-blur-md px-8 py-3.5 rounded-full text-sm sm:text-base font-bold text-slate-200 shadow-[0_0_20px_rgba(255,255,255,0.05)] border border-slate-200/20 items-center gap-3 uppercase tracking-widest">
+              <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6 text-slate-300" />
               <span>OJS 3 Verified</span>
             </div>
           </div>
