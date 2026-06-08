@@ -77,7 +77,7 @@ export default function App() {
               <img 
                 src="/logoOJS_3.png" 
                 alt="Open Journal Systems" 
-                className="w-40 sm:w-56 h-auto object-contain transition-transform duration-500 group-hover:scale-110 scale-110"
+                className="w-40 sm:w-56 h-auto object-contain transition-transform duration-500 group-hover:scale-[1.45] scale-[1.35]"
               />
             </a>
 
