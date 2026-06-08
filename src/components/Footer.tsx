@@ -82,6 +82,23 @@ export default function Footer() {
 
       <div className="bg-gradient-to-r from-brand-900 via-brand-800 to-brand-900 border-t-4 border-accent-500 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center shrink-0">
+          {/* OJS Badge Centered Above Publisher Logos */}
+          <div className="flex justify-center mb-8">
+            <a 
+              href="https://pkp.sfu.ca/software/ojs/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="bg-white rounded-2xl overflow-hidden flex items-center justify-center w-[200px] h-[70px] md:w-[260px] md:h-[90px] shadow-xl border border-white/20 hover:scale-105 transition-transform duration-300"
+              title="Powered by Open Journal Systems"
+            >
+              <img 
+                src="/logoOJS_3.png" 
+                alt="Open Journal Systems" 
+                className="w-full h-full object-cover scale-[1.8]"
+              />
+            </a>
+          </div>
+
           <div className="flex justify-center items-center gap-6 md:gap-10 mb-6">
             <div className="bg-white/5 hover:bg-white/10 transition-colors p-3 rounded-2xl backdrop-blur-sm border border-white/10 h-24 md:h-28 flex items-center justify-center">
               <img src="/logo-bernas.png.png" alt="PT. Bernas Sumut Jaya" className="h-16 md:h-20 w-auto object-contain" />

@@ -67,19 +67,7 @@ export default function App() {
           <div className="min-h-screen bg-academic-50 font-sans text-academic-800 selection:bg-brand-100 selection:text-brand-900 flex flex-col overflow-x-hidden">
             
             {/* Global OJS Floating Badge - Bottom Right */}
-            <a 
-              href="https://pkp.sfu.ca/software/ojs/" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="fixed bottom-6 right-6 z-[999] transition-transform duration-300 hover:scale-105 hover:-translate-y-1 shadow-[0_4px_20px_rgba(0,0,0,0.15)] bg-white rounded-xl overflow-hidden flex items-center justify-center w-[180px] h-[65px] sm:w-[220px] sm:h-[80px] border border-slate-200/80"
-              title="Powered by Open Journal Systems"
-            >
-              <img 
-                src="/logoOJS_3.png" 
-                alt="Open Journal Systems" 
-                className="w-full h-full object-cover scale-[1.7] sm:scale-[1.8]"
-              />
-            </a>
+
 
             <Routes>
               <Route path="/" element={<Home />} />
