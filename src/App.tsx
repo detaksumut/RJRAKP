@@ -71,11 +71,11 @@ export default function App() {
               href="https://pkp.sfu.ca/software/ojs/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="fixed bottom-6 right-6 z-[999] transition-all duration-300 hover:scale-110 hover:-translate-y-1 shadow-2xl bg-white/95 rounded-2xl p-3 border border-white/20"
+              className="fixed bottom-6 right-6 z-[999] transition-all duration-300 hover:scale-110 hover:-translate-y-1 drop-shadow-2xl"
               title="Powered by Open Journal Systems"
             >
               <img 
-                src="/logojs3.png" 
+                src="/logoOJS_3.png" 
                 alt="Open Journal Systems" 
                 className="w-32 sm:w-48 h-auto object-contain"
               />
