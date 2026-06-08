@@ -71,6 +71,10 @@ export default function Hero() {
             <a href="https://explore.openaire.eu/search/advanced/research-outcomes?f0=resultauthor&fv0=Muhibbuddin%20Mr" target="_blank" rel="noopener noreferrer" className="flex items-center transition-all duration-300 transform hover:scale-110 cursor-pointer">
               <img src="/OpenAIRE.png" alt="OpenAIRE Logo" className="h-9 md:h-12 bg-white/95 rounded-lg px-2.5 py-1.5 shadow-sm" />
             </a>
+
+            <a href="https://www.elsevier.com" target="_blank" rel="noopener noreferrer" className="flex items-center transition-all duration-300 transform hover:scale-110 cursor-pointer">
+              <img src="/logoelsevier.png" alt="Elsevier Logo" className="h-8 md:h-10 bg-white/95 rounded shadow-sm px-2 py-1" />
+            </a>
           </div>
         </div>
 
