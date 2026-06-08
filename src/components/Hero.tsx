@@ -42,7 +42,7 @@ export default function Hero() {
             </div>
             <span className="text-[10px] md:text-xs uppercase tracking-[0.2em] text-slate-300 font-black">Connected</span>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 opacity-80 hover:opacity-100 transition-opacity duration-500">
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-5 md:gap-6 opacity-80 hover:opacity-100 transition-opacity duration-500">
             
             <a href="https://www.scopus.com/dashboard.uri?origin=&zone=TopNavBar" target="_blank" rel="noopener noreferrer">
               <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Scopus_logo.svg" alt="Scopus" className="h-10 md:h-14 transition-all duration-300 transform hover:scale-110 cursor-pointer" />
