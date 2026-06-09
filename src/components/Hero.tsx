@@ -73,7 +73,7 @@ export default function Hero() {
               <img src="/OpenAIRE.png" alt="OpenAIRE Logo" className="h-9 md:h-12 bg-white/95 rounded-lg px-2.5 py-1.5 shadow-sm" />
             </a>
 
-            <a href="https://www.elsevier.com" target="_blank" rel="noopener noreferrer" className="flex items-center transition-all duration-300 transform hover:scale-110 cursor-pointer">
+            <a href="https://hq.ssrn.com/login/authentication.cfm?partid=11897288" target="_blank" rel="noopener noreferrer" className="flex items-center transition-all duration-300 transform hover:scale-110 cursor-pointer">
               <img src={ElsevierLogo} alt="Elsevier Logo" className="h-8 md:h-10 bg-white/95 rounded shadow-sm px-2 py-1" />
             </a>
           </div>
