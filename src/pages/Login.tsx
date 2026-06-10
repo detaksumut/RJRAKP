@@ -15,6 +15,12 @@ export default function Login() {
 
   const message = location.state?.message;
 
+  const handleOrcidLogin = () => {
+    const clientId = import.meta.env.VITE_ORCID_CLIENT_ID || 'APP-AJ40VLU6GXMHQBNA';
+    const redirectUri = 'https://rjrakp.com/auth/callback';
+    window.location.href = `https://orcid.org/oauth/authorize?client_id=${clientId}&response_type=code&scope=/authenticate&redirect_uri=${encodeURIComponent(redirectUri)}`;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -134,6 +140,21 @@ export default function Login() {
                 {error}
               </div>
             )}
+
+            <button 
+              onClick={handleOrcidLogin}
+              className="w-full bg-[#A6CE39] hover:bg-[#8eb82b] text-white font-bold py-3 rounded-lg transition-colors mb-6 flex items-center justify-center gap-2"
+              type="button"
+            >
+              <img src="/ORCID.png" alt="ORCID" className="h-6 bg-white rounded-full p-0.5" onError={(e) => { e.currentTarget.src = 'https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png'; }} />
+              Login dengan ORCID
+            </button>
+
+            <div className="flex items-center gap-4 mb-6">
+              <div className="flex-1 h-px bg-slate-200"></div>
+              <span className="text-sm text-slate-500 font-medium uppercase tracking-wider">ATAU EMAIL</span>
+              <div className="flex-1 h-px bg-slate-200"></div>
+            </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>

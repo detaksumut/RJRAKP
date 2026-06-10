@@ -56,6 +56,7 @@ import AdminArticles from './pages/dashboards/AdminArticles';
 import AdminBoardMembers from './pages/dashboards/AdminBoardMembers';
 import Unauthorized from './pages/dashboards/Unauthorized';
 import SetupAdmin from './pages/SetupAdmin';
+import AuthCallback from './pages/AuthCallback';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './contexts/AuthContext';
 
@@ -101,6 +102,7 @@ export default function App() {
             <Route path="/hak-cipta" element={<Copyright />} />
             <Route path="/etika-publikasi" element={<Ethics />} />
             <Route path="/proses-peer-review" element={<PeerReview />} />
+            <Route path="/auth/callback" element={<AuthCallback />} />
             <Route path="/unauthorized" element={<Unauthorized />} />
             
             <Route element={<ProtectedRoute allowedRoles={['admin']} />}>

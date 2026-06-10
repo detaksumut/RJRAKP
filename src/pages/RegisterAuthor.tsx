@@ -22,6 +22,12 @@ export default function RegisterAuthor() {
   const [loading, setLoading] = useState(false);
   const [slowLoading, setSlowLoading] = useState(false);
 
+  const handleOrcidLogin = () => {
+    const clientId = import.meta.env.VITE_ORCID_CLIENT_ID || 'APP-AJ40VLU6GXMHQBNA';
+    const redirectUri = 'https://rjrakp.com/auth/callback';
+    window.location.href = `https://orcid.org/oauth/authorize?client_id=${clientId}&response_type=code&scope=/authenticate&redirect_uri=${encodeURIComponent(redirectUri)}`;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("STEP 1 FORM SUBMIT");
@@ -110,6 +116,21 @@ export default function RegisterAuthor() {
           <div className="p-8">
             {error && <div className="bg-rose-50 text-rose-700 p-4 rounded-lg text-sm border border-rose-200 mb-6">{error}</div>}
             
+            <button 
+              onClick={handleOrcidLogin}
+              className="w-full bg-[#A6CE39] hover:bg-[#8eb82b] text-white font-bold py-3 rounded-lg transition-colors mb-6 flex items-center justify-center gap-2"
+              type="button"
+            >
+              <img src="/ORCID.png" alt="ORCID" className="h-6 bg-white rounded-full p-0.5" onError={(e) => { e.currentTarget.src = 'https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png'; }} />
+              Daftar Instan dengan ORCID
+            </button>
+
+            <div className="flex items-center gap-4 mb-6">
+              <div className="flex-1 h-px bg-slate-200"></div>
+              <span className="text-sm text-slate-500 font-medium uppercase tracking-wider">ATAU FORMULIR MANUAL</span>
+              <div className="flex-1 h-px bg-slate-200"></div>
+            </div>
+
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label className="block text-xs font-bold text-academic-700 uppercase mb-2">Nama Lengkap *</label>
