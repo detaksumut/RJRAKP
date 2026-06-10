@@ -427,6 +427,15 @@ export default function EditorPublications() {
                 border-bottom: 2px solid rgba(255,255,255,0.2);
                 padding-bottom: 15px;
                 text-align: center;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+              }
+              .header img {
+                height: 60px;
+                object-fit: contain;
+                filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
               }
               .header span {
                 font-size: 14px;
@@ -491,6 +500,7 @@ export default function EditorPublications() {
           </head>
           <body>
             <div class="header">
+              <img src="https://rjrakp.com/logo-rjrakp.png" alt="Logo RJRAKP" />
               <span>Rumah Jurnal RJRAKP</span>
             </div>
             
