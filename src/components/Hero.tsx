@@ -129,7 +129,7 @@ export default function Hero() {
               <a 
                 href="/portofolio-rjrakp.png" 
                 download="Portofolio_RJRAKP.png"
-                className="flex items-center justify-center gap-2 px-6 py-3.5 border border-amber-400 text-[11px] font-black rounded-xl text-amber-400 bg-amber-400/10 hover:bg-amber-400/20 hover:text-amber-300 transition-all hover:-translate-y-0.5 duration-200 uppercase tracking-widest"
+                className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-black text-[11px] shadow-lg text-emerald-950 bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-500 hover:to-teal-500 hover:shadow-emerald-500/30 hover:shadow-xl transition-all hover:-translate-y-0.5 duration-200 uppercase tracking-widest"
               >
                 Unduh Portofolio
               </a>
