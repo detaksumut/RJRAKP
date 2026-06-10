@@ -144,7 +144,7 @@ serve(async (req) => {
     const responseHeaders = new Headers(corsHeaders);
     // Use application/xml or text/xml for Crossref. Content-Disposition allows it to be downloaded as a file.
     responseHeaders.set('Content-Type', 'text/xml; charset=utf-8');
-    responseHeaders.set('Content-Disposition', \`attachment; filename="crossref-deposit-${articleId}.xml"\`);
+    responseHeaders.set('Content-Disposition', `attachment; filename="crossref-deposit-${articleId}.xml"`);
 
     return new Response(xmlContent, {
       headers: responseHeaders,
