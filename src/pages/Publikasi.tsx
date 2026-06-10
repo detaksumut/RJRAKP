@@ -46,9 +46,9 @@ function JournalCover({ name, slug, volume, issue, year, eIssn, pIssn, articles 
       <div className="absolute -right-16 -top-16 w-36 h-36 rounded-full bg-white/5 blur-xl group-hover:scale-110 transition-transform duration-500" />
       
       {/* Logo / Header */}
-      <div className="border-b border-white/20 pb-3 mb-4 z-10 flex flex-col items-center gap-3 text-center">
-        <img src="/logo-rjrakp.png" alt="Logo RJRAKP" className="h-12 object-contain filter brightness-0 invert opacity-100 drop-shadow-md" />
-        <span className="text-[10px] font-bold tracking-[0.2em] text-accent-100 uppercase">Rumah Jurnal RJRAKP</span>
+      <div className="border-b border-white/20 pb-3 mb-4 z-10 flex flex-col items-center justify-center gap-3 text-center w-full">
+        <img src="/logo-rjrakp.png" alt="Logo RJRAKP" className="h-12 w-auto mx-auto object-contain filter brightness-0 invert opacity-100 drop-shadow-md" />
+        <span className="text-[10px] font-bold tracking-[0.2em] text-accent-100 uppercase w-full block text-center">Rumah Jurnal RJRAKP</span>
       </div>
 
       {/* Journal Title */}
