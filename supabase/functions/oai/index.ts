@@ -117,7 +117,7 @@ serve(async (req) => {
 </OAI-PMH>`;
 
     return new Response(xmlResponse, {
-      headers: { ...corsHeaders, 'Content-Type': 'application/xml' },
+      headers: { ...corsHeaders, 'Content-Type': 'text/xml' },
       status: 200,
     })
   } catch (error: any) {
