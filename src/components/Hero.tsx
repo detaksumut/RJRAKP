@@ -127,6 +127,13 @@ export default function Hero() {
                 Membaca Jurnal <ArrowRight className="w-3.5 h-3.5" />
               </a>
               <a 
+                href="/portofolio-rjrakp.png" 
+                download="Portofolio_RJRAKP.png"
+                className="flex items-center justify-center gap-2 px-6 py-3.5 border border-accent-400 text-[11px] font-black rounded-xl text-accent-400 bg-transparent hover:bg-accent-400/10 hover:text-accent-300 transition-all hover:-translate-y-0.5 duration-200 uppercase tracking-widest"
+              >
+                Unduh Portofolio
+              </a>
+              <a 
                 href="/pedoman" 
                 className="flex items-center justify-center gap-2 px-6 py-3.5 border border-white/10 text-[11px] font-black rounded-xl text-white/80 bg-white/5 hover:bg-white/10 hover:text-white transition-all hover:-translate-y-0.5 duration-200 uppercase tracking-widest"
               >
