@@ -5,6 +5,10 @@
       "destination": "/api/sitemap"
     },
     {
+      "source": "/oai",
+      "destination": "https://abmjieqcumlskannfkdl.supabase.co/functions/v1/oai"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
