@@ -1,0 +1,260 @@
+import React, { useState, useEffect } from 'react';
+import DashboardLayout from '../../components/DashboardLayout';
+import { supabase } from '../../lib/supabase';
+import { useAuth } from '../../contexts/AuthContext';
+import { Save, Lock, CreditCard } from 'lucide-react';
+
+export default function UserProfile() {
+  const { user } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [passwordLoading, setPasswordLoading] = useState(false);
+  const [successMsg, setSuccessMsg] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
+  const [passSuccessMsg, setPassSuccessMsg] = useState('');
+  const [passErrorMsg, setPassErrorMsg] = useState('');
+  
+  const [formData, setFormData] = useState({
+    bank_name: '',
+    bank_account_number: '',
+    bank_account_holder: ''
+  });
+
+  const [passwords, setPasswords] = useState({
+    newPassword: '',
+    confirmPassword: '',
+  });
+
+  useEffect(() => {
+    if (user?.id) {
+      fetchUserProfile();
+    }
+  }, [user?.id]);
+
+  const fetchUserProfile = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('bank_name, bank_account_number, bank_account_holder')
+        .eq('id', user?.id)
+        .single();
+
+      if (error) throw error;
+      if (data) {
+        setFormData({
+          bank_name: data.bank_name || '',
+          bank_account_number: data.bank_account_number || '',
+          bank_account_holder: data.bank_account_holder || ''
+        });
+      }
+    } catch (err) {
+      console.error('Error fetching profile:', err);
+    }
+  };
+
+  const handleUpdateBankInfo = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSuccessMsg('');
+    setErrorMsg('');
+    setLoading(true);
+    try {
+      const { error } = await supabase
+        .from('users')
+        .update({
+          bank_name: formData.bank_name,
+          bank_account_number: formData.bank_account_number,
+          bank_account_holder: formData.bank_account_holder
+        })
+        .eq('id', user?.id);
+
+      if (error) throw error;
+      setSuccessMsg('Data rekening berhasil disimpan.');
+      setTimeout(() => setSuccessMsg(''), 3000);
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Gagal menyimpan data rekening');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpdatePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPassSuccessMsg('');
+    setPassErrorMsg('');
+
+    if (passwords.newPassword !== passwords.confirmPassword) {
+      setPassErrorMsg('Password baru dan konfirmasi tidak cocok.');
+      return;
+    }
+
+    if (passwords.newPassword.length < 6) {
+      setPassErrorMsg('Password minimal 6 karakter.');
+      return;
+    }
+
+    setPasswordLoading(true);
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: passwords.newPassword
+      });
+
+      if (error) throw error;
+      
+      setPassSuccessMsg('Password berhasil diperbarui.');
+      setPasswords({ newPassword: '', confirmPassword: '' });
+      setTimeout(() => setPassSuccessMsg(''), 3000);
+    } catch (err: any) {
+      setPassErrorMsg(err.message || 'Gagal mengubah password');
+    } finally {
+      setPasswordLoading(false);
+    }
+  };
+
+  return (
+    <DashboardLayout>
+      <div className="max-w-3xl mx-auto">
+        <h1 className="text-2xl font-serif font-bold text-academic-900 mb-6">Profil & Rekening</h1>
+
+        {/* Bank Account Section */}
+        <div className="bg-white rounded-xl border border-academic-200 shadow-sm overflow-hidden mb-6">
+          <div className="px-6 py-4 border-b border-academic-100 flex items-center gap-2 bg-academic-50">
+            <CreditCard className="w-5 h-5 text-academic-600" />
+            <h2 className="font-bold text-lg text-academic-900">Data Rekening Bank (Untuk Pembayaran Honorarium)</h2>
+          </div>
+          
+          <div className="p-6">
+            {successMsg && (
+              <div className="mb-6 p-4 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-lg text-sm font-medium">
+                {successMsg}
+              </div>
+            )}
+            
+            {errorMsg && (
+              <div className="mb-6 p-4 bg-rose-50 text-rose-800 border border-rose-200 rounded-lg text-sm font-medium">
+                {errorMsg}
+              </div>
+            )}
+
+            <form onSubmit={handleUpdateBankInfo} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-bold text-academic-900 mb-1">
+                    Nama Bank
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.bank_name}
+                    onChange={(e) => setFormData({...formData, bank_name: e.target.value})}
+                    className="w-full px-4 py-2 border border-academic-300 rounded-lg focus:ring-2 focus:ring-brand-500"
+                    placeholder="Contoh: BCA, BSI, Mandiri"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-academic-900 mb-1">
+                    Nomor Rekening
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.bank_account_number}
+                    onChange={(e) => setFormData({...formData, bank_account_number: e.target.value})}
+                    className="w-full px-4 py-2 border border-academic-300 rounded-lg focus:ring-2 focus:ring-brand-500"
+                    placeholder="Contoh: 1234567890"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-academic-900 mb-1">
+                  Nama Pemilik Rekening (Sesuai Buku Tabungan)
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.bank_account_holder}
+                  onChange={(e) => setFormData({...formData, bank_account_holder: e.target.value})}
+                  className="w-full px-4 py-2 border border-academic-300 rounded-lg focus:ring-2 focus:ring-brand-500"
+                  placeholder="Contoh: Budi Santoso"
+                />
+              </div>
+
+              <div className="pt-4">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="flex items-center gap-2 bg-brand-600 text-white px-6 py-2.5 rounded-lg font-bold hover:bg-brand-700 disabled:opacity-50 transition-colors"
+                >
+                  <Save className="w-4 h-4" />
+                  {loading ? 'Menyimpan...' : 'Simpan Data Rekening'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        {/* Password Section */}
+        <div className="bg-white rounded-xl border border-academic-200 shadow-sm overflow-hidden mb-6">
+          <div className="px-6 py-4 border-b border-academic-100 flex items-center gap-2 bg-academic-50">
+            <Lock className="w-5 h-5 text-academic-600" />
+            <h2 className="font-bold text-lg text-academic-900">Ubah Password</h2>
+          </div>
+          
+          <div className="p-6">
+            {passSuccessMsg && (
+              <div className="mb-6 p-4 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-lg text-sm font-medium">
+                {passSuccessMsg}
+              </div>
+            )}
+            
+            {passErrorMsg && (
+              <div className="mb-6 p-4 bg-rose-50 text-rose-800 border border-rose-200 rounded-lg text-sm font-medium">
+                {passErrorMsg}
+              </div>
+            )}
+
+            <form onSubmit={handleUpdatePassword} className="space-y-4">
+              <div>
+                <label className="block text-sm font-bold text-academic-900 mb-1">
+                  Password Baru
+                </label>
+                <input
+                  type="password"
+                  required
+                  value={passwords.newPassword}
+                  onChange={(e) => setPasswords({...passwords, newPassword: e.target.value})}
+                  className="w-full px-4 py-2 border border-academic-300 rounded-lg focus:ring-2 focus:ring-brand-500"
+                  placeholder="Masukkan password baru"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-academic-900 mb-1">
+                  Konfirmasi Password Baru
+                </label>
+                <input
+                  type="password"
+                  required
+                  value={passwords.confirmPassword}
+                  onChange={(e) => setPasswords({...passwords, confirmPassword: e.target.value})}
+                  className="w-full px-4 py-2 border border-academic-300 rounded-lg focus:ring-2 focus:ring-brand-500"
+                  placeholder="Ulangi password baru"
+                />
+              </div>
+
+              <div className="pt-4">
+                <button
+                  type="submit"
+                  disabled={passwordLoading}
+                  className="flex items-center gap-2 bg-academic-800 text-white px-6 py-2.5 rounded-lg font-bold hover:bg-academic-900 disabled:opacity-50 transition-colors"
+                >
+                  <Save className="w-4 h-4" />
+                  {passwordLoading ? 'Menyimpan...' : 'Simpan Password'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </DashboardLayout>
+  );
+}

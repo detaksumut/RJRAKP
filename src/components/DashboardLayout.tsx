@@ -22,6 +22,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         { label: 'Status Review', path: '/dashboard/author/review-status', icon: Bell },
         { label: 'Acceptance Letter', path: '/dashboard/author/loa', icon: Settings },
         { label: 'Sertifikat Publikasi', path: '/dashboard/author/certificates', icon: User },
+        { label: 'Profil & Rekening', path: '/dashboard/profile', icon: User },
       ];
     } else if (role === 'reviewer') {
       return [
@@ -29,6 +30,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         { label: 'Artikel Ditugaskan', path: '/dashboard/reviewer/assignments', icon: FileText },
         { label: 'Review Saya', path: '/dashboard/reviewer/my-reviews', icon: Edit },
         { label: 'Riwayat Review', path: '/dashboard/reviewer/history', icon: Edit },
+        { label: 'Profil & Rekening', path: '/dashboard/profile', icon: User },
       ];
     } else if (role === 'editor') {
       return [
@@ -38,6 +40,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         { label: 'Pemeriksaan Hasil Reviewer', path: '/dashboard/editor/decisions', icon: FileText },
         { label: 'Riwayat Keputusan', path: '/dashboard/editor/decisions-history', icon: FileText },
         { label: 'Generate Cover & Publikasi', path: '/dashboard/editor/publications', icon: BarChart },
+        { label: 'Profil & Rekening', path: '/dashboard/profile', icon: User },
       ];
     } else if (role === 'admin') {
       return [
@@ -51,7 +54,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         { label: 'Manajemen Pengguna', path: '/dashboard/admin/users', icon: User },
         { label: 'Keuangan & Honor', path: '/dashboard/admin/finance', icon: DollarSign },
         { label: 'Activity Logs', path: '/dashboard/admin/logs', icon: BarChart },
-        { label: 'Pengaturan Akun', path: '/dashboard/admin/settings', icon: Settings },
+        { label: 'Profil & Rekening', path: '/dashboard/profile', icon: User },
+        { label: 'Pengaturan Sistem', path: '/dashboard/admin/settings', icon: Settings },
       ];
     }
     return [];

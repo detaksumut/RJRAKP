@@ -58,6 +58,7 @@ import AdminFinance from './pages/dashboards/AdminFinance';
 import Unauthorized from './pages/dashboards/Unauthorized';
 import SetupAdmin from './pages/SetupAdmin';
 import AuthCallback from './pages/AuthCallback';
+import UserProfile from './pages/dashboards/UserProfile';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './contexts/AuthContext';
 
@@ -105,6 +106,10 @@ export default function App() {
             <Route path="/proses-peer-review" element={<PeerReview />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
             <Route path="/unauthorized" element={<Unauthorized />} />
+            
+            <Route element={<ProtectedRoute allowedRoles={['admin', 'editor', 'reviewer', 'author']} />}>
+               <Route path="/dashboard/profile" element={<UserProfile />} />
+            </Route>
             
             <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
                <Route path="/admin/indexing" element={<AdminIndexing />} />

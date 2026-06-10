@@ -22,7 +22,7 @@ export default function AdminFinance() {
           status,
           description,
           payment_date,
-          users (full_name, email),
+          users (full_name, email, bank_name, bank_account_number, bank_account_holder),
           articles (title),
           honorarium_rates (role_name)
         `)
@@ -110,7 +110,17 @@ export default function AdminFinance() {
                   <tr key={p.id} className="hover:bg-academic-50/50 transition-colors">
                     <td className="p-4">
                       <div className="font-bold text-academic-900">{p.users?.full_name}</div>
-                      <div className="text-xs text-brand-600 font-medium">{p.honorarium_rates?.role_name}</div>
+                      <div className="text-xs text-brand-600 font-medium mb-1">{p.honorarium_rates?.role_name}</div>
+                      {p.users?.bank_account_number ? (
+                        <div className="text-[10px] text-academic-600 bg-academic-100/50 p-1.5 rounded border border-academic-200 mt-1">
+                          <span className="font-bold">{p.users.bank_name}</span> - {p.users.bank_account_number}<br/>
+                          <span className="text-academic-500">a.n {p.users.bank_account_holder}</span>
+                        </div>
+                      ) : (
+                        <div className="text-[10px] text-rose-500 bg-rose-50 p-1.5 rounded border border-rose-100 mt-1 italic">
+                          Belum mengisi data rekening
+                        </div>
+                      )}
                     </td>
                     <td className="p-4">
                       <div className="text-sm text-academic-800 line-clamp-2">{p.articles?.title || p.description}</div>
