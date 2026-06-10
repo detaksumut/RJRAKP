@@ -20,8 +20,8 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY') ?? '';
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const baseUrl = 'https://rjrakp.id/oai';
-    const adminEmail = 'admin@rjrakp.id';
+    const baseUrl = 'https://rjrakp.com/api/oai';
+    const adminEmail = 'rjrakp@rjrakp.com';
     const repositoryName = 'Rumah Jurnal RJRAKP Repository';
     const date = new Date().toISOString();
 
@@ -59,7 +59,7 @@ serve(async (req) => {
       let records = '';
       if (articles && articles.length > 0) {
         articles.forEach((art: any) => {
-          const identifier = `oai:rjrakp.id:article/${art.id}`;
+          const identifier = `oai:rjrakp.com:article/${art.id}`;
           const datestamp = new Date(art.updated_at || Date.now()).toISOString();
           
           if (verb === 'ListIdentifiers') {
@@ -90,7 +90,7 @@ serve(async (req) => {
                   <dc:date>${datestamp.split('T')[0]}</dc:date>
                   <dc:type>info:eu-repo/semantics/article</dc:type>
                   <dc:format>application/pdf</dc:format>
-                  <dc:identifier>https://rjrakp.id/article/${art.slug}</dc:identifier>
+                  <dc:identifier>https://rjrakp.com/article/${art.slug}</dc:identifier>
                   <dc:language>id</dc:language>
                 </oai_dc:dc>
               </metadata>
