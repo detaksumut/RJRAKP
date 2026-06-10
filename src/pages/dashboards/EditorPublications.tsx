@@ -645,9 +645,9 @@ export default function EditorPublications() {
                   <div className={`w-64 h-90 rounded-2xl shadow-2xl relative overflow-hidden flex flex-col text-white bg-gradient-to-br ${coverGradient} border border-white/10 p-5 select-none shrink-0`}>
                     <div className="absolute -right-16 -top-16 w-36 h-36 rounded-full bg-white/5 blur-xl" />
                     <div className="relative z-10">
-                      <div className="border-b-2 border-white/20 pb-3 mb-4 flex flex-col gap-2">
-                        <img src="/logo-rjrakp.png" alt="Logo RJRAKP" className="h-6 object-contain self-start filter brightness-0 invert opacity-90" />
-                        <span className="text-[9px] font-bold tracking-widest text-white/70 uppercase">Rumah Jurnal RJRAKP</span>
+                      <div className="border-b-2 border-white/20 pb-4 mb-4 flex flex-col items-center gap-3 text-center">
+                        <img src="/logo-rjrakp.png" alt="Logo RJRAKP" className="h-12 object-contain filter brightness-0 invert opacity-100 drop-shadow-md" />
+                        <span className="text-[10px] font-bold tracking-[0.2em] text-white/80 uppercase">Rumah Jurnal RJRAKP</span>
                       </div>
                     </div>
 
