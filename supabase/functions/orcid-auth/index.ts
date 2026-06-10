@@ -92,7 +92,8 @@ serve(async (req) => {
         email: generatedEmail,
         full_name: name,
         role: 'author',
-        status: 'APPROVED'
+        status: 'APPROVED',
+        orcid_id: orcidId
       });
 
       if (insertError) {
