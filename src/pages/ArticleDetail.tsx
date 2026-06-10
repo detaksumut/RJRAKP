@@ -108,7 +108,7 @@ export default function ArticleDetail() {
 
       try {
         // Politeness practice for Crossref API
-        const email = 'rjrakp@rj.beritaindonesia.news'; 
+        const email = 'redaksi@rjrakp.com'; 
         const res = await fetch(`https://api.crossref.org/works/${doi}?mailto=${email}`);
         
         if (!res.ok) return;

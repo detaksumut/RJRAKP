@@ -72,7 +72,7 @@ export default function Footer() {
               <li className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-accent-600 shrink-0" />
                 <span className="text-academic-600 text-xs font-semibold">
-                  rjrakp@rj.beritaindonesia.news
+                  redaksi@rjrakp.com
                 </span>
               </li>
             </ul>
