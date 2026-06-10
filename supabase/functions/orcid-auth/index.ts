@@ -59,8 +59,13 @@ serve(async (req) => {
     const { data: existingUsers, error: searchError } = await supabaseAdmin.auth.admin.listUsers();
     
     let userExists = false;
+    let userId = null;
     if (existingUsers && existingUsers.users) {
-      userExists = existingUsers.users.some(u => u.email === generatedEmail);
+      const foundUser = existingUsers.users.find(u => u.email === generatedEmail);
+      if (foundUser) {
+        userExists = true;
+        userId = foundUser.id;
+      }
     }
 
     if (!userExists) {
@@ -77,16 +82,22 @@ serve(async (req) => {
       });
 
       if (createError) throw createError;
+      userId = newUser?.user?.id;
+    }
 
-      // Ensure profile exists in users table (triggers usually do this, but just in case)
-      if (newUser && newUser.user) {
-        await supabaseAdmin.from('users').upsert({
-          id: newUser.user.id,
-          email: generatedEmail,
-          full_name: name,
-          role: 'author',
-          orcid: orcidId
-        });
+    // Ensure profile exists in users table
+    if (userId) {
+      const { error: insertError } = await supabaseAdmin.from('users').upsert({
+        id: userId,
+        email: generatedEmail,
+        full_name: name,
+        role: 'author',
+        status: 'APPROVED',
+        orcid: orcidId
+      });
+
+      if (insertError) {
+        console.error("Error inserting into users table:", insertError);
       }
     }
 
