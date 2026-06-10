@@ -203,7 +203,7 @@ export default function AdminSettings() {
               {ratesLoading ? (
                 <p className="text-academic-500">Memuat tarif...</p>
               ) : (
-                rates.map((rate) => (
+                rates?.map((rate) => (
                   <div key={rate.id} className="p-4 border border-academic-200 rounded-lg bg-academic-50 flex flex-col justify-between">
                     <div>
                       <p className="font-bold text-academic-900 text-sm">{rate.role_name}</p>
@@ -242,8 +242,8 @@ export default function AdminSettings() {
               {ratesLoading ? (
                 <p className="text-academic-500">Memuat peran...</p>
               ) : (
-                rates.filter(r => !r.role_key.includes('reviewer') && r.role_key !== 'editor').map((rate) => {
-                  const assignedUser = globalStaff.find(s => s.role_key === rate.role_key)?.user_id || '';
+                rates?.filter(r => !r.role_key?.includes('reviewer') && r.role_key !== 'editor').map((rate) => {
+                  const assignedUser = globalStaff?.find(s => s.role_key === rate.role_key)?.user_id || '';
                   return (
                     <div key={rate.role_key} className="p-4 border border-academic-200 rounded-lg bg-academic-50 flex flex-col justify-between">
                       <div className="mb-3">
@@ -255,7 +255,7 @@ export default function AdminSettings() {
                         className="w-full px-3 py-2 border border-academic-300 rounded focus:ring-2 focus:ring-brand-500 text-sm"
                       >
                         <option value="">-- Belum Ditugaskan --</option>
-                        {users.map(u => (
+                        {users?.map(u => (
                           <option key={u.id} value={u.id}>{u.full_name}</option>
                         ))}
                       </select>
