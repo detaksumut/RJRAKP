@@ -157,6 +157,9 @@ export default function AdminIssues() {
           // Update status to 'published'
           await supabase.from('articles').update({ status: 'published' }).in('id', articleIds);
           
+          // Generate Honorariums for the Issue Staff (Direktur, SDM, dll)
+          await supabase.rpc('generate_issue_honorariums', { p_issue_id: issue.id });
+          
           // Create publications if not exist
           const { data: existingPubs } = await supabase.from('publications').select('article_id').in('article_id', articleIds);
           const existingIds = existingPubs?.map(p => p.article_id) || [];

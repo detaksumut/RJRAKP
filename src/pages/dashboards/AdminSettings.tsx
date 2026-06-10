@@ -15,10 +15,61 @@ export default function AdminSettings() {
 
   const [rates, setRates] = useState<any[]>([]);
   const [ratesLoading, setRatesLoading] = useState(false);
+  const [users, setUsers] = useState<any[]>([]);
+  const [globalStaff, setGlobalStaff] = useState<any[]>([]);
 
   useEffect(() => {
     fetchRates();
+    fetchUsersAndStaff();
   }, []);
+
+  const fetchUsersAndStaff = async () => {
+    try {
+      const { data: usersData } = await supabase.from('users').select('id, full_name, role').order('full_name');
+      if (usersData) setUsers(usersData);
+
+      const { data: staffData } = await supabase
+        .from('staff_assignments')
+        .select('*')
+        .is('issue_id', null)
+        .is('article_id', null);
+      if (staffData) setGlobalStaff(staffData);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleAssignGlobalStaff = async (roleKey: string, userId: string) => {
+    try {
+      if (!userId) {
+        // Delete assignment
+        await supabase
+          .from('staff_assignments')
+          .delete()
+          .eq('role_key', roleKey)
+          .is('issue_id', null)
+          .is('article_id', null);
+      } else {
+        // Upsert assignment (check if exists first)
+        const existing = globalStaff.find(s => s.role_key === roleKey);
+        if (existing) {
+          await supabase
+            .from('staff_assignments')
+            .update({ user_id: userId })
+            .eq('id', existing.id);
+        } else {
+          await supabase
+            .from('staff_assignments')
+            .insert({ user_id: userId, role_key: roleKey });
+        }
+      }
+      fetchUsersAndStaff();
+      setSuccessMsg('Penugasan staf berhasil disimpan.');
+      setTimeout(() => setSuccessMsg(''), 3000);
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Gagal menyimpan penugasan staf');
+    }
+  };
 
   const fetchRates = async () => {
     try {
@@ -176,6 +227,43 @@ export default function AdminSettings() {
               )}
             </div>
             <p className="text-xs text-academic-500 mt-4 italic">Tarif akan langsung disimpan saat Anda selesai mengetik angka.</p>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl border border-academic-200 shadow-sm overflow-hidden mb-6">
+          <div className="px-6 py-4 border-b border-academic-100 flex items-center gap-2 bg-academic-50">
+            <h2 className="font-bold text-lg text-academic-900">Penugasan Staf Tetap (Global)</h2>
+          </div>
+          <div className="p-6">
+            <p className="text-sm text-academic-600 mb-6">
+              Pilih pengguna yang menjabat posisi tetap di jurnal ini (seperti Direktur, SDM, dll). Mereka akan otomatis menerima honor setiap kali ada **Edisi Baru** yang diterbitkan.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {ratesLoading ? (
+                <p className="text-academic-500">Memuat peran...</p>
+              ) : (
+                rates.filter(r => !r.role_key.includes('reviewer') && r.role_key !== 'editor').map((rate) => {
+                  const assignedUser = globalStaff.find(s => s.role_key === rate.role_key)?.user_id || '';
+                  return (
+                    <div key={rate.role_key} className="p-4 border border-academic-200 rounded-lg bg-academic-50 flex flex-col justify-between">
+                      <div className="mb-3">
+                        <p className="font-bold text-academic-900 text-sm">{rate.role_name}</p>
+                      </div>
+                      <select
+                        value={assignedUser}
+                        onChange={(e) => handleAssignGlobalStaff(rate.role_key, e.target.value)}
+                        className="w-full px-3 py-2 border border-academic-300 rounded focus:ring-2 focus:ring-brand-500 text-sm"
+                      >
+                        <option value="">-- Belum Ditugaskan --</option>
+                        {users.map(u => (
+                          <option key={u.id} value={u.id}>{u.full_name}</option>
+                        ))}
+                      </select>
+                    </div>
+                  );
+                })
+              )}
+            </div>
           </div>
         </div>
       </div>
