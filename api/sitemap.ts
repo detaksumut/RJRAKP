@@ -20,7 +20,7 @@ export default async function handler(req: any, res: any) {
     }
 
     // 2. Generate XML
-    const domain = 'https://rj.beritaindonesia.news';
+    const domain = 'https://rjrakp.com';
     
     let xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
