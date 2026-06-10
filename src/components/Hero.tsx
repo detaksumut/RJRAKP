@@ -122,20 +122,20 @@ export default function Hero() {
             <div className="mt-8 flex flex-wrap gap-3 items-center">
               <a 
                 href="/#jurnal" 
-                className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-black text-[11px] shadow-lg text-brand-950 bg-gradient-to-r from-accent-400 to-amber-400 hover:from-accent-500 hover:to-amber-500 hover:shadow-accent-500/20 hover:shadow-xl transition-all hover:-translate-y-0.5 duration-200 uppercase tracking-widest"
+                className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-black text-xs shadow-lg text-brand-950 bg-gradient-to-r from-accent-400 to-amber-400 hover:from-accent-500 hover:to-amber-500 hover:shadow-accent-500/20 hover:shadow-xl transition-all hover:-translate-y-0.5 duration-200 uppercase tracking-widest"
               >
                 Membaca Jurnal <ArrowRight className="w-3.5 h-3.5" />
               </a>
               <a 
                 href="/portofolio-rjrakp.png" 
                 download="Portofolio_RJRAKP.png"
-                className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-black text-[11px] shadow-lg text-emerald-950 bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-500 hover:to-teal-500 hover:shadow-emerald-500/30 hover:shadow-xl transition-all hover:-translate-y-0.5 duration-200 uppercase tracking-widest"
+                className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-black text-xs shadow-lg text-emerald-950 bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-500 hover:to-teal-500 hover:shadow-emerald-500/30 hover:shadow-xl transition-all hover:-translate-y-0.5 duration-200 uppercase tracking-widest"
               >
                 Unduh Portofolio
               </a>
               <a 
                 href="/pedoman" 
-                className="flex items-center justify-center gap-2 px-6 py-3.5 border border-white/10 text-[11px] font-black rounded-xl text-white/80 bg-white/5 hover:bg-white/10 hover:text-white transition-all hover:-translate-y-0.5 duration-200 uppercase tracking-widest"
+                className="flex items-center justify-center gap-2 px-6 py-3.5 border border-white/10 text-xs font-black rounded-xl text-white/80 bg-white/5 hover:bg-white/10 hover:text-white transition-all hover:-translate-y-0.5 duration-200 uppercase tracking-widest"
               >
                 Panduan Penulis
               </a>
