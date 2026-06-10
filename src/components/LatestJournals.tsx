@@ -41,20 +41,7 @@ export default function LatestJournals() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {journals.map((journal: any) => {
               const getJournalImage = (slug: string) => {
-                switch (slug) {
-                  case 'audit-kebijakan-publik':
-                    return 'https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=800&q=80';
-                  case 'hukum-dan-keadilan':
-                    return 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=800&q=80';
-                  case 'pendidikan-dan-pembelajaran':
-                    return 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=800&q=80';
-                  case 'teknik-dan-teknologi':
-                    return 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80';
-                  case 'agama-dan-peradaban-islam':
-                    return 'https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=800&q=80';
-                  default:
-                    return 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=800&q=80';
-                }
+                return '/logo-rjrakp.png';
               };
               const scopes = journal.journal_scopes?.map((s: any) => s.name).join(', ') || journal.metadata?.focus || '-';
               const image = getJournalImage(journal.slug);
@@ -62,12 +49,12 @@ export default function LatestJournals() {
 
               return (
               <div key={journal.id} className="group rounded-xl border border-academic-200 overflow-hidden bg-white shadow-sm flex flex-col h-full hover:shadow-md transition-shadow">
-                <div className="relative h-48 w-full overflow-hidden border-b border-academic-100">
+                <div className="relative h-48 w-full overflow-hidden border-b border-academic-100 flex items-center justify-center bg-slate-50 p-6">
                   <div className={`absolute inset-0 opacity-10 ${color}`} />
                   <img 
                     src={image} 
                     alt={journal.name} 
-                    className="w-full h-full object-cover grayscale opacity-90 group-hover:scale-105 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500"
+                    className="w-full h-full object-contain filter drop-shadow-md group-hover:scale-105 transition-all duration-500 z-10"
                   />
                 </div>
                 <div className="p-5 flex flex-col flex-grow">
