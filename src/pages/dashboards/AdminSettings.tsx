@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
 import { supabase } from '../../lib/supabase';
 import { Save, Lock } from 'lucide-react';
