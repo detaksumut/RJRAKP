@@ -296,6 +296,9 @@ export default function EditorPublications() {
 
       if (artErr) throw artErr;
 
+      // 2.5 Generate Honorariums (Call RPC)
+      await supabase.rpc('generate_article_honorariums', { p_article_id: article.id });
+
       // 3. Log activity
       await supabase.from('activity_logs').insert({
         user_id: user?.id,
