@@ -4,7 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
 import { 
   BookOpen, Layers, Printer, Plus, Trash2, 
-  FileText, Calendar, Check, AlertCircle, RefreshCw, X 
+  FileText, Calendar, Check, AlertCircle, RefreshCw, X, FileCode
 } from 'lucide-react';
 
 export default function EditorPublications() {
@@ -352,6 +352,11 @@ export default function EditorPublications() {
       console.error(err);
       setError(err.message || 'Gagal menarik artikel dari publikasi.');
     }
+  };
+
+  const handleDownloadXml = (articleId: string) => {
+    const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/crossref-xml?article_id=${articleId}`;
+    window.open(url, '_blank');
   };
 
   // Printable cover window trigger
@@ -703,12 +708,20 @@ export default function EditorPublications() {
                           <p className="text-[10px] text-academic-500 italic">Oleh: {pub.articles?.article_authors?.map((a: any) => a.full_name).join(', ')}</p>
                           <p className="text-[10px] font-mono text-brand-700">DOI: {pub.doi || '-'}</p>
                         </div>
-                        <button
-                          onClick={() => handleUnpublishArticle(pub)}
-                          className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-100 rounded-md font-semibold text-[10px] transition-colors shrink-0"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" /> Batal Terbit
-                        </button>
+                        <div className="flex flex-col gap-1.5 shrink-0">
+                          <button
+                            onClick={() => handleDownloadXml(pub.articles?.id)}
+                            className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-brand-50 hover:bg-brand-100 text-brand-700 border border-brand-100 rounded-md font-semibold text-[10px] transition-colors"
+                          >
+                            <FileCode className="w-3.5 h-3.5" /> XML Crossref
+                          </button>
+                          <button
+                            onClick={() => handleUnpublishArticle(pub)}
+                            className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-100 rounded-md font-semibold text-[10px] transition-colors"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" /> Batal Terbit
+                          </button>
+                        </div>
                       </div>
                     ))
                   )}
