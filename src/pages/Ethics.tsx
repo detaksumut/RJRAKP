@@ -53,6 +53,14 @@ export default function Ethics() {
                   <li>Menjaga kualitas ilmiah jurnal.</li>
                 </ol>
 
+                <h2 className="text-xl font-bold font-serif text-brand-900 mt-8 mb-4 border-b border-brand-100 pb-2">Penggunaan Artificial Intelligence (GenAI)</h2>
+                <p>Sesuai dengan pedoman COPE dan standar pengindeksan global (Scopus/WOS), Rumah Jurnal RJRAKP menetapkan kebijakan berikut terkait penggunaan AI Generatif (seperti ChatGPT, Claude, dll):</p>
+                <ol className="list-decimal pl-6 space-y-2">
+                  <li><strong>AI Tidak Boleh Menjadi Penulis:</strong> Program komputer, bot, atau alat AI apa pun tidak memenuhi syarat kepengarangan (authorship) dan tidak boleh dicantumkan sebagai penulis.</li>
+                  <li><strong>Kewajiban Deklarasi:</strong> Penulis yang menggunakan GenAI untuk membantu penulisan naskah (seperti parafrase atau perbaikan bahasa) wajib mendeklarasikannya secara transparan di bagian Acknowledgement atau Metodologi.</li>
+                  <li><strong>Tanggung Jawab Penuh:</strong> Penulis manusia bertanggung jawab penuh atas keakuratan, orisinalitas, dan integritas seluruh isi naskah, termasuk bagian yang dibantu oleh AI. Penggunaan AI untuk memalsukan data (fabrikasi) adalah pelanggaran etika berat.</li>
+                </ol>
+
                 <h2 className="text-xl font-bold font-serif text-brand-900 mt-8 mb-4 border-b border-brand-100 pb-2">Pelanggaran Etika</h2>
                 <p>Rumah Jurnal RJRAKP tidak mentolerir:</p>
                 <ul className="list-disc pl-6 space-y-2">
@@ -62,6 +70,7 @@ export default function Ethics() {
                   <li>Duplikasi publikasi</li>
                   <li>Penyalahgunaan sitasi</li>
                   <li>Konflik kepentingan yang tidak diungkapkan</li>
+                  <li>Penggunaan GenAI yang tidak dideklarasikan atau melanggar hak cipta</li>
                 </ul>
                 
                 <p className="font-medium mt-4 p-4 bg-brand-50 rounded-lg text-brand-900">
