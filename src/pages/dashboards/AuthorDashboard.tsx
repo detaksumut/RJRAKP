@@ -126,6 +126,32 @@ export default function AuthorDashboard() {
                   <dt className="text-xs font-bold text-academic-400 uppercase tracking-widest mb-1">Email Terdaftar</dt>
                   <dd className="text-academic-900 font-medium">{profile.email}</dd>
                 </div>
+                
+                {(profile.orcid_id || profile.scopus_id || profile.wos_id) && (
+                  <div className="col-span-1 sm:col-span-2 mt-2 pt-4 border-t border-academic-100">
+                    <dt className="text-xs font-bold text-academic-400 uppercase tracking-widest mb-3">Identitas Peneliti Global</dt>
+                    <div className="flex flex-wrap gap-4">
+                      {profile.orcid_id && (
+                        <a href={`https://orcid.org/${profile.orcid_id}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-[#A6CE39]/10 text-[#8eb82b] px-3 py-1.5 rounded-full text-sm font-bold hover:bg-[#A6CE39]/20 transition-colors">
+                          <img src="/ORCID.png" alt="ORCID" className="h-4" onError={(e) => { e.currentTarget.src = 'https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png'; }} />
+                          {profile.orcid_id}
+                        </a>
+                      )}
+                      {profile.scopus_id && (
+                        <a href={`https://www.scopus.com/authid/detail.uri?authorId=${profile.scopus_id}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-orange-100 text-orange-700 px-3 py-1.5 rounded-full text-sm font-bold hover:bg-orange-200 transition-colors">
+                          <span className="font-serif">Scopus</span>
+                          {profile.scopus_id}
+                        </a>
+                      )}
+                      {profile.wos_id && (
+                        <a href={`https://www.webofscience.com/wos/author/record/${profile.wos_id}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-purple-100 text-purple-700 px-3 py-1.5 rounded-full text-sm font-bold hover:bg-purple-200 transition-colors">
+                          <span className="font-serif">WoS</span>
+                          {profile.wos_id}
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                )}
               </dl>
             </div>
           </div>

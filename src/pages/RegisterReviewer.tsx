@@ -16,6 +16,8 @@ export default function RegisterReviewer() {
     expertise_area: '',
     orcid_id: '',
     google_scholar: '',
+    scopus_id: '',
+    wos_id: '',
     cv_url: '',
     password: '',
     confirm_password: '',
@@ -74,7 +76,9 @@ export default function RegisterReviewer() {
         status: 'PENDING',
         institution: formData.institution,
         faculty: formData.faculty,
-        degree_level: formData.education_level
+        degree_level: formData.education_level,
+        scopus_id: formData.scopus_id,
+        wos_id: formData.wos_id
       });
 
       if (userError) throw userError;
@@ -88,6 +92,8 @@ export default function RegisterReviewer() {
         expertise_area: formData.expertise_area,
         orcid_id: formData.orcid_id,
         google_scholar: formData.google_scholar,
+        scopus_id: formData.scopus_id,
+        wos_id: formData.wos_id,
         cv_url: formData.cv_url, // In a real app we upload the file and get the URL
       });
 
@@ -182,6 +188,17 @@ export default function RegisterReviewer() {
                 <div>
                   <label className="block text-xs font-bold text-academic-700 uppercase mb-2">Google Scholar (Opsional)</label>
                   <input type="text" value={formData.google_scholar} onChange={e => setFormData({...formData, google_scholar: e.target.value})} className="w-full border border-academic-300 rounded-md px-4 py-2 text-sm focus:ring-brand-500" />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-xs font-bold text-academic-700 uppercase mb-2">Scopus ID (Opsional)</label>
+                  <input type="text" value={formData.scopus_id} onChange={e => setFormData({...formData, scopus_id: e.target.value})} placeholder="Contoh: 57211111111" className="w-full border border-academic-300 rounded-md px-4 py-2 text-sm focus:ring-brand-500" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-academic-700 uppercase mb-2">Web of Science ID (Opsional)</label>
+                  <input type="text" value={formData.wos_id} onChange={e => setFormData({...formData, wos_id: e.target.value})} placeholder="Contoh: A-1234-2023" className="w-full border border-academic-300 rounded-md px-4 py-2 text-sm focus:ring-brand-500" />
                 </div>
               </div>
 
