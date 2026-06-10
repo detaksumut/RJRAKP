@@ -16,6 +16,7 @@ export default function RegisterAuthor() {
     education_level: 'S1',
     scopus_id: '',
     wos_id: '',
+    sinta_id: '',
     password: '',
     confirm_password: '',
     agree_terms: false
@@ -81,7 +82,8 @@ export default function RegisterAuthor() {
         study_program: formData.study_program,
         degree_level: formData.education_level,
         scopus_id: formData.scopus_id,
-        wos_id: formData.wos_id
+        wos_id: formData.wos_id,
+        sinta_id: formData.sinta_id
       });
 
       if (userError) throw userError;
@@ -187,6 +189,11 @@ export default function RegisterAuthor() {
                   <label className="block text-xs font-bold text-academic-700 uppercase mb-2">Web of Science ID (Opsional)</label>
                   <input type="text" value={formData.wos_id} onChange={e => setFormData({...formData, wos_id: e.target.value})} placeholder="Contoh: A-1234-2023" className="w-full border border-academic-300 rounded-md px-4 py-2 text-sm focus:ring-brand-500" />
                 </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-academic-700 uppercase mb-2">SINTA ID (Opsional)</label>
+                <input type="text" value={formData.sinta_id} onChange={e => setFormData({...formData, sinta_id: e.target.value})} placeholder="Contoh: 6012345" className="w-full border border-academic-300 rounded-md px-4 py-2 text-sm focus:ring-brand-500" />
               </div>
 
               <div className="border-t border-academic-100 pt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
