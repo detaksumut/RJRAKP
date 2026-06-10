@@ -433,16 +433,18 @@ export default function EditorPublications() {
                 gap: 10px;
               }
               .header img {
-                height: 60px;
+                height: 80px;
                 object-fit: contain;
                 filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
               }
-              .header span {
-                font-size: 14px;
-                font-family: Arial, sans-serif;
-                text-transform: uppercase;
-                letter-spacing: 2px;
-                opacity: 0.8;
+              .header {
+                border-bottom: 2px solid rgba(255,255,255,0.2);
+                padding-bottom: 15px;
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
               }
               .title-container {
                 flex-grow: 1;
@@ -501,7 +503,6 @@ export default function EditorPublications() {
           <body>
             <div class="header">
               <img src="https://rjrakp.com/logo-rjrakp.png" alt="Logo RJRAKP" />
-              <span>Rumah Jurnal RJRAKP</span>
             </div>
             
             <div class="title-container">
@@ -645,9 +646,8 @@ export default function EditorPublications() {
                   <div className={`w-64 h-90 rounded-2xl shadow-2xl relative overflow-hidden flex flex-col text-white bg-gradient-to-br ${coverGradient} border border-white/10 p-5 select-none shrink-0`}>
                     <div className="absolute -right-16 -top-16 w-36 h-36 rounded-full bg-white/5 blur-xl" />
                     <div className="relative z-10 w-full">
-                      <div className="border-b-2 border-white/20 pb-4 mb-4 flex flex-col items-center justify-center gap-3 text-center w-full">
-                        <img src="/logo-rjrakp.png" alt="Logo RJRAKP" className="h-12 w-auto mx-auto object-contain filter brightness-0 invert opacity-100 drop-shadow-md" />
-                        <span className="text-[10px] font-bold tracking-[0.2em] text-white/80 uppercase w-full block text-center">Rumah Jurnal RJRAKP</span>
+                      <div className="border-b-2 border-white/20 pb-4 mb-4 flex flex-col items-center justify-center text-center w-full">
+                        <img src="/logo-rjrakp.png" alt="Logo RJRAKP" className="h-16 w-auto mx-auto object-contain filter brightness-0 invert opacity-100 drop-shadow-md" />
                       </div>
                     </div>
 
