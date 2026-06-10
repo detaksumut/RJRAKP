@@ -20,7 +20,7 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY') ?? '';
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const baseUrl = 'https://rjrakp.com/api/oai';
+    const baseUrl = 'https://rjrakp.com/oai';
     const adminEmail = 'rjrakp@rjrakp.com';
     const repositoryName = 'Rumah Jurnal RJRAKP Repository';
     const date = new Date().toISOString();
