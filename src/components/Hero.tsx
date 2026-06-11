@@ -69,6 +69,10 @@ export default function Hero() {
               <img src="https://upload.wikimedia.org/wikipedia/commons/0/06/ORCID_iD.svg" alt="ORCID Logo" className="h-10 md:h-14" />
             </a>
 
+            <a href="https://www.webofscience.com/wos/author/record/QKY-3514-2026" target="_blank" rel="noopener noreferrer" className="flex items-center transition-all duration-300 transform hover:scale-110 cursor-pointer">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/2/29/Web_of_Science_Logo_12.2023.svg" alt="Web of Science Logo" className="h-9 md:h-12 bg-white/95 rounded-lg px-2.5 py-1.5 shadow-sm" onError={(e) => { e.currentTarget.src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Web_of_Science_Logo_12.2023.svg/512px-Web_of_Science_Logo_12.2023.svg.png'; }} />
+            </a>
+
             <a href="https://explore.openaire.eu/search/advanced/research-outcomes?f0=resultauthor&fv0=Muhibbuddin%20Mr" target="_blank" rel="noopener noreferrer" className="flex items-center transition-all duration-300 transform hover:scale-110 cursor-pointer">
               <img src="/OpenAIRE.png" alt="OpenAIRE Logo" className="h-9 md:h-12 bg-white/95 rounded-lg px-2.5 py-1.5 shadow-sm" />
             </a>
