@@ -172,7 +172,7 @@ export default function Login() {
                   <input type="checkbox" id="remember" className="rounded border-academic-300" />
                   <label htmlFor="remember" className="text-sm text-academic-600">Ingat saya</label>
                 </div>
-                <button type="button" className="text-sm text-brand-600 font-bold hover:underline bg-transparent border-none p-0 cursor-pointer" onClick={(e) => { e.preventDefault(); console.log("Fitur reset password belum tersedia di tahap ini."); setError("Fitur reset password belum tersedia di tahap ini."); }}>Lupa Password?</button>
+                <Link to="/forgot-password" className="text-sm text-brand-600 font-bold hover:underline">Lupa Password?</Link>
               </div>
 
               <button type="submit" disabled={loading} className="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-2.5 rounded-lg transition-colors mt-6 disabled:opacity-50">

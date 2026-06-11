@@ -10,6 +10,7 @@ import About from './pages/About';
 import Pedoman from './pages/Pedoman';
 import AdminIndexing from './pages/AdminIndexing';
 import Login from './pages/Login';
+import ForgotPassword from './pages/ForgotPassword';
 import RegisterSelection from './pages/RegisterSelection';
 import RegisterAuthor from './pages/RegisterAuthor';
 import RegisterReviewer from './pages/RegisterReviewer';
@@ -96,6 +97,7 @@ export default function App() {
             <Route path="/panduan-editor" element={<PanduanEditor />} />
             <Route path="/pedoman" element={<Pedoman />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/register" element={<RegisterSelection />} />
             <Route path="/register/author" element={<RegisterAuthor />} />
             <Route path="/register/reviewer" element={<RegisterReviewer />} />
