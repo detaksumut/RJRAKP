@@ -264,7 +264,7 @@ export default function AuthorSubmit() {
         supabase.functions.invoke('send-wa', {
           body: {
             target: userPhone,
-            message: `*Notifikasi RJRAKP*\n\nHalo ${userName},\n\nArtikel Anda dengan judul *"${formData.title}"* telah berhasil disubmit dan masuk ke antrean Editorial.\n\n*PENTING (BIAYA PUBLIKASI):*\nMohon untuk melakukan transfer biaya Review & Publikasi agar proses dapat dilanjutkan sampai terbit sertifikat, nomor DOI, serta indeksasi internasional (Google Scholar, Zenodo).\n\nTransfer ke Rekening:\n*BRI 1341 0100 0081 562*\na.n *Muhibbuddin*\n\nAnda dapat memantau status artikel di dashboard Anda.\n\nTerima kasih.`
+            message: `*Notifikasi RJRAKP*\n\nHalo ${userName},\n\nArtikel Anda dengan judul *"${formData.title}"* telah berhasil disubmit dan masuk ke antrean Editorial.\n\n*PENTING (BIAYA PUBLIKASI):*\nMohon untuk melakukan transfer biaya Review & Publikasi sebesar *Rp 2.500.000* agar proses dapat dilanjutkan sampai terbit sertifikat, nomor DOI, serta indeksasi internasional (Google Scholar, Zenodo).\n\nTransfer ke Rekening:\n*BRI 1341 0100 0081 562*\na.n *Muhibbuddin*\n\nAnda dapat memantau status artikel di dashboard Anda.\n\nTerima kasih.`
           }
         }).catch(err => console.error("Gagal mengirim WA:", err));
       }
@@ -314,6 +314,10 @@ export default function AuthorSubmit() {
                   <span className="block text-[10px] font-bold uppercase tracking-widest text-brand-500 mb-1">Rekening Tujuan Pembayaran</span>
                   <span className="block text-2xl font-black text-brand-900 tracking-wider">1341 0100 0081 562</span>
                   <span className="block text-sm font-bold text-brand-700 mt-1">Bank BRI a.n. Muhibbuddin</span>
+                </div>
+                <div className="text-left md:text-right border-t md:border-t-0 md:border-l border-brand-200/50 pt-3 md:pt-0 md:pl-6">
+                  <span className="block text-[10px] font-bold uppercase tracking-widest text-brand-500 mb-1">Jumlah Transfer</span>
+                  <span className="block text-2xl font-black text-brand-900 tracking-wider">Rp 2.500.000</span>
                 </div>
               </div>
             </div>
