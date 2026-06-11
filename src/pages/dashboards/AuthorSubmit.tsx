@@ -264,7 +264,7 @@ export default function AuthorSubmit() {
         supabase.functions.invoke('send-wa', {
           body: {
             target: userPhone,
-            message: `*Notifikasi RJRAKP*\n\nHalo ${userName},\n\nArtikel Anda dengan judul *"${formData.title}"* telah berhasil disubmit dan masuk ke antrean Editorial.\n\n*PENTING (BIAYA PUBLIKASI):*\nMohon untuk melakukan transfer biaya Review & Publikasi sebesar *Rp 2.500.000* agar proses dapat dilanjutkan sampai terbit sertifikat, nomor DOI, serta indeksasi internasional (Google Scholar, Zenodo).\n\nTransfer ke Rekening:\n*BRI 1341 0100 0081 562*\na.n *Muhibbuddin*\n\nAnda dapat memantau status artikel di dashboard Anda.\n\nTerima kasih.`
+            message: `*Notifikasi RJRAKP*\n\nHalo ${userName},\n\nArtikel Anda dengan judul *"${formData.title}"* telah berhasil disubmit dan masuk ke antrean Editorial.\n\n*PENTING (BIAYA PUBLIKASI):*\nMohon untuk melakukan transfer biaya Review & Publikasi sebesar *Rp 2.500.000*. Biaya ini sudah mencakup penerbitan di Rumah Jurnal Internasional (terindeks di Google Scholar & Zenodo, terhubung ke ORCID, serta terindeks di OpenAIRE) agar proses dapat dilanjutkan sampai terbit sertifikat dan nomor DOI.\n\nTransfer ke Rekening:\n*BRI 1341 0100 0081 562*\na.n *Muhibbuddin*\n\nAnda dapat memantau status artikel di dashboard Anda.\n\nTerima kasih.`
           }
         }).catch(err => console.error("Gagal mengirim WA:", err));
       }
@@ -307,7 +307,7 @@ export default function AuthorSubmit() {
             <div className="bg-white border border-brand-200 rounded-xl p-6 text-left mb-8 shadow-sm">
               <h4 className="text-brand-800 font-bold mb-2">Pemberitahuan Biaya Publikasi & Review</h4>
               <p className="text-brand-700 text-sm mb-4 leading-relaxed">
-                Setiap jurnal yang disubmit, selain menerima notifikasi ini, penulis juga diminta untuk segera mentransfer <strong>Biaya Review</strong>. Biaya ini sudah mencakup keseluruhan proses hingga terbitnya sertifikat, penyematan nomor referensi <strong>DOI</strong> yang valid, serta indeksasi ke berbagai lembaga jurnal internasional terkemuka seperti <strong>Google Scholar</strong> dan <strong>Zenodo</strong>.
+                Setiap jurnal yang disubmit, selain menerima notifikasi ini, penulis juga diminta untuk segera mentransfer <strong>Biaya Review & Publikasi</strong>. Biaya ini sudah mencakup keseluruhan proses penerbitan di <strong>Rumah Jurnal Internasional</strong>, termasuk indeksasi di <strong>Google Scholar</strong> dan <strong>Zenodo</strong>, penautan otomatis ke profil <strong>ORCID</strong>, indeksasi di <strong>OpenAIRE</strong>, serta penyematan nomor referensi <strong>DOI</strong> yang valid dan terbitnya sertifikat.
               </p>
               <div className="bg-brand-50 p-4 rounded-lg flex flex-col md:flex-row items-center gap-4 justify-between border border-brand-100">
                 <div>

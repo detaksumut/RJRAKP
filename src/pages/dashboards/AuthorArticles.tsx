@@ -52,7 +52,7 @@ export default function AuthorArticles() {
           <div>
             <h4 className="text-brand-900 font-bold mb-1.5">Informasi Biaya Review & Publikasi</h4>
             <p className="text-sm text-brand-700 leading-relaxed mb-3">
-              Bagi artikel yang berstatus <strong>Baru Masuk (Submitted)</strong> atau sedang dalam proses, Penulis diminta untuk melakukan transfer <strong>Biaya Review</strong>. Biaya ini meliputi keseluruhan proses hingga penerbitan Sertifikat, nomor DOI yang valid, serta indeksasi lengkap ke lembaga internasional (Google Scholar, Zenodo, dll).
+              Bagi artikel yang berstatus <strong>Baru Masuk (Submitted)</strong> atau sedang dalam proses, Penulis diminta untuk melakukan transfer <strong>Biaya Review & Publikasi</strong>. Biaya ini sudah mencakup keseluruhan proses penerbitan di <strong>Rumah Jurnal Internasional</strong>, termasuk indeksasi di <strong>Google Scholar</strong> dan <strong>Zenodo</strong>, penautan otomatis ke profil <strong>ORCID</strong>, indeksasi di <strong>OpenAIRE</strong>, serta penyematan nomor referensi <strong>DOI</strong> yang valid dan terbitnya sertifikat.
             </p>
             <div className="inline-flex flex-wrap items-center gap-3 bg-white px-4 py-2.5 rounded-lg border border-brand-200 shadow-sm">
                <span className="text-[10px] uppercase font-bold text-brand-500 tracking-wider">Rekening Tujuan:</span>
