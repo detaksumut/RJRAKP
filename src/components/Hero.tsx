@@ -39,7 +39,7 @@ export default function Hero() {
           <div className="mb-6 flex items-center justify-center gap-4">
             <div className="inline-flex bg-slate-100/10 backdrop-blur-md px-5 py-2.5 rounded-full text-xs font-bold text-slate-200 shadow-[0_0_20px_rgba(255,255,255,0.05)] border border-slate-200/20 items-center gap-2 uppercase tracking-widest">
               <ShieldCheck className="w-4 h-4 text-slate-300" />
-              <span>OJS 3 Verified</span>
+              <span>Fully Compatible with OJS 3</span>
             </div>
             <span className="text-[10px] md:text-xs uppercase tracking-[0.2em] text-slate-300 font-black">Connected</span>
           </div>

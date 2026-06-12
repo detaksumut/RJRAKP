@@ -83,7 +83,7 @@ export default function Footer() {
       <div className="bg-gradient-to-r from-brand-900 via-brand-800 to-brand-900 border-t-4 border-accent-500 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center shrink-0">
           {/* OJS Badge Centered Above Publisher Logos */}
-          <div className="flex justify-center mb-8">
+          <div className="flex flex-col items-center justify-center mb-8 gap-2">
             <a 
               href="https://pkp.sfu.ca/software/ojs/" 
               target="_blank" 
@@ -97,6 +97,7 @@ export default function Footer() {
                 className="w-full h-full object-cover scale-[1.8]"
               />
             </a>
+            <span className="text-white/60 text-[10px] uppercase font-bold tracking-widest">Fully Compatible with OJS 3</span>
           </div>
 
           <div className="flex justify-center items-center gap-6 md:gap-10 mb-6">
