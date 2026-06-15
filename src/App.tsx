@@ -62,6 +62,10 @@ import AuthCallback from './pages/AuthCallback';
 import UserProfile from './pages/dashboards/UserProfile';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './contexts/AuthContext';
+import OpinionList from './pages/OpinionList';
+import OpinionDetail from './pages/OpinionDetail';
+import AuthorOpinions from './pages/dashboards/AuthorOpinions';
+import AuthorOpinionForm from './pages/dashboards/AuthorOpinionForm';
 
 export default function App() {
   return (
@@ -92,6 +96,8 @@ export default function App() {
               <Route path="/jurnal/:slug" element={<JurnalDetail />} />
               <Route path="/publikasi" element={<Publikasi />} />
               <Route path="/article/:slug" element={<ArticleDetail />} />
+              <Route path="/opini" element={<OpinionList />} />
+              <Route path="/opini/:slug" element={<OpinionDetail />} />
             <Route path="/panduan-penulis" element={<PanduanPenulis />} />
             <Route path="/panduan-reviewer" element={<PanduanReviewer />} />
             <Route path="/panduan-editor" element={<PanduanEditor />} />
@@ -121,6 +127,9 @@ export default function App() {
               <Route path="/dashboard/author" element={<AuthorDashboard />} />
               <Route path="/dashboard/author/articles" element={<AuthorArticles />} />
               <Route path="/dashboard/author/articles/:id" element={<AuthorArticleDetail />} />
+              <Route path="/dashboard/author/opinions" element={<AuthorOpinions />} />
+              <Route path="/dashboard/author/opinions/new" element={<AuthorOpinionForm />} />
+              <Route path="/dashboard/author/opinions/edit/:id" element={<AuthorOpinionForm />} />
               <Route path="/dashboard/author/submit" element={<AuthorSubmit />} />
               <Route path="/dashboard/author/review-status" element={<AuthorReviewStatus />} />
               <Route path="/dashboard/author/loa" element={<AuthorLoa />} />

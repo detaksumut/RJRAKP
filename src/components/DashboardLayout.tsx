@@ -18,6 +18,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       return [
         { label: 'Dashboard', path: '/dashboard/author', icon: LayoutDashboard },
         { label: 'Artikel Saya', path: '/dashboard/author/articles', icon: FileText },
+        { label: 'Opini Saya', path: '/dashboard/author/opinions', icon: BookOpen },
         { label: 'Submit Artikel', path: '/dashboard/author/submit', icon: Edit },
         { label: 'Status Review', path: '/dashboard/author/review-status', icon: Bell },
         { label: 'Acceptance Letter', path: '/dashboard/author/loa', icon: Settings },

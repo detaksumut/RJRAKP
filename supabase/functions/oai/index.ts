@@ -116,11 +116,10 @@ serve(async (req) => {
   ${xmlContent}
 </OAI-PMH>`;
 
-    const headers = new Headers(corsHeaders);
-    headers.set('Content-Type', 'text/xml; charset=utf-8');
-
     return new Response(xmlResponse, {
-      headers,
+      headers: {
+        'Content-Type': 'text/xml; charset=utf-8'
+      },
       status: 200,
     })
   } catch (error: any) {
