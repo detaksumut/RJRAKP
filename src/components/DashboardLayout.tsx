@@ -1,7 +1,7 @@
 import { ReactNode, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { LogOut, LayoutDashboard, User, FileText, Bell, Settings, Edit, Users, BarChart, Menu, X, BookOpen, DollarSign } from 'lucide-react';
+import { LogOut, LayoutDashboard, User, FileText, Bell, Settings, Edit, Users, BarChart, Menu, X, BookOpen, DollarSign, MessageSquare } from 'lucide-react';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -53,6 +53,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         { label: 'Manajemen Terbitan', path: '/dashboard/admin/issues', icon: BookOpen },
         { label: 'Manajemen Artikel', path: '/dashboard/admin/articles', icon: FileText },
         { label: 'Manajemen Pengguna', path: '/dashboard/admin/users', icon: User },
+        { label: 'Manajemen Opini', path: '/dashboard/admin/opinions', icon: MessageSquare },
         { label: 'Keuangan & Honor', path: '/dashboard/admin/finance', icon: DollarSign },
         { label: 'Activity Logs', path: '/dashboard/admin/logs', icon: BarChart },
         { label: 'Profil & Rekening', path: '/dashboard/profile', icon: User },

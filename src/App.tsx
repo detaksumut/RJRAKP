@@ -56,6 +56,7 @@ import AdminIssues from './pages/dashboards/AdminIssues';
 import AdminArticles from './pages/dashboards/AdminArticles';
 import AdminBoardMembers from './pages/dashboards/AdminBoardMembers';
 import AdminFinance from './pages/dashboards/AdminFinance';
+import AdminOpinions from './pages/dashboards/AdminOpinions';
 import Unauthorized from './pages/dashboards/Unauthorized';
 import SetupAdmin from './pages/SetupAdmin';
 import AuthCallback from './pages/AuthCallback';
@@ -162,6 +163,7 @@ export default function App() {
               <Route path="/dashboard/admin/issues" element={<AdminIssues />} />
               <Route path="/dashboard/admin/articles" element={<AdminArticles />} />
               <Route path="/dashboard/admin/finance" element={<AdminFinance />} />
+              <Route path="/dashboard/admin/opinions" element={<AdminOpinions />} />
               <Route path="/dashboard/admin/logs" element={<AdminLogs />} />
               <Route path="/dashboard/admin/settings" element={<AdminSettings />} />
             </Route>
