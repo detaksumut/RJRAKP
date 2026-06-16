@@ -62,15 +62,7 @@ export default function LatestJournals() {
                     {journal.name}
                   </h3>
                   <div className="space-y-2 mb-4 flex-grow">
-                    <div className="flex items-start text-[11px] text-academic-500 uppercase tracking-wide">
-                      <span className="font-bold w-12 text-brand-800">E-ISSN</span>
-                      <span>: {journal.e_issn || '-'}</span>
-                    </div>
-                    <div className="flex items-start text-[11px] text-academic-500 uppercase tracking-wide">
-                      <span className="font-bold w-12 text-brand-800">P-ISSN</span>
-                      <span>: {journal.p_issn || '-'}</span>
-                    </div>
-                    <div className="flex items-start text-[11px] text-academic-600 pt-2 border-t border-academic-100 mt-3 line-clamp-2 leading-relaxed">
+                    <div className="flex items-start text-[11px] text-academic-600 line-clamp-2 leading-relaxed">
                       <span className="font-bold w-12 text-brand-800 uppercase tracking-wide shrink-0">Fokus</span>
                       <span>: {scopes}</span>
                     </div>

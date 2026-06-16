@@ -81,11 +81,7 @@ function JournalCover({ name, slug, volume, issue, year, eIssn, pIssn, articles 
         </div>
       </div>
 
-      {/* Footer Cover Info */}
-      <div className="border-t border-white/10 pt-3 mt-auto flex justify-between text-[8px] text-white/60 z-10 tracking-widest uppercase font-bold">
-        <span>P-ISSN: {pIssn || '-'}</span>
-        <span>E-ISSN: {eIssn || '-'}</span>
-      </div>
+
     </div>
   );
 }
@@ -258,17 +254,7 @@ export default function Publikasi() {
                 {activeJournal.description || 'Jurnal ini mempublikasikan artikel riset berkualitas tinggi yang fokus pada kontribusi ilmiah terapan.'}
               </p>
 
-              {/* ISSN Metadata */}
-              <div className="grid grid-cols-2 gap-4 max-w-sm mb-6 border-y border-academic-100 py-4">
-                <div>
-                  <div className="text-[10px] font-black text-academic-500 uppercase tracking-wider">P-ISSN (Cetak)</div>
-                  <div className="text-sm font-bold text-academic-800 mt-1">{activeJournal.p_issn || '-'}</div>
-                </div>
-                <div>
-                  <div className="text-[10px] font-black text-academic-500 uppercase tracking-wider">E-ISSN (Online)</div>
-                  <div className="text-sm font-bold text-academic-800 mt-1">{activeJournal.e_issn || '-'}</div>
-                </div>
-              </div>
+
 
               {/* Indexing Badges */}
               <div>

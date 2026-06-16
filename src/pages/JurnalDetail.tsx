@@ -140,10 +140,7 @@ export default function JurnalDetail() {
               <h1 className="text-2xl md:text-4xl lg:text-5xl font-serif font-bold text-white mb-2 shadow-sm">
                 {journal.name}
               </h1>
-              <div className="flex flex-wrap gap-4 text-white/80 text-sm font-medium">
-                <span className="flex items-center gap-1.5"><Info className="w-4 h-4" /> E-ISSN: {journal.e_issn || '-'}</span>
-                <span className="flex items-center gap-1.5"><Info className="w-4 h-4" /> P-ISSN: {journal.p_issn || '-'}</span>
-              </div>
+
             </div>
           </div>
           
