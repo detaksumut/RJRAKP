@@ -260,15 +260,6 @@ export default function Publikasi() {
               <div>
                 <span className="text-[10px] font-black text-academic-500 uppercase tracking-wider block mb-3">Indeksasi Jurnal:</span>
                 <div className="flex flex-wrap gap-3">
-                  {/* SINTA */}
-                  <div className="flex items-center bg-sky-50 border border-sky-200 px-3 py-1.5 rounded-lg shadow-sm hover:bg-sky-100 transition-colors">
-                    <div className="w-6 h-6 rounded bg-sky-600 flex items-center justify-center text-[10px] font-bold text-white uppercase mr-2">S3</div>
-                    <div>
-                      <div className="text-[7.5px] font-bold uppercase tracking-wider text-sky-800/60 leading-none">Terakreditasi</div>
-                      <div className="text-xs font-black text-sky-900 tracking-wider">SINTA 3</div>
-                    </div>
-                  </div>
-
                   {/* Google Scholar */}
                   <div className="flex items-center bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-lg shadow-sm hover:bg-emerald-100 transition-colors">
                     <svg className="w-5 h-5 text-emerald-600 mr-2 shrink-0" viewBox="0 0 24 24" fill="currentColor">
@@ -278,17 +269,6 @@ export default function Publikasi() {
                     <div>
                       <div className="text-[7.5px] font-bold uppercase tracking-wider text-emerald-800/60 leading-none">Indexed In</div>
                       <div className="text-xs font-black text-emerald-900 tracking-wider">Google Scholar</div>
-                    </div>
-                  </div>
-
-                  {/* Crossref */}
-                  <div className="flex items-center bg-orange-50 border border-orange-200 px-3 py-1.5 rounded-lg shadow-sm hover:bg-orange-100 transition-colors">
-                    <svg className="w-5 h-5 text-orange-600 mr-2 shrink-0" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
-                    </svg>
-                    <div>
-                      <div className="text-[7.5px] font-bold uppercase tracking-wider text-orange-800/60 leading-none">DOI Registry</div>
-                      <div className="text-xs font-black text-orange-900 tracking-wider">Crossref</div>
                     </div>
                   </div>
                 </div>
