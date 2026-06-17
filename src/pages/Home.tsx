@@ -5,6 +5,7 @@ import Statistics from '../components/Statistics';
 import LatestJournals from '../components/LatestJournals';
 import LatestArticles from '../components/LatestArticles';
 import IndexingRoadmap from '../components/IndexingRoadmap';
+import SintaPackages from '../components/SintaPackages';
 import Footer from '../components/Footer';
 
 export default function Home() {
@@ -17,6 +18,7 @@ export default function Home() {
       <LatestJournals />
       <IndexingRoadmap />
       <LatestArticles />
+      <SintaPackages />
       <Footer />
     </>
   );
