@@ -228,20 +228,20 @@ export default function LoaView() {
             
             {/* Signature Area */}
             <div className="relative h-16 flex items-center">
-              {/* E-signature seal graphic representation */}
-              <div className="absolute left-[-20px] top-[-20px] w-36 h-20 border-2 border-emerald-600/30 bg-emerald-50/20 rounded-full flex flex-col items-center justify-center rotate-[-6deg] select-none pointer-events-none">
-                <ShieldCheck className="w-5 h-5 text-emerald-600/60" />
-                <span className="text-[7px] font-black text-emerald-700/60 uppercase tracking-widest">DIGITALLY SIGNED</span>
-                <span className="text-[6px] font-bold text-emerald-600/50 uppercase leading-none">RJRAKP PUBLISHER</span>
-              </div>
+              {/* Official Stamp Image */}
+              <img 
+                src="/stempel-rjrakp.png" 
+                alt="Stempel Resmi RJRAKP" 
+                className="absolute left-[-30px] top-[-25px] w-28 h-28 object-contain select-none pointer-events-none z-20 mix-blend-multiply"
+                style={{ mixBlendMode: 'multiply' }}
+              />
               <p className="font-serif italic font-bold text-academic-700 text-lg border-b border-academic-300 pb-1 z-10 select-none">
                 dto Publisher
               </p>
             </div>
 
             <div>
-              <p className="font-bold text-academic-900 underline">Muhibbuddin, M.Pd.</p>
-              <p className="text-xs text-academic-500">Direktur / Penerbit RJRAKP</p>
+              <p className="font-bold text-academic-900 underline">Muhibbuddin</p>
             </div>
           </div>
         </div>
