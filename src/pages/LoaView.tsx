@@ -117,7 +117,7 @@ export default function LoaView() {
           .print-container { 
             box-shadow: none !important; 
             border: none !important; 
-            padding: 0 !important; 
+            padding: 1.5cm 1.5cm !important; 
             margin: 0 !important;
             width: 100% !important;
             max-width: 100% !important;
@@ -142,12 +142,12 @@ export default function LoaView() {
       </div>
 
       {/* Official LOA Document container */}
-      <div className="max-w-[800px] mx-auto bg-white border border-slate-300 shadow-2xl p-12 md:p-16 print-container relative flex flex-col justify-between min-h-[1050px] font-sans text-academic-950">
+      <div className="max-w-[800px] mx-auto bg-white border border-slate-300 shadow-2xl p-10 md:p-12 print-container relative flex flex-col justify-between min-h-[920px] font-sans text-academic-950">
         
         <div>
           {/* Official Letterhead */}
-          <div className="flex items-center gap-5 border-b-4 border-double border-academic-950 pb-5 mb-8">
-            <img src="/logo-rjrakp.png" alt="RJRAKP Logo" className="h-20 w-auto object-contain shrink-0" />
+          <div className="flex items-center gap-5 border-b-4 border-double border-academic-950 pb-4 mb-5">
+            <img src="/logo-rjrakp.png" alt="RJRAKP Logo" className="h-18 w-auto object-contain shrink-0" />
             <div className="flex-1 text-center pr-10">
               <h1 className="text-lg md:text-xl font-bold uppercase tracking-wide leading-tight">
                 Rumah Jurnal Riset, Analisis dan Keadilan Publik
@@ -155,7 +155,7 @@ export default function LoaView() {
               <h2 className="text-xl md:text-2xl font-serif font-black tracking-widest text-brand-900 leading-none mt-1">
                 RJRAKP
               </h2>
-              <p className="text-[10px] text-academic-600 font-semibold mt-2.5">
+              <p className="text-[10px] text-academic-600 font-semibold mt-1">
                 Sekretariat: Gedung LSM MSRI, Jalan H.M. Joni No. 11, Kode Pos 20216, Medan, Sumatera Utara
               </p>
               <p className="text-[10px] text-brand-700 font-bold">
@@ -165,7 +165,7 @@ export default function LoaView() {
           </div>
 
           {/* LOA Title and Number */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-5">
             <h3 className="text-lg font-bold uppercase tracking-wider underline font-serif">
               Letter of Acceptance (LoA)
             </h3>
@@ -175,7 +175,7 @@ export default function LoaView() {
           </div>
 
           {/* Recipient Details */}
-          <div className="mb-6 text-sm space-y-1">
+          <div className="mb-4 text-sm space-y-1">
             <p className="font-bold">Kepada Yth.</p>
             <p className="font-bold text-academic-900">{correspondingAuthor.full_name} (Corresponding Author)</p>
             <p className="text-academic-700">{correspondingAuthor.affiliation || article.users?.institution}</p>
@@ -183,13 +183,13 @@ export default function LoaView() {
           </div>
 
           {/* Content Body */}
-          <div className="text-sm leading-relaxed text-justify space-y-6">
+          <div className="text-sm leading-relaxed text-justify space-y-4">
             <p>
-              Dengan ini dinyatakan bahwa artikel ilmiah berikut telah diterima (<strong>Accepted</strong>) dan dinyatakan memenuhi kriteria untuk diproses publikasi melalui Rumah Jurnal Riset, Analisis dan Keadilan Publik (RJRAKP).
+              Dengan ini dinyatakan bahwa artikel berjudul "<strong>{cleanTitle}</strong>" telah diterima (Accepted) untuk diproses publikasi melalui Rumah Jurnal Riset, Analisis dan Keadilan Publik (RJRAKP) sesuai target publikasi yang dipilih oleh penulis.
             </p>
 
             {/* Article Metadata Table */}
-            <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 space-y-3.5 shadow-inner">
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-2 shadow-inner">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-1 border-b border-slate-200/50 pb-2">
                 <span className="text-xs font-bold text-academic-500 uppercase tracking-wider col-span-1">Judul Artikel</span>
                 <span className="text-sm font-bold text-academic-900 font-serif leading-snug col-span-3">"{cleanTitle}"</span>
@@ -209,18 +209,14 @@ export default function LoaView() {
             </div>
 
             <p>
-              Dengan ini dinyatakan bahwa artikel berjudul "<strong>{cleanTitle}</strong>" telah diterima (Accepted) untuk diproses publikasi melalui Rumah Jurnal Riset, Analisis dan Keadilan Publik (RJRAKP) sesuai target publikasi yang dipilih oleh penulis.
-            </p>
-
-            <p>
               Artikel tersebut telah melalui proses **Evaluasi Internal RJRAKP** (Initial Screening & Editorial Review) dan dinyatakan memenuhi kelayakan ilmiah untuk diteruskan ke tahap publikasi formal. Naskah saat ini sedang disiapkan untuk dimasukkan ke dalam antrean penerbitan pada terbitan jurnal berkala RJRAKP.
             </p>
           </div>
         </div>
 
         {/* Signature & Seal block */}
-        <div className="flex flex-col items-end text-sm mt-12">
-          <div className="text-left w-64 space-y-12">
+        <div className="flex flex-col items-end text-sm mt-5">
+          <div className="text-left w-64 space-y-6">
             <div>
               <p>Medan, {issuedDateFormatted}</p>
               <p className="font-bold text-academic-800 mt-1">Publisher RJRAKP</p>
