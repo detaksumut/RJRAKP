@@ -20,6 +20,28 @@ export default function AuthorSubmit() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
   const [isTranslating, setIsTranslating] = useState(false);
+
+  const [publicationType, setPublicationType] = useState('international');
+  const [submittedPkg, setSubmittedPkg] = useState<any>(null);
+
+  const getPackageDetails = (type: string) => {
+    switch (type) {
+      case 'sinta_6':
+        return { price: 'Rp 3.000.000', label: 'Paket Publikasi Jurnal SINTA 6 (All In)', name: 'SINTA 6' };
+      case 'sinta_5':
+        return { price: 'Rp 3.200.000', label: 'Paket Publikasi Jurnal SINTA 5 (All In)', name: 'SINTA 5' };
+      case 'sinta_4':
+        return { price: 'Rp 4.000.000', label: 'Paket Publikasi Jurnal SINTA 4 (All In)', name: 'SINTA 4' };
+      case 'sinta_3':
+        return { price: 'Rp 7.000.000', label: 'Paket Publikasi Jurnal SINTA 3 (All In)', name: 'SINTA 3' };
+      case 'sinta_2':
+        return { price: 'Rp 13.000.000', label: 'Paket Publikasi Jurnal SINTA 2 (All In)', name: 'SINTA 2' };
+      case 'sinta_1':
+        return { price: 'Rp 18.000.000', label: 'Paket Publikasi Jurnal SINTA 1 (All In)', name: 'SINTA 1' };
+      default:
+        return { price: 'Rp 2.500.000', label: 'Paket Publikasi Jurnal Internasional (All In)', name: 'Jurnal Internasional' };
+    }
+  };
   
   const [titlePageFile, setTitlePageFile] = useState<File | null>(null);
   const [anonymousFile, setAnonymousFile] = useState<File | null>(null);
@@ -215,13 +237,17 @@ export default function AuthorSubmit() {
         supportingUrl = supabase.storage.from('manuscripts').getPublicUrl(suppFileName).data.publicUrl;
       }
 
+      const pkgDetails = getPackageDetails(publicationType);
+      const isSinta = publicationType !== 'international';
+      const finalTitle = isSinta ? `[${pkgDetails.name}] ${formData.title}` : formData.title;
+
       // 3. Create Article
       const { data: currentArticle, error: articleError } = await supabase
         .from('articles')
         .insert([{
           journal_id: formData.journal_id,
           submitter_id: user.id,
-          title: formData.title,
+          title: finalTitle,
           abstract: formData.abstract,
           abstract_en: formData.abstract_en,
           keywords: formData.keywords,
@@ -261,15 +287,22 @@ export default function AuthorSubmit() {
       const userName = userData?.full_name || user.user_metadata?.full_name || 'Penulis';
       
       if (userPhone) {
+        const waMessage = `*Notifikasi RJRAKP*\n\nHalo ${userName},\n\nArtikel Anda dengan judul *"${finalTitle}"* telah berhasil disubmit dan masuk ke antrean Editorial.\n\n*PENTING (BIAYA PUBLIKASI):*\nMohon untuk melakukan transfer biaya Review & Publikasi sebesar *${pkgDetails.price}*. ${
+          isSinta 
+            ? `Biaya ini adalah biaya All-in untuk penerbitan dengan target ${pkgDetails.name} di RJRAKP (terindeks Google Scholar, terbit Zenodo, terindeks di OpenAIRE, terdaftar di ORCID, serta khusus Web of Science untuk tulisan tertentu & SSRN Elsevier).`
+            : `Biaya ini sudah mencakup penerbitan di Rumah Jurnal Internasional (terindeks di Google Scholar & Zenodo, terhubung ke ORCID, serta terindeks di OpenAIRE) agar proses dapat dilanjutkan sampai terbit sertifikat dan nomor DOI.`
+        }\n\nTransfer ke Rekening:\n*BRI 1341 0100 0081 562*\na.n *Muhibbuddin*\n\nAnda dapat memantau status artikel di dashboard Anda.\n\nTerima kasih.`;
+
         supabase.functions.invoke('send-wa', {
           body: {
             target: userPhone,
-            message: `*Notifikasi RJRAKP*\n\nHalo ${userName},\n\nArtikel Anda dengan judul *"${formData.title}"* telah berhasil disubmit dan masuk ke antrean Editorial.\n\n*PENTING (BIAYA PUBLIKASI):*\nMohon untuk melakukan transfer biaya Review & Publikasi sebesar *Rp 2.500.000*. Biaya ini sudah mencakup penerbitan di Rumah Jurnal Internasional (terindeks di Google Scholar & Zenodo, terhubung ke ORCID, serta terindeks di OpenAIRE) agar proses dapat dilanjutkan sampai terbit sertifikat dan nomor DOI.\n\nTransfer ke Rekening:\n*BRI 1341 0100 0081 562*\na.n *Muhibbuddin*\n\nAnda dapat memantau status artikel di dashboard Anda.\n\nTerima kasih.`
+            message: waMessage
           }
         }).catch(err => console.error("Gagal mengirim WA:", err));
       }
 
       // Sukses
+      setSubmittedPkg(pkgDetails);
       localStorage.removeItem('manuscript_draft');
       setSuccess(true);
       setTitlePageFile(null);
@@ -277,6 +310,7 @@ export default function AuthorSubmit() {
       setSupportingFile(null);
       setFormData({ journal_id: journals[0]?.id || '', title: '', abstract: '', abstract_en: '', bibliography: '', funding_source: '', conflict_of_interest: false, keywords: '', cover_letter: '' });
       setAuthors([{ id: Math.random().toString(), full_name: user.user_metadata?.full_name || '', email: user.email || '', affiliation: '', country: '', orcid: '' }]);
+      setPublicationType('international');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err: any) {
       const errorMessage = err.message || 'Gagal mensubmit artikel.';
@@ -306,8 +340,16 @@ export default function AuthorSubmit() {
 
             <div className="bg-white border border-brand-200 rounded-xl p-6 text-left mb-8 shadow-sm">
               <h4 className="text-brand-800 font-bold mb-2">Pemberitahuan Biaya Publikasi & Review</h4>
-              <p className="text-brand-700 text-sm mb-4 leading-relaxed">
-                Setiap jurnal yang disubmit, selain menerima notifikasi ini, penulis juga diminta untuk segera mentransfer <strong>Biaya Review & Publikasi</strong>. Biaya ini sudah mencakup keseluruhan proses penerbitan di <strong>Rumah Jurnal Internasional</strong>, termasuk indeksasi di <strong>Google Scholar</strong> dan <strong>Zenodo</strong>, penautan otomatis ke profil <strong>ORCID</strong>, indeksasi di <strong>OpenAIRE</strong>, serta penyematan nomor referensi <strong>DOI</strong> yang valid dan terbitnya sertifikat.
+              <p className="text-brand-700 text-sm mb-4 leading-relaxed font-medium">
+                {submittedPkg?.name !== 'Jurnal Internasional' ? (
+                  <>
+                    Setiap jurnal yang disubmit dengan target SINTA, selain menerima notifikasi ini, penulis juga diminta untuk segera mentransfer <strong>Biaya Review & Publikasi All-In</strong>. Biaya ini mencakup penerbitan di RJRAKP dengan target <strong>{submittedPkg?.name}</strong>, termasuk indeksasi di <strong>Google Scholar</strong>, <strong>Zenodo</strong>, penautan otomatis ke profil <strong>ORCID</strong>, indeksasi di <strong>OpenAIRE</strong>, serta penyematan nomor referensi <strong>DOI</strong> dan terbitnya sertifikat. Khusus untuk <strong>Web of Science</strong> (tulisan tertentu) & <strong>SSRN Elsevier</strong>.
+                  </>
+                ) : (
+                  <>
+                    Setiap jurnal yang disubmit, selain menerima notifikasi ini, penulis juga diminta untuk segera mentransfer <strong>Biaya Review & Publikasi</strong>. Biaya ini sudah mencakup keseluruhan proses penerbitan di <strong>Rumah Jurnal Internasional</strong>, termasuk indeksasi di <strong>Google Scholar</strong> dan <strong>Zenodo</strong>, penautan otomatis ke profil <strong>ORCID</strong>, indeksasi di <strong>OpenAIRE</strong>, serta penyematan nomor referensi <strong>DOI</strong> yang valid dan terbitnya sertifikat.
+                  </>
+                )}
               </p>
               <div className="bg-brand-50 p-4 rounded-lg flex flex-col md:flex-row items-center gap-4 justify-between border border-brand-100">
                 <div>
@@ -317,7 +359,7 @@ export default function AuthorSubmit() {
                 </div>
                 <div className="text-left md:text-right border-t md:border-t-0 md:border-l border-brand-200/50 pt-3 md:pt-0 md:pl-6">
                   <span className="block text-[10px] font-bold uppercase tracking-widest text-brand-500 mb-1">Jumlah Transfer</span>
-                  <span className="block text-2xl font-black text-brand-900 tracking-wider">Rp 2.500.000</span>
+                  <span className="block text-2xl font-black text-brand-900 tracking-wider">{submittedPkg?.price || 'Rp 2.500.000'}</span>
                 </div>
               </div>
             </div>
@@ -349,6 +391,25 @@ export default function AuthorSubmit() {
                     <option value="" disabled>-- Pilih Jurnal --</option>
                     {journals.map(j => (<option key={j.id} value={j.id}>{j.name}</option>))}
                   </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-academic-900 mb-2">Pilih Tipe/Paket Publikasi <span className="text-red-500">*</span></label>
+                  <select 
+                    value={publicationType} 
+                    onChange={e => setPublicationType(e.target.value)} 
+                    className="w-full border border-academic-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-brand-500 bg-academic-50"
+                  >
+                    <option value="international">Publikasi Jurnal Internasional (Biaya Publish: Rp 2.500.000)</option>
+                    <option value="sinta_6">Publikasi Jurnal SINTA 6 (Biaya Publish: Rp 3.000.000)</option>
+                    <option value="sinta_5">Publikasi Jurnal SINTA 5 (Biaya Publish: Rp 3.200.000)</option>
+                    <option value="sinta_4">Publikasi Jurnal SINTA 4 (Biaya Publish: Rp 4.000.000)</option>
+                    <option value="sinta_3">Publikasi Jurnal SINTA 3 (Biaya Publish: Rp 7.000.000)</option>
+                    <option value="sinta_2">Publikasi Jurnal SINTA 2 (Biaya Publish: Rp 13.000.000)</option>
+                    <option value="sinta_1">Publikasi Jurnal SINTA 1 (Biaya Publish: Rp 18.000.000)</option>
+                  </select>
+                  <p className="text-xs text-academic-500 mt-1.5 leading-relaxed">
+                    Khusus untuk submitter yang meminta diterbitkan ikut SINTA, biaya tersebut sudah <strong>All In</strong> mencakup biaya terbit di RJRAKP (terindeks Google Scholar, terbit Zenodo, terindeks di OpenAIRE, dan terdaftar di ORCID). Khusus untuk Web of Science (tulisan tertentu) & SSRN Elsevier.
+                  </p>
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-academic-900 mb-2">Judul Artikel <span className="text-red-500">*</span></label>
