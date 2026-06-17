@@ -318,7 +318,7 @@ Fasilitas yang diperoleh:
 Khusus paket publikasi SINTA, RJRAKP akan melakukan pendampingan dan pengelolaan publikasi hingga artikel diterbitkan pada jurnal yang saat ini terindeks SINTA sesuai kategori yang dipilih oleh penulis.
 
 Catatan:
-Publikasi tetap mengikuti kebijakan editor dan hasil peer review jurnal tujuan.
+Proses publikasi dilaksanakan sesuai kebijakan editor, reviewer, dan ketentuan jurnal tujuan.
 
 Silakan melakukan pembayaran sebesar *${pkgDetails.price}* ke rekening yang telah ditentukan untuk memulai proses pendampingan publikasi:
 *Bank BRI 1341 0100 0081 562*
@@ -415,6 +415,9 @@ https://rjrakp.com`;
                   </>
                 )}
               </p>
+              <div className="text-xs text-brand-600 mb-4 bg-brand-50/50 p-2.5 rounded border border-brand-100/50 leading-relaxed font-semibold">
+                <strong>Catatan:</strong> Proses publikasi dilaksanakan sesuai kebijakan editor, reviewer, dan ketentuan jurnal tujuan.
+              </div>
               <div className="bg-brand-50 p-4 rounded-lg flex flex-col md:flex-row items-center gap-4 justify-between border border-brand-100">
                 <div>
                   <span className="block text-[10px] font-bold uppercase tracking-widest text-brand-500 mb-1">Rekening Tujuan Pembayaran</span>
