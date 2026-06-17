@@ -287,11 +287,75 @@ export default function AuthorSubmit() {
       const userName = userData?.full_name || user.user_metadata?.full_name || 'Penulis';
       
       if (userPhone) {
-        const waMessage = `*Notifikasi RJRAKP*\n\nHalo ${userName},\n\nArtikel Anda dengan judul *"${finalTitle}"* telah berhasil disubmit dan masuk ke antrean Editorial.\n\n*PENTING (BIAYA PUBLIKASI):*\nMohon untuk melakukan transfer biaya Review & Publikasi sebesar *${pkgDetails.price}*. ${
-          isSinta 
-            ? `Biaya ini adalah biaya All-in untuk penerbitan dengan target ${pkgDetails.name} di RJRAKP (terindeks Google Scholar, terbit Zenodo, terindeks di OpenAIRE, terdaftar di ORCID, serta khusus Web of Science untuk tulisan tertentu & SSRN Elsevier).`
-            : `Biaya ini sudah mencakup penerbitan di Rumah Jurnal Internasional (terindeks di Google Scholar & Zenodo, terhubung ke ORCID, serta terindeks di OpenAIRE) agar proses dapat dilanjutkan sampai terbit sertifikat dan nomor DOI.`
-        }\n\nTransfer ke Rekening:\n*BRI 1341 0100 0081 562*\na.n *Muhibbuddin*\n\nAnda dapat memantau status artikel di dashboard Anda.\n\nTerima kasih.`;
+        const waMessage = isSinta 
+          ? `Terima kasih telah melakukan submit artikel melalui Rumah Jurnal Riset, Analisis dan Keadilan Publik (RJRAKP).
+
+Detail Pengajuan:
+
+Judul Artikel:
+${formData.title}
+
+Target Publikasi:
+${pkgDetails.name}
+
+Biaya Pendampingan Publikasi:
+${pkgDetails.price}
+
+Fasilitas yang diperoleh:
+
+✓ Review awal naskah
+✓ Penyuntingan dan penyempurnaan artikel
+✓ Penyesuaian template jurnal tujuan
+✓ Pendampingan submit artikel
+✓ Pendampingan revisi reviewer
+✓ Monitoring proses publikasi hingga terbit
+✓ Depositori Zenodo
+✓ Integrasi OpenAIRE
+✓ Integrasi ORCID Author
+✓ Terindeks Google Scholar
+✓ Pendampingan metadata publikasi
+
+Khusus paket publikasi SINTA, RJRAKP akan melakukan pendampingan dan pengelolaan publikasi hingga artikel diterbitkan pada jurnal yang saat ini terindeks SINTA sesuai kategori yang dipilih oleh penulis.
+
+Catatan:
+Publikasi tetap mengikuti kebijakan editor dan hasil peer review jurnal tujuan.
+
+Silakan melakukan pembayaran sebesar *${pkgDetails.price}* ke rekening yang telah ditentukan untuk memulai proses pendampingan publikasi:
+*Bank BRI 1341 0100 0081 562*
+a.n *Muhibbuddin*
+
+RJRAKP
+Rumah Jurnal Riset, Analisis dan Keadilan Publik
+Jl. H.M. Joni No. 11, Medan
+https://rjrakp.com`
+          : `Terima kasih telah melakukan submit artikel melalui Rumah Jurnal Riset, Analisis dan Keadilan Publik (RJRAKP).
+
+Detail Pengajuan:
+
+Judul Artikel:
+${formData.title}
+
+Target Publikasi:
+Jurnal Internasional
+
+Biaya Publikasi & Review:
+Rp 2.500.000
+
+Fasilitas yang diperoleh:
+✓ Penerbitan di Rumah Jurnal Internasional
+✓ Terindeks Google Scholar & Zenodo
+✓ Terhubung ke ORCID
+✓ Terindeks di OpenAIRE
+✓ Penerbitan sertifikat dan nomor DOI
+
+Silakan melakukan pembayaran sebesar *Rp 2.500.000* ke rekening yang telah ditentukan untuk memulai proses publikasi:
+*Bank BRI 1341 0100 0081 562*
+a.n *Muhibbuddin*
+
+RJRAKP
+Rumah Jurnal Riset, Analisis dan Keadilan Publik
+Jl. H.M. Joni No. 11, Medan
+https://rjrakp.com`;
 
         supabase.functions.invoke('send-wa', {
           body: {
