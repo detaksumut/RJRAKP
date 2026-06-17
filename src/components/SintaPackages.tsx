@@ -14,7 +14,7 @@ export default function SintaPackages() {
         'Full Formatting & Submission',
         'Terindeks SINTA',
       ],
-      whatsappUrl: 'https://wa.me/62811665212?text=Halo%20Admin%20RJRAKP,%20saya%20ingin%20berkonsultasi%20mengenai%20publikasi%20jurnal%20SINTA%206.',
+      whatsappUrl: 'https://wa.me/6281343737367?text=Halo%20Admin%20RJRAKP,%20saya%20ingin%20berkonsultasi%20mengenai%20publikasi%20jurnal%20SINTA%206.',
     },
     {
       name: 'SINTA 5',
@@ -28,7 +28,7 @@ export default function SintaPackages() {
         'Full Formatting & Submission',
         'Terindeks SINTA',
       ],
-      whatsappUrl: 'https://wa.me/62811665212?text=Halo%20Admin%20RJRAKP,%20saya%20ingin%20berkonsultasi%20mengenai%20publikasi%20jurnal%20SINTA%205.',
+      whatsappUrl: 'https://wa.me/6281343737367?text=Halo%20Admin%20RJRAKP,%20saya%20ingin%20berkonsultasi%20mengenai%20publikasi%20jurnal%20SINTA%205.',
     },
     {
       name: 'SINTA 4',
@@ -42,7 +42,7 @@ export default function SintaPackages() {
         'Full Formatting & Submission',
         'Terindeks SINTA',
       ],
-      whatsappUrl: 'https://wa.me/62811665212?text=Halo%20Admin%20RJRAKP,%20saya%20ingin%20berkonsultasi%20mengenai%20publikasi%20jurnal%20SINTA%204.',
+      whatsappUrl: 'https://wa.me/6281343737367?text=Halo%20Admin%20RJRAKP,%20saya%20ingin%20berkonsultasi%20mengenai%20publikasi%20jurnal%20SINTA%204.',
       highlighted: true,
     },
   ];
