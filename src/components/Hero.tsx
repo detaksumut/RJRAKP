@@ -57,6 +57,10 @@ export default function Hero() {
               <span className="text-white font-bold text-lg md:text-2xl font-sans tracking-tight">Google Scholar</span>
             </a>
 
+            <a href="https://sinta.kemdikbud.go.id/authors/detail?id=6976317&view=overview" target="_blank" rel="noopener noreferrer" className="flex items-center transition-all duration-300 transform hover:scale-110 cursor-pointer">
+              <img src="/logosinta.png" alt="SINTA Logo" className="h-9 md:h-12 object-contain" />
+            </a>
+
             <a href="https://zenodo.org/communities/rjrakp/records?q=&l=list&p=1&s=10&sort=newest" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 transition-all duration-300 transform hover:scale-110 cursor-pointer">
               <img src="/zenodo.png" alt="Zenodo Logo" className="h-10 md:h-14 rounded-md" />
             </a>
