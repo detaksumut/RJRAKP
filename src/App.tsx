@@ -22,6 +22,7 @@ import JurnalList from './pages/JurnalList';
 import JurnalDetail from './pages/JurnalDetail';
 import Publikasi from './pages/Publikasi';
 import ArticleDetail from './pages/ArticleDetail';
+import LoaView from './pages/LoaView';
 import PanduanPenulis from './pages/PanduanPenulis';
 import PanduanReviewer from './pages/PanduanReviewer';
 import PanduanEditor from './pages/PanduanEditor';
@@ -118,6 +119,7 @@ export default function App() {
             
             <Route element={<ProtectedRoute allowedRoles={['admin', 'editor', 'reviewer', 'author']} />}>
                <Route path="/dashboard/profile" element={<UserProfile />} />
+               <Route path="/loa/:articleId" element={<LoaView />} />
             </Route>
             
             <Route element={<ProtectedRoute allowedRoles={['admin']} />}>

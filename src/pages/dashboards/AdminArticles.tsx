@@ -31,6 +31,72 @@ export default function AdminArticles() {
   const [selectedIssueId, setSelectedIssueId] = useState('');
   const [customDoi, setCustomDoi] = useState('');
 
+  const [issuingLoa, setIssuingLoa] = useState<Record<string, boolean>>({});
+
+  const handleIssueLoa = async (article: any) => {
+    setIssuingLoa(prev => ({ ...prev, [article.id]: true }));
+    setError('');
+    setSuccess('');
+    try {
+      const { count, error: countErr } = await supabase
+        .from('acceptance_letters')
+        .select('*', { count: 'exact', head: true });
+        
+      if (countErr) throw countErr;
+      
+      const nextSeq = (count || 0) + 1;
+      const seqFormatted = String(nextSeq).padStart(3, '0');
+      
+      const today = new Date();
+      const day = today.getDate();
+      const getRomanMonth = (m: number) => {
+        const roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
+        return roman[m] || '';
+      };
+      const romanMonth = getRomanMonth(today.getMonth());
+      const year = today.getFullYear();
+      
+      const letterNumber = `${seqFormatted}/${day}/RJRAKP/${romanMonth}/${year}`;
+      
+      const { error: insertErr } = await supabase
+        .from('acceptance_letters')
+        .insert({
+          article_id: article.id,
+          letter_number: letterNumber,
+          issued_date: today.toISOString(),
+          file_url: 'generated'
+        });
+        
+      if (insertErr) throw insertErr;
+      
+      await supabase.from('activity_logs').insert({
+        user_id: user?.id,
+        action: `Issued LoA ${letterNumber} for article ID ${article.id}`,
+        entity_type: 'articles',
+        entity_id: article.id
+      });
+      
+      setSuccess(`LoA ${letterNumber} berhasil diterbitkan.`);
+      
+      // Update local state references
+      await fetchArticles();
+      
+      const updatedArticle = { 
+        ...selectedArticle, 
+        acceptance_letters: { 
+          letter_number: letterNumber, 
+          issued_date: today.toISOString() 
+        } 
+      };
+      setSelectedArticle(updatedArticle);
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || 'Gagal menerbitkan LoA.');
+    } finally {
+      setIssuingLoa(prev => ({ ...prev, [article.id]: false }));
+    }
+  };
+
   const handleUploadManuscriptFromAdmin = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!selectedArticle || !e.target.files || e.target.files.length === 0) return;
     const file = e.target.files[0];
@@ -169,6 +235,7 @@ export default function AdminArticles() {
         issues (id, volume, issue_number, year),
         users!submitter_id (id, full_name, email, institution),
         article_authors (*),
+        acceptance_letters (*),
         review_assignments (
           id,
           status,
@@ -665,6 +732,36 @@ export default function AdminArticles() {
                     >
                       <Download className="w-4 h-4" /> Unduh XML Crossref (DOI)
                     </button>
+                  </div>
+                )}
+
+                {/* LoA Button */}
+                {['accepted', 'copyediting', 'layouting', 'published'].includes(selectedArticle.status.toLowerCase()) && (
+                  <div className="pt-4 border-t border-academic-100">
+                    {selectedArticle.acceptance_letters ? (
+                      <div className="space-y-2">
+                        <div className="text-[10px] font-bold text-academic-500 uppercase tracking-widest">LoA Diterbitkan</div>
+                        <div className="text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-100 rounded px-2.5 py-1.5 break-all">
+                          No: {Array.isArray(selectedArticle.acceptance_letters) ? selectedArticle.acceptance_letters[0]?.letter_number : (selectedArticle.acceptance_letters as any)?.letter_number}
+                        </div>
+                        <a 
+                          href={`/loa/${selectedArticle.id}`} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="w-full inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg transition-colors shadow-sm"
+                        >
+                          <Eye className="w-4 h-4" /> Lihat / Cetak LoA
+                        </a>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => handleIssueLoa(selectedArticle)}
+                        disabled={issuingLoa[selectedArticle.id]}
+                        className="w-full inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs rounded-lg transition-colors shadow-sm disabled:opacity-50"
+                      >
+                        <FileText className="w-4 h-4" /> {issuingLoa[selectedArticle.id] ? 'Memproses...' : 'Terbitkan LoA Sekarang'}
+                      </button>
+                    )}
                   </div>
                 )}
 
