@@ -146,19 +146,19 @@ export default function LoaView() {
         
         <div>
           {/* Official Letterhead */}
-          <div className="flex items-center gap-5 border-b-4 border-double border-academic-950 pb-4 mb-5">
-            <img src="/logo-rjrakp.png" alt="RJRAKP Logo" className="h-18 w-auto object-contain shrink-0" />
-            <div className="flex-1 text-center pr-10">
+          <div className="flex items-center gap-6 border-b-4 border-double border-academic-950 pb-4 mb-5">
+            <img src="/logo-rjrakp.png" alt="RJRAKP Logo" className="h-26 w-auto object-contain shrink-0" />
+            <div className="flex-1 text-center" style={{ paddingRight: '128px' }}>
               <h1 className="text-lg md:text-xl font-bold uppercase tracking-wide leading-tight">
                 Rumah Jurnal Riset, Analisis dan Keadilan Publik
               </h1>
               <h2 className="text-xl md:text-2xl font-serif font-black tracking-widest text-brand-900 leading-none mt-1">
                 RJRAKP
               </h2>
-              <p className="text-[10px] text-academic-600 font-semibold mt-1">
+              <p className="text-[10px] text-academic-600 font-semibold mt-2">
                 Sekretariat: Gedung LSM MSRI, Jalan H.M. Joni No. 11, Kode Pos 20216, Medan, Sumatera Utara
               </p>
-              <p className="text-[10px] text-brand-700 font-bold">
+              <p className="text-[10px] text-brand-700 font-bold mt-0.5">
                 Email: redaksi@rjrakp.com | Website: https://rjrakp.com
               </p>
             </div>
