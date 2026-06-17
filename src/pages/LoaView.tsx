@@ -232,7 +232,7 @@ export default function LoaView() {
               <img 
                 src="/stempel-rjrakp.png" 
                 alt="Stempel Resmi RJRAKP" 
-                className="absolute left-[-30px] top-[-25px] w-28 h-28 object-contain select-none pointer-events-none z-20 mix-blend-multiply"
+                className="absolute left-[-35px] top-[-32px] w-32 h-32 object-contain select-none pointer-events-none z-20 mix-blend-multiply"
                 style={{ mixBlendMode: 'multiply' }}
               />
               <p className="font-serif italic font-bold text-academic-700 text-lg border-b border-academic-300 pb-1 z-10 select-none">
