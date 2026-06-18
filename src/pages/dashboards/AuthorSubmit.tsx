@@ -532,8 +532,16 @@ https://rjrakp.com`;
                     ></textarea>
                   </div>
                   <div>
-                    <div className="flex justify-between items-center mb-2">
-                      <label className="block text-sm font-bold text-academic-900">Abstract (English) <span className="text-red-500">*</span></label>
+                    <label className="block text-sm font-bold text-academic-900 mb-2">Abstract (English) <span className="text-red-500">*</span></label>
+                    <div className="mb-2">
+                      <button 
+                        type="button" 
+                        onClick={handleAutoTranslate}
+                        disabled={isTranslating || !formData.abstract}
+                        className="text-xs font-bold bg-brand-50 text-brand-700 hover:bg-brand-100 border border-brand-200 px-3.5 py-1.5 rounded-lg transition-colors disabled:opacity-50 flex items-center gap-1.5 shadow-sm"
+                      >
+                        {isTranslating ? 'Menerjemahkan...' : '✨ Auto Translate'}
+                      </button>
                     </div>
                     <textarea 
                       name="abstract_en" 
@@ -544,16 +552,6 @@ https://rjrakp.com`;
                       className="w-full border border-academic-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-brand-500" 
                       placeholder="Write your English abstract here..."
                     ></textarea>
-                    <div className="flex justify-end mt-2">
-                      <button 
-                        type="button" 
-                        onClick={handleAutoTranslate}
-                        disabled={isTranslating || !formData.abstract}
-                        className="text-xs font-bold bg-brand-50 text-brand-700 hover:bg-brand-100 border border-brand-200 px-3.5 py-1.5 rounded-lg transition-colors disabled:opacity-50 flex items-center gap-1.5 shadow-sm"
-                      >
-                        {isTranslating ? 'Menerjemahkan...' : '✨ Auto Translate'}
-                      </button>
-                    </div>
                   </div>
                 </div>
 
