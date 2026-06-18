@@ -520,6 +520,7 @@ https://rjrakp.com`;
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-bold text-academic-900 mb-2">Abstrak (Bahasa Indonesia) <span className="text-red-500">*</span></label>
+                    <p className="text-xs text-academic-500 mb-2">Wajib diisi. Copy-paste seluruh abstrak Bahasa Indonesia dari naskah Anda ke dalam kotak ini.</p>
                     <textarea 
                       name="abstract" 
                       required 
@@ -542,6 +543,7 @@ https://rjrakp.com`;
                         {isTranslating ? 'Menerjemahkan...' : '✨ Auto Translate'}
                       </button>
                     </div>
+                    <p className="text-xs text-academic-500 mb-2">Wajib diisi. Copy-paste seluruh abstrak Bahasa Inggris dari naskah Anda ke dalam kotak ini, atau gunakan tombol Auto Translate.</p>
                     <textarea 
                       name="abstract_en" 
                       required 
