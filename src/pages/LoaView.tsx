@@ -53,16 +53,16 @@ export default function LoaView() {
   };
 
   const getCleanTitle = (title: string) => {
-    return title ? title.replace(/^\[(SINTA \d+|Tugas Perkuliahan)\]\s*/i, '') : '';
+    return title ? title.replace(/^\[(SINTA \d+|Jurnal Perkuliahan \(Non SINTA\)|Jurnal Internasional \(Non SINTA\))\]\s*/i, '') : '';
   };
 
   const getTargetPublikasi = (title: string) => {
-    if (!title) return 'Jurnal Internasional';
-    const match = title.match(/^\[(SINTA \d+|Tugas Perkuliahan)\]/i);
+    if (!title) return 'Jurnal Internasional (Non SINTA)';
+    const match = title.match(/^\[(SINTA \d+|Jurnal Perkuliahan \(Non SINTA\)|Jurnal Internasional \(Non SINTA\))\]/i);
     if (match) {
       return match[1];
     }
-    return 'Jurnal Internasional';
+    return 'Jurnal Internasional (Non SINTA)';
   };
 
   if (loading) {

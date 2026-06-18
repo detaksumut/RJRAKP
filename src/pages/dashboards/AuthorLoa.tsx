@@ -44,15 +44,15 @@ export default function AuthorLoa() {
   };
 
   const getCleanTitle = (title: string) => {
-    return title.replace(/^\[(SINTA \d+|Tugas Perkuliahan)\]\s*/i, '');
+    return title.replace(/^\[(SINTA \d+|Jurnal Perkuliahan \(Non SINTA\)|Jurnal Internasional \(Non SINTA\))\]\s*/i, '');
   };
 
   const getTargetPublikasi = (title: string) => {
-    const match = title.match(/^\[(SINTA \d+|Tugas Perkuliahan)\]/i);
+    const match = title.match(/^\[(SINTA \d+|Jurnal Perkuliahan \(Non SINTA\)|Jurnal Internasional \(Non SINTA\))\]/i);
     if (match) {
       return match[1];
     }
-    return 'Jurnal Internasional';
+    return 'Jurnal Internasional (Non SINTA)';
   };
 
   return (
