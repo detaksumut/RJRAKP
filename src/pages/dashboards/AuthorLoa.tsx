@@ -44,11 +44,11 @@ export default function AuthorLoa() {
   };
 
   const getCleanTitle = (title: string) => {
-    return title.replace(/^\[SINTA \d+\]\s*/i, '');
+    return title.replace(/^\[(SINTA \d+|Tugas Perkuliahan)\]\s*/i, '');
   };
 
   const getTargetPublikasi = (title: string) => {
-    const match = title.match(/^\[(SINTA \d+)\]/i);
+    const match = title.match(/^\[(SINTA \d+|Tugas Perkuliahan)\]/i);
     if (match) {
       return match[1];
     }

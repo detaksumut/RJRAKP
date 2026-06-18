@@ -53,12 +53,12 @@ export default function LoaView() {
   };
 
   const getCleanTitle = (title: string) => {
-    return title ? title.replace(/^\[SINTA \d+\]\s*/i, '') : '';
+    return title ? title.replace(/^\[(SINTA \d+|Tugas Perkuliahan)\]\s*/i, '') : '';
   };
 
   const getTargetPublikasi = (title: string) => {
     if (!title) return 'Jurnal Internasional';
-    const match = title.match(/^\[(SINTA \d+)\]/i);
+    const match = title.match(/^\[(SINTA \d+|Tugas Perkuliahan)\]/i);
     if (match) {
       return match[1];
     }

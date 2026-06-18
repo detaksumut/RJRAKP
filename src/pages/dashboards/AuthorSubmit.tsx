@@ -38,6 +38,8 @@ export default function AuthorSubmit() {
         return { price: 'Rp 13.000.000', label: 'Paket Publikasi Jurnal SINTA 2 (All In)', name: 'SINTA 2' };
       case 'sinta_1':
         return { price: 'Rp 18.000.000', label: 'Paket Publikasi Jurnal SINTA 1 (All In)', name: 'SINTA 1' };
+      case 'tugas_kuliah':
+        return { price: 'Rp 0', label: 'Tugas Perkuliahan (Gratis)', name: 'Tugas Perkuliahan' };
       default:
         return { price: 'Rp 2.500.000', label: 'Paket Publikasi Jurnal Internasional (All In)', name: 'Jurnal Internasional' };
     }
@@ -286,7 +288,7 @@ export default function AuthorSubmit() {
       const userPhone = userData?.phone || user.user_metadata?.phone;
       const userName = userData?.full_name || user.user_metadata?.full_name || 'Penulis';
       
-      if (userPhone) {
+      if (userPhone && publicationType !== 'tugas_kuliah') {
         const waMessage = isSinta 
           ? `Terima kasih telah melakukan submit artikel melalui Rumah Jurnal Riset, Analisis dan Keadilan Publik (RJRAKP).
 
@@ -402,34 +404,46 @@ https://rjrakp.com`;
             <h3 className="text-xl font-bold mb-2">Submit Berhasil!</h3>
             <p className="text-emerald-700 mb-6">Manuskrip dan data metadata penulis telah berhasil dikirimkan ke tim editorial. Anda dapat memantau status artikel di Dashboard.</p>
 
-            <div className="bg-white border border-brand-200 rounded-xl p-6 text-left mb-8 shadow-sm">
-              <h4 className="text-brand-800 font-bold mb-2">Pemberitahuan Biaya Publikasi & Review</h4>
-              <p className="text-brand-700 text-sm mb-4 leading-relaxed font-medium">
-                {submittedPkg?.name !== 'Jurnal Internasional' ? (
-                  <>
-                    Setiap jurnal yang disubmit dengan target SINTA, selain menerima notifikasi ini, penulis juga diminta untuk segera mentransfer <strong>Biaya Review & Publikasi All-In</strong>. Biaya ini mencakup penerbitan di RJRAKP dengan target <strong>{submittedPkg?.name}</strong>, termasuk indeksasi di <strong>Google Scholar</strong>, <strong>Zenodo</strong>, penautan otomatis ke profil <strong>ORCID</strong>, indeksasi di <strong>OpenAIRE</strong>, serta penyematan nomor referensi <strong>DOI</strong> dan terbitnya sertifikat. Khusus untuk <strong>Web of Science</strong> (tulisan tertentu) & <strong>SSRN Elsevier</strong>.
-                  </>
-                ) : (
-                  <>
-                    Setiap jurnal yang disubmit, selain menerima notifikasi ini, penulis juga diminta untuk segera mentransfer <strong>Biaya Review & Publikasi</strong>. Biaya ini sudah mencakup keseluruhan proses penerbitan di <strong>Rumah Jurnal Internasional</strong>, termasuk indeksasi di <strong>Google Scholar</strong> dan <strong>Zenodo</strong>, penautan otomatis ke profil <strong>ORCID</strong>, indeksasi di <strong>OpenAIRE</strong>, serta penyematan nomor referensi <strong>DOI</strong> yang valid dan terbitnya sertifikat.
-                  </>
-                )}
-              </p>
-              <div className="text-xs text-brand-600 mb-4 bg-brand-50/50 p-2.5 rounded border border-brand-100/50 leading-relaxed font-semibold">
-                <strong>Catatan:</strong> Proses publikasi dilaksanakan sesuai kebijakan editor, reviewer, dan ketentuan jurnal tujuan.
-              </div>
-              <div className="bg-brand-50 p-4 rounded-lg flex flex-col md:flex-row items-center gap-4 justify-between border border-brand-100">
-                <div>
-                  <span className="block text-[10px] font-bold uppercase tracking-widest text-brand-500 mb-1">Rekening Tujuan Pembayaran</span>
-                  <span className="block text-2xl font-black text-brand-900 tracking-wider">1341 0100 0081 562</span>
-                  <span className="block text-sm font-bold text-brand-700 mt-1">Bank BRI a.n. Muhibbuddin</span>
-                </div>
-                <div className="text-left md:text-right border-t md:border-t-0 md:border-l border-brand-200/50 pt-3 md:pt-0 md:pl-6">
-                  <span className="block text-[10px] font-bold uppercase tracking-widest text-brand-500 mb-1">Jumlah Transfer</span>
-                  <span className="block text-2xl font-black text-brand-900 tracking-wider">{submittedPkg?.price || 'Rp 2.500.000'}</span>
+            {submittedPkg?.name === 'Tugas Perkuliahan' ? (
+              <div className="bg-white border border-emerald-200 rounded-xl p-6 text-left mb-8 shadow-sm">
+                <h4 className="text-emerald-800 font-bold mb-2">Konfirmasi Pengajuan Tugas Perkuliahan</h4>
+                <p className="text-emerald-700 text-sm mb-4 leading-relaxed font-medium">
+                  Pengajuan artikel Anda untuk kategori <strong>Tugas Perkuliahan</strong> telah berhasil diterima oleh sistem. Rincian konfirmasi pengajuan resmi telah dikirimkan ke alamat email Anda (<strong>{user?.email}</strong>).
+                </p>
+                <div className="text-xs text-emerald-600 mb-0 bg-emerald-50/50 p-2.5 rounded border border-emerald-100/50 leading-relaxed font-semibold">
+                  <strong>Status Layanan:</strong> Layanan ini gratis dan tidak dikenakan biaya publikasi/pendampingan. Naskah Anda akan langsung diproses oleh tim editor untuk evaluasi akademik.
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="bg-white border border-brand-200 rounded-xl p-6 text-left mb-8 shadow-sm">
+                <h4 className="text-brand-800 font-bold mb-2">Pemberitahuan Biaya Publikasi & Review</h4>
+                <p className="text-brand-700 text-sm mb-4 leading-relaxed font-medium">
+                  {submittedPkg?.name !== 'Jurnal Internasional' ? (
+                    <>
+                      Setiap jurnal yang disubmit dengan target SINTA, selain menerima notifikasi ini, penulis juga diminta untuk segera mentransfer <strong>Biaya Review & Publikasi All-In</strong>. Biaya ini mencakup penerbitan di RJRAKP dengan target <strong>{submittedPkg?.name}</strong>, termasuk indeksasi di <strong>Google Scholar</strong>, <strong>Zenodo</strong>, penautan otomatis ke profil <strong>ORCID</strong>, indeksasi di <strong>OpenAIRE</strong>, serta penyematan nomor referensi <strong>DOI</strong> dan terbitnya sertifikat. Khusus untuk <strong>Web of Science</strong> (tulisan tertentu) & <strong>SSRN Elsevier</strong>.
+                    </>
+                  ) : (
+                    <>
+                      Setiap jurnal yang disubmit, selain menerima notifikasi ini, penulis juga diminta untuk segera mentransfer <strong>Biaya Review & Publikasi</strong>. Biaya ini sudah mencakup keseluruhan proses penerbitan di <strong>Rumah Jurnal Internasional</strong>, termasuk indeksasi di <strong>Google Scholar</strong> dan <strong>Zenodo</strong>, penautan otomatis ke profil <strong>ORCID</strong>, indeksasi di <strong>OpenAIRE</strong>, serta penyematan nomor referensi <strong>DOI</strong> yang valid dan terbitnya sertifikat.
+                    </>
+                  )}
+                </p>
+                <div className="text-xs text-brand-600 mb-4 bg-brand-50/50 p-2.5 rounded border border-brand-100/50 leading-relaxed font-semibold">
+                  <strong>Catatan:</strong> Proses publikasi dilaksanakan sesuai kebijakan editor, reviewer, dan ketentuan jurnal tujuan.
+                </div>
+                <div className="bg-brand-50 p-4 rounded-lg flex flex-col md:flex-row items-center gap-4 justify-between border border-brand-100">
+                  <div>
+                    <span className="block text-[10px] font-bold uppercase tracking-widest text-brand-500 mb-1">Rekening Tujuan Pembayaran</span>
+                    <span className="block text-2xl font-black text-brand-900 tracking-wider">1341 0100 0081 562</span>
+                    <span className="block text-sm font-bold text-brand-700 mt-1">Bank BRI a.n. Muhibbuddin</span>
+                  </div>
+                  <div className="text-left md:text-right border-t md:border-t-0 md:border-l border-brand-200/50 pt-3 md:pt-0 md:pl-6">
+                    <span className="block text-[10px] font-bold uppercase tracking-widest text-brand-500 mb-1">Jumlah Transfer</span>
+                    <span className="block text-2xl font-black text-brand-900 tracking-wider">{submittedPkg?.price || 'Rp 2.500.000'}</span>
+                  </div>
+                </div>
+              </div>
+            )}
 
             <button onClick={() => setSuccess(false)} className="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-bold shadow-sm">
               Submit Artikel Lainnya
@@ -467,6 +481,7 @@ https://rjrakp.com`;
                     className="w-full border border-academic-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-brand-500 bg-academic-50"
                   >
                     <option value="international">Publikasi Jurnal Internasional (Biaya Publish: Rp 2.500.000)</option>
+                    <option value="tugas_kuliah">Tugas Perkuliahan (Gratis / Tidak ada biaya)</option>
                     <option value="sinta_6">Publikasi Jurnal SINTA 6 (Biaya Publish: Rp 3.000.000)</option>
                     <option value="sinta_5">Publikasi Jurnal SINTA 5 (Biaya Publish: Rp 3.200.000)</option>
                     <option value="sinta_4">Publikasi Jurnal SINTA 4 (Biaya Publish: Rp 4.000.000)</option>
