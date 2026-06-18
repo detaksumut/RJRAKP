@@ -543,7 +543,6 @@ https://rjrakp.com`;
                         {isTranslating ? 'Menerjemahkan...' : '✨ Auto Translate'}
                       </button>
                     </div>
-                    <p className="text-xs text-academic-500 mb-2">Wajib diisi. Copy-paste seluruh abstrak Bahasa Inggris dari naskah Anda ke dalam kotak ini, atau gunakan tombol Auto Translate.</p>
                     <textarea 
                       name="abstract_en" 
                       required 
