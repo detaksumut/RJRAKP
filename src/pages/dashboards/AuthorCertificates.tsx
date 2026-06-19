@@ -130,12 +130,12 @@ body { width: 297mm; height: 210mm; font-family: 'Inter', sans-serif; background
 }
 
 /* ==================== HEADER ==================== */
-.hdr { display: flex; align-items: center; justify-content: center; gap: 6mm; margin-bottom: 4mm; }
-.hdr-logo img { width: 22mm; height: auto; display: block; }
+.hdr { display: flex; align-items: center; justify-content: center; gap: 5mm; margin-bottom: 5mm; }
+.hdr-logo img { width: 19mm; height: auto; display: block; }
 .hdr-txt { text-align: left; display: flex; flex-direction: column; justify-content: center; }
-.hdr-rj { font-size: 13px; font-weight: 800; color: #6b7280; text-transform: uppercase; letter-spacing: 4px; line-height: 1; }
-.hdr-name { font-family: 'Cinzel', 'Playfair Display', serif; font-size: 28px; font-weight: 900; color: #0a1a3f; line-height: 1.15; letter-spacing: 1.5px; margin-top: 1.5mm; }
-.hdr-tag { font-size: 8.5px; color: #c9a227; font-style: italic; letter-spacing: 2px; margin-top: 1.5mm; line-height: 1; }
+.hdr-rj { font-family: 'Cinzel', 'Playfair Display', serif; font-size: 13px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 5px; line-height: 1; }
+.hdr-name { font-family: 'Cinzel', 'Playfair Display', serif; font-size: 24px; font-weight: 900; color: #0a1a3f; line-height: 1.1; letter-spacing: 1.5px; margin-top: 2mm; }
+.hdr-tag { font-size: 8px; color: #a17a0e; font-style: italic; letter-spacing: 2.5px; margin-top: 2.5mm; line-height: 1; font-weight: 700; }
 
 /* ==================== TITLE ==================== */
 .ttl { text-align: center; margin-bottom: 3mm; }
@@ -448,10 +448,10 @@ body { width: 297mm; height: 210mm; font-family: 'Inter', sans-serif; background
 
                         <div className="relative z-10 flex flex-col items-center justify-center h-full px-5 py-3">
                           <div className="flex items-center gap-2 mb-1.5">
-                            <img src="/logo-rjrakp.png" alt="Logo" className="w-6.5 h-6.5 object-contain" />
+                            <img src="/logo-rjrakp.png" alt="Logo" className="w-6 h-6 object-contain" />
                             <div className="text-left font-serif">
-                              <div className="text-[6.5px] text-[#6b7280] font-extrabold uppercase tracking-widest leading-none">RUMAH JURNAL</div>
-                              <div className="text-[12px] font-black text-[#0a1a3f] leading-tight font-black">ANALISIS DAN KEADILAN PUBLIK</div>
+                              <div className="text-[6px] text-[#475569] font-bold uppercase tracking-widest leading-none">RUMAH JURNAL</div>
+                              <div className="text-[11px] font-black text-[#0a1a3f] leading-tight mt-0.5">ANALISIS DAN KEADILAN PUBLIK</div>
                             </div>
                           </div>
                           <div className="text-[14px] font-black text-[#0a1a3f] uppercase tracking-[3px] leading-none mb-0.5" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>SERTIFIKAT</div>
