@@ -132,8 +132,8 @@ body { width: 297mm; height: 210mm; font-family: 'Inter', sans-serif; background
 .hdr { display: flex; align-items: center; justify-content: center; gap: 4mm; margin-bottom: 3mm; }
 .hdr-logo img { width: 16mm; height: auto; }
 .hdr-txt { text-align: left; }
-.hdr-rj { font-size: 8.5px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 3px; }
-.hdr-name { font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 900; color: #0a1a3f; line-height: 1.2; }
+.hdr-rj { font-size: 11px; font-weight: 800; color: #6b7280; text-transform: uppercase; letter-spacing: 4px; }
+.hdr-name { font-family: 'Cinzel', 'Playfair Display', serif; font-size: 22px; font-weight: 900; color: #0a1a3f; line-height: 1.2; letter-spacing: 1px; }
 .hdr-tag { font-size: 7px; color: #c9a227; font-style: italic; letter-spacing: 1.5px; margin-top: 1mm; }
 
 /* ==================== TITLE ==================== */
@@ -266,7 +266,7 @@ body { width: 297mm; height: 210mm; font-family: 'Inter', sans-serif; background
       <div class="hdr">
         <div class="hdr-logo"><img src="${logoUrl}" alt="RJRAKP" /></div>
         <div class="hdr-txt">
-          <div class="hdr-rj">Rumah Jurnal</div>
+          <div class="hdr-rj">RUMAH JURNAL</div>
           <div class="hdr-name">ANALISIS DAN KEADILAN PUBLIK</div>
           <div class="hdr-tag">Integritas &middot; Transparansi &middot; Akademik &middot; Keadilan</div>
         </div>
@@ -345,7 +345,7 @@ body { width: 297mm; height: 210mm; font-family: 'Inter', sans-serif; background
           </div>
         </div>
         <div class="ftr-col">
-          <div class="ftr-role">Sekretaris</div>
+          <div class="ftr-role">Editor in Chief</div>
         </div>
       </div>
 
@@ -474,9 +474,9 @@ body { width: 297mm; height: 210mm; font-family: 'Inter', sans-serif; background
                         <div className="relative z-10 flex flex-col items-center justify-center h-full px-5 py-3">
                           <div className="flex items-center gap-1.5 mb-1">
                             <img src="/logo-rjrakp.png" alt="Logo" className="w-5 h-5 object-contain" />
-                            <div>
-                              <div className="text-[5px] text-[#6b7280] font-bold uppercase tracking-widest leading-none">Rumah Jurnal</div>
-                              <div className="text-[7px] font-black text-[#0a1a3f] leading-tight">ANALISIS DAN KEADILAN PUBLIK</div>
+                            <div className="text-left font-serif">
+                              <div className="text-[6px] text-[#6b7280] font-extrabold uppercase tracking-widest leading-none">RUMAH JURNAL</div>
+                              <div className="text-[10px] font-black text-[#0a1a3f] leading-tight">ANALISIS DAN KEADILAN PUBLIK</div>
                             </div>
                           </div>
                           <div className="text-[14px] font-black text-[#0a1a3f] uppercase tracking-[3px] leading-none mb-0.5" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>SERTIFIKAT</div>
