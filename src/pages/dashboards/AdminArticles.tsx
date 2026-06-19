@@ -76,6 +76,17 @@ export default function AdminArticles() {
         entity_id: article.id
       });
       
+      // Send WhatsApp Notification to Author
+      const submitterPhone = article.users?.phone;
+      if (submitterPhone) {
+        supabase.functions.invoke('send-wa', {
+          body: {
+            target: submitterPhone,
+            message: `*Letter of Acceptance (LoA) Terbit*\n\nHalo ${article.users?.full_name || 'Penulis'},\n\nAcceptance Letter (LoA) untuk artikel Anda yang berjudul *"${article.title.replace(/^\[.*?\]\s*/, '')}"* telah resmi diterbitkan oleh Redaksi RJRAKP.\n\nNomor LoA: *${letterNumber}*\n\nSilakan masuk ke dashboard RJRAKP Anda pada menu *Acceptance Letter (LoA)* untuk mengunduh/mencetak dokumen resmi LoA Anda.\n\nTerima kasih.`
+          }
+        }).catch(err => console.error("Gagal mengirim WA:", err));
+      }
+
       setSuccess(`LoA ${letterNumber} berhasil diterbitkan.`);
       
       // Update local state references
@@ -233,7 +244,7 @@ export default function AdminArticles() {
         *,
         journals (id, name, slug),
         issues (id, volume, issue_number, year),
-        users!submitter_id (id, full_name, email, institution),
+        users!submitter_id (id, full_name, email, institution, phone),
         article_authors (*),
         acceptance_letters (*),
         review_assignments (
