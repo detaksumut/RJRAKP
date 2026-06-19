@@ -307,11 +307,8 @@ export default function AuthorArticles() {
                 Unduh template naskah resmi Microsoft Word yang digunakan oleh jurnal ini untuk memformat struktur penulisan artikel Anda.
               </p>
               <a
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  alert('Fitur Unduh Template: File template naskah standar sedang dipersiapkan oleh redaksi.');
-                }}
+                href="/template-naskah.docx"
+                download="Template_Naskah_RJRAKP.docx"
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-50 hover:bg-brand-100 border border-brand-200 text-brand-700 font-bold text-xs rounded-lg transition-colors w-full justify-center"
               >
                 <Download className="w-3.5 h-3.5" /> Unduh Template Naskah
