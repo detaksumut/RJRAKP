@@ -42,6 +42,14 @@ export default function AuthorArticleDetail() {
     return 'Manajemen';
   };
 
+  const getArticleScope = () => {
+    if (article?.keywords && article.keywords.startsWith('Scope: ')) {
+      const parts = article.keywords.split(', ');
+      return parts[0].replace('Scope: ', '');
+    }
+    return null;
+  };
+
   const getEditorName = () => {
     if (editorialDecisions && editorialDecisions.length > 0) {
       const decisionWithEditor = editorialDecisions.find(d => d.users?.full_name);
@@ -471,6 +479,12 @@ export default function AuthorArticleDetail() {
                   <td className="py-3 pr-4 font-bold text-academic-500 uppercase tracking-widest text-[10px]">Section</td>
                   <td className="py-3 text-academic-800 font-medium">{getSection(article.journals?.name || '')}</td>
                 </tr>
+                {getArticleScope() && (
+                  <tr className="border-b border-academic-100">
+                    <td className="py-3 pr-4 font-bold text-academic-500 uppercase tracking-widest text-[10px]">Scope Jurnal</td>
+                    <td className="py-3 text-brand-700 font-bold">{getArticleScope()}</td>
+                  </tr>
+                )}
                 <tr className="border-b border-academic-100">
                   <td className="py-3 pr-4 font-bold text-academic-500 uppercase tracking-widest text-[10px]">Editor</td>
                   <td className="py-3 text-academic-800 font-medium">{getEditorName()}</td>

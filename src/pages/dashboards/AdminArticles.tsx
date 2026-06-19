@@ -495,9 +495,24 @@ export default function AdminArticles() {
                 </div>
 
                 {selectedArticle.keywords && (
-                  <div className="pt-2">
-                    <h4 className="text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Kata Kunci</h4>
-                    <p className="text-xs text-academic-700 font-semibold">{selectedArticle.keywords}</p>
+                  <div className="pt-2 space-y-3">
+                    {selectedArticle.keywords.startsWith('Scope: ') ? (
+                      <>
+                        <div>
+                          <h4 className="text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Scope Jurnal</h4>
+                          <p className="text-xs text-brand-700 font-bold">{selectedArticle.keywords.split(', ')[0].replace('Scope: ', '')}</p>
+                        </div>
+                        <div>
+                          <h4 className="text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Kata Kunci</h4>
+                          <p className="text-xs text-academic-700 font-semibold">{selectedArticle.keywords.split(', ').slice(1).join(', ')}</p>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <h4 className="text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Kata Kunci</h4>
+                        <p className="text-xs text-academic-700 font-semibold">{selectedArticle.keywords}</p>
+                      </>
+                    )}
                   </div>
                 )}
               </div>

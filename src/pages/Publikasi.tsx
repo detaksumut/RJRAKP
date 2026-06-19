@@ -419,7 +419,7 @@ export default function Publikasi() {
                       <p className="font-serif italic mb-3">{article.abstract}</p>
                       {article.keywords && (
                         <p className="text-[11px]">
-                          <span className="font-bold text-academic-800">Kata Kunci:</span> {article.keywords}
+                          <span className="font-bold text-academic-800">Kata Kunci:</span> {article.keywords.startsWith('Scope: ') ? article.keywords.split(', ').slice(1).join(', ') : article.keywords}
                         </p>
                       )}
                     </div>

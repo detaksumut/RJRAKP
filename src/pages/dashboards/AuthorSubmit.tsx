@@ -23,6 +23,9 @@ export default function AuthorSubmit() {
 
   const [publicationType, setPublicationType] = useState('international');
   const [submittedPkg, setSubmittedPkg] = useState<any>(null);
+  const [scopes, setScopes] = useState<any[]>([]);
+  const [selectedScope, setSelectedScope] = useState('');
+  const [customScope, setCustomScope] = useState('');
 
   const getPackageDetails = (type: string) => {
     switch (type) {
@@ -60,6 +63,29 @@ export default function AuthorSubmit() {
     funding_source: '',
     conflict_of_interest: '',
   });
+
+  const fetchScopes = async (journalId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('journal_scopes')
+        .select('name')
+        .eq('journal_id', journalId)
+        .order('name');
+        
+      if (error) throw error;
+      setScopes(data || []);
+    } catch (err) {
+      console.error('Error fetching scopes:', err);
+    }
+  };
+
+  useEffect(() => {
+    if (formData.journal_id) {
+      fetchScopes(formData.journal_id);
+      setSelectedScope('');
+      setCustomScope('');
+    }
+  }, [formData.journal_id]);
 
   const [authors, setAuthors] = useState<AuthorData[]>([
     { id: Math.random().toString(), full_name: '', email: '', affiliation: '', country: '', orcid: '' }
@@ -243,6 +269,8 @@ export default function AuthorSubmit() {
       const isSinta = publicationType !== 'international';
       const finalTitle = isSinta ? `[${pkgDetails.name}] ${formData.title}` : formData.title;
 
+      const finalScope = selectedScope === 'Lainnya' ? (customScope.trim() || 'Lainnya') : selectedScope;
+
       // 3. Create Article
       const { data: currentArticle, error: articleError } = await supabase
         .from('articles')
@@ -252,7 +280,7 @@ export default function AuthorSubmit() {
           title: finalTitle,
           abstract: formData.abstract,
           abstract_en: formData.abstract_en,
-          keywords: formData.keywords,
+          keywords: finalScope ? `Scope: ${finalScope}, ${formData.keywords}` : formData.keywords,
           cover_letter: formData.cover_letter,
           bibliography: formData.bibliography,
           funding_source: formData.funding_source,
@@ -377,6 +405,8 @@ https://rjrakp.com`;
       setFormData({ journal_id: journals[0]?.id || '', title: '', abstract: '', abstract_en: '', bibliography: '', funding_source: '', conflict_of_interest: false, keywords: '', cover_letter: '' });
       setAuthors([{ id: Math.random().toString(), full_name: user.user_metadata?.full_name || '', email: user.email || '', affiliation: '', country: '', orcid: '' }]);
       setPublicationType('international');
+      setSelectedScope('');
+      setCustomScope('');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err: any) {
       const errorMessage = err.message || 'Gagal mensubmit artikel.';
@@ -497,6 +527,44 @@ https://rjrakp.com`;
                     <option value="" disabled>-- Pilih Jurnal --</option>
                     {journals.map(j => (<option key={j.id} value={j.id}>{j.name}</option>))}
                   </select>
+                </div>
+
+                {/* Scope Selection */}
+                <div>
+                  <label className="block text-sm font-bold text-academic-900 mb-2">Pilih Scope Jurnal (Opsional)</label>
+                  <select 
+                    value={selectedScope} 
+                    onChange={e => {
+                      setSelectedScope(e.target.value);
+                      if (e.target.value !== 'Lainnya') {
+                        setCustomScope('');
+                      }
+                    }} 
+                    className="w-full border border-academic-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-brand-500 bg-academic-50 cursor-pointer font-medium"
+                  >
+                    <option value="">-- Pilih Scope Jurnal (Opsional) --</option>
+                    {scopes.map((s, idx) => (
+                      <option key={idx} value={s.name}>{s.name}</option>
+                    ))}
+                    <option value="Lainnya">Lainnya (Sesuai Bidang Jurnal)</option>
+                  </select>
+
+                  {selectedScope === 'Lainnya' && (
+                    <div className="mt-3">
+                      <label className="block text-xs font-bold text-academic-700 mb-1.5">Tuliskan Scope Jurnal Anda</label>
+                      <input 
+                        type="text" 
+                        value={customScope} 
+                        onChange={e => setCustomScope(e.target.value)} 
+                        placeholder="Misal: Kecerdasan Buatan Terapan, Pemasaran Digital, dll..."
+                        className="w-full border border-academic-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-brand-500 bg-white"
+                      />
+                    </div>
+                  )}
+
+                  <p className="text-xs text-academic-500 mt-1.5 leading-relaxed">
+                    Pilih bidang fokus/scope yang paling sesuai dengan naskah Anda. Anda tetap bisa mengirimkan naskah meskipun bidang spesifik Anda tidak terdaftar.
+                  </p>
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-academic-900 mb-2">Pilih Tipe/Paket Publikasi <span className="text-red-500">*</span></label>

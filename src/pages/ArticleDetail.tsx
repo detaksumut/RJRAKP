@@ -214,8 +214,15 @@ export default function ArticleDetail() {
   const pubDate = pub?.publication_date ? new Date(pub.publication_date).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
   const pubYear = pub?.publication_date ? new Date(pub.publication_date).getFullYear().toString() : '';
 
-  // Prepare keywords
-  const keywordsList = article.keywords ? article.keywords.split(',').map((k: string) => k.trim()).filter((k: string) => k) : [];
+  // Prepare keywords and scope
+  const rawKeywords = article.keywords || '';
+  const articleScope = rawKeywords.startsWith('Scope: ') 
+    ? rawKeywords.split(', ')[0].replace('Scope: ', '') 
+    : null;
+    
+  const keywordsList = rawKeywords.startsWith('Scope: ')
+    ? rawKeywords.split(', ').slice(1).map((k: string) => k.trim()).filter((k: string) => k)
+    : rawKeywords.split(',').map((k: string) => k.trim()).filter((k: string) => k);
 
   // Generate Citations
   const generateCitation = (format: 'apa' | 'mla' | 'chicago') => {
@@ -518,16 +525,28 @@ export default function ArticleDetail() {
                   {article.abstract || 'Abstrak tidak tersedia untuk artikel ini.'}
                 </div>
 
-                {keywordsList.length > 0 && (
-                  <div className="mt-8">
-                    <h3 className="text-sm font-bold text-academic-900 mb-3 uppercase tracking-wider">Kata Kunci (Keywords)</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {keywordsList.map((kw: string, idx: number) => (
-                        <span key={idx} className="bg-academic-100 text-academic-700 px-3 py-1 rounded-md text-sm font-medium">
-                          {kw}
+                {(keywordsList.length > 0 || articleScope) && (
+                  <div className="mt-8 space-y-6">
+                    {articleScope && (
+                      <div>
+                        <h3 className="text-sm font-bold text-academic-900 mb-2 uppercase tracking-wider">Scope Jurnal</h3>
+                        <span className="bg-brand-50 border border-brand-200 text-brand-700 font-bold px-3 py-1.5 rounded-md text-sm inline-block">
+                          {articleScope}
                         </span>
-                      ))}
-                    </div>
+                      </div>
+                    )}
+                    {keywordsList.length > 0 && (
+                      <div>
+                        <h3 className="text-sm font-bold text-academic-900 mb-3 uppercase tracking-wider">Kata Kunci (Keywords)</h3>
+                        <div className="flex flex-wrap gap-2">
+                          {keywordsList.map((kw: string, idx: number) => (
+                            <span key={idx} className="bg-academic-100 text-academic-700 px-3 py-1 rounded-md text-sm font-medium">
+                              {kw}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
