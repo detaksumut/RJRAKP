@@ -1,6 +1,6 @@
 import DashboardLayout from '../../components/DashboardLayout';
 import { useAuth } from '../../contexts/AuthContext';
-import { FileText, Edit, UserCheck, CheckCircle, Clock, X, Download, Eye } from 'lucide-react';
+import { FileText, Edit, UserCheck, CheckCircle, Clock, X, Download, Eye, Bold, Italic, Underline, Link2, Image, List, ListOrdered, Maximize2, Upload } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 
@@ -147,7 +147,15 @@ export default function ReviewerDashboard() {
       if (updateError) throw updateError;
       
       setSelectedAssignment(null);
-      setReviewForm({ recommendation: '', comments_for_author: '', comments_for_editor: '' });
+      setReviewForm({
+        recommendation: '',
+        score_originality: '3',
+        score_methodology: '3',
+        score_readability: '3',
+        score_contribution: '3',
+        comments_for_author: '',
+        comments_for_editor: ''
+      });
       fetchAssignments();
     } catch (err: any) {
       console.error(err);
@@ -155,6 +163,50 @@ export default function ReviewerDashboard() {
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const insertFormat = (field: 'comments_for_author' | 'comments_for_editor', format: string) => {
+    const textarea = document.getElementById(field) as HTMLTextAreaElement;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const text = textarea.value;
+    const selectedText = text.substring(start, end);
+    
+    let replacement = '';
+    switch (format) {
+      case 'bold':
+        replacement = `**${selectedText || 'teks'}**`;
+        break;
+      case 'italic':
+        replacement = `*${selectedText || 'teks'}*`;
+        break;
+      case 'underline':
+        replacement = `<u>${selectedText || 'teks'}</u>`;
+        break;
+      case 'link':
+        replacement = `[${selectedText || 'teks'}](url)`;
+        break;
+      case 'bullet':
+        replacement = `\n- ${selectedText || 'butir'}`;
+        break;
+      case 'number':
+        replacement = `\n1. ${selectedText || 'butir'}`;
+        break;
+      default:
+        return;
+    }
+
+    const newValue = text.substring(0, start) + replacement + text.substring(end);
+    setReviewForm(prev => ({ ...prev, [field]: newValue }));
+    
+    // Refocus and select
+    setTimeout(() => {
+      textarea.focus();
+      const offset = format === 'bold' ? 2 : format === 'italic' ? 1 : format === 'underline' ? 3 : format === 'link' ? 1 : 3;
+      textarea.setSelectionRange(start + offset, start + offset + (selectedText || 'teks').length);
+    }, 0);
   };
 
   if (user?.status === 'PENDING') {
@@ -276,6 +328,238 @@ export default function ReviewerDashboard() {
                     <p className="text-xs text-academic-500">Tidak ada naskah terunggah. Hanya menampilkan informasi abstrak.</p>
                   </div>
                 )}
+
+                {/* Form Review (Recommendation & Comments placed here for wide layout comfort, styled like OJS) */}
+                <div className="pt-6 border-t border-slate-200 mt-6 space-y-6">
+                  <h3 className="text-lg font-bold text-slate-800 font-serif">Form Review</h3>
+                  
+                  <div className="space-y-1.5">
+                    <label className="block text-sm font-bold text-slate-800">Rekomendasi</label>
+                    <div className="flex items-center gap-2">
+                      <select
+                        value={reviewForm.recommendation}
+                        onChange={(e) => setReviewForm({ ...reviewForm, recommendation: e.target.value })}
+                        className="w-full max-w-md border border-slate-300 rounded px-3 py-1.5 text-sm bg-white cursor-pointer font-medium focus:outline-none focus:ring-1 focus:ring-brand-500 focus:border-brand-500"
+                      >
+                        <option value="">-- Pilih Rekomendasi --</option>
+                        <option value="accept">Accept Submission (Diterima)</option>
+                        <option value="minor_revision">Revisions Required (Revisi Minor)</option>
+                        <option value="major_revision">Resubmit for Review (Revisi Mayor)</option>
+                        <option value="reject">Decline Submission (Ditolak)</option>
+                      </select>
+                      <div 
+                        className="w-5 h-5 rounded-full bg-blue-600 hover:bg-blue-700 flex items-center justify-center text-white font-bold text-xs cursor-pointer select-none transition-colors" 
+                        title="Rekomendasi ini bersifat sementara. Anda dapat mengubah rekomendasi pada langkah berikutnya."
+                        onClick={() => alert("Rekomendasi ini bersifat sementara. Anda dapat mengubah rekomendasi pada langkah berikutnya.")}
+                      >
+                        ?
+                      </div>
+                    </div>
+                    <p className="text-xs text-slate-500">Rekomendasi ini bersifat sementara. Anda dapat mengubah rekomendasi pada langkah berikutnya.</p>
+                  </div>
+
+                  <div className="space-y-6">
+                    {/* Komentar untuk Penulis */}
+                    <div className="space-y-1.5">
+                      <label className="block text-sm font-bold text-slate-800">Komentar untuk Penulis <span className="text-red-500">*</span></label>
+                      <div className="border border-slate-300 rounded-lg overflow-hidden bg-white focus-within:border-brand-500 focus-within:ring-1 focus-within:ring-brand-500 shadow-sm">
+                        {/* Editor Toolbar */}
+                        <div className="bg-slate-50 border-b border-slate-200 px-3 py-1.5 flex items-center gap-1 flex-wrap">
+                          <button
+                            type="button"
+                            onClick={() => insertFormat('comments_for_author', 'bold')}
+                            title="Tebal (Bold)"
+                            className="p-1 rounded hover:bg-slate-200 text-slate-600 transition-colors"
+                          >
+                            <Bold className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => insertFormat('comments_for_author', 'italic')}
+                            title="Miring (Italic)"
+                            className="p-1 rounded hover:bg-slate-200 text-slate-600 transition-colors"
+                          >
+                            <Italic className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => insertFormat('comments_for_author', 'underline')}
+                            title="Garis Bawah (Underline)"
+                            className="p-1 rounded hover:bg-slate-200 text-slate-600 transition-colors"
+                          >
+                            <Underline className="w-4 h-4" />
+                          </button>
+                          
+                          <div className="w-[1px] h-4 bg-slate-300 mx-1" />
+
+                          <button
+                            type="button"
+                            onClick={() => insertFormat('comments_for_author', 'link')}
+                            title="Sisipkan Tautan (Link)"
+                            className="p-1 rounded hover:bg-slate-200 text-slate-600 transition-colors"
+                          >
+                            <Link2 className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => alert("Fitur Unggah Gambar/Media disiapkan untuk editor visual.")}
+                            title="Sisipkan Gambar"
+                            className="p-1 rounded hover:bg-slate-200 text-slate-600 transition-colors"
+                          >
+                            <Image className="w-4 h-4" />
+                          </button>
+
+                          <div className="w-[1px] h-4 bg-slate-300 mx-1" />
+
+                          <button
+                            type="button"
+                            onClick={() => insertFormat('comments_for_author', 'bullet')}
+                            title="Daftar Simbol (Bullet List)"
+                            className="p-1 rounded hover:bg-slate-200 text-slate-600 transition-colors"
+                          >
+                            <List className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => insertFormat('comments_for_author', 'number')}
+                            title="Daftar Angka (Numbered List)"
+                            className="p-1 rounded hover:bg-slate-200 text-slate-600 transition-colors"
+                          >
+                            <ListOrdered className="w-4 h-4" />
+                          </button>
+
+                          <div className="w-[1px] h-4 bg-slate-300 mx-1" />
+
+                          <button
+                            type="button"
+                            onClick={() => alert("Fitur Unggah Lampiran berkas tambahan.")}
+                            title="Unggah File"
+                            className="p-1 rounded hover:bg-slate-200 text-slate-600 transition-colors"
+                          >
+                            <Upload className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => alert("Tampilan Layar Penuh disiapkan.")}
+                            title="Layar Penuh (Fullscreen)"
+                            className="p-1 rounded hover:bg-slate-200 text-slate-600 transition-colors"
+                          >
+                            <Maximize2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                        <textarea
+                          id="comments_for_author"
+                          rows={6}
+                          value={reviewForm.comments_for_author}
+                          onChange={(e) => setReviewForm({ ...reviewForm, comments_for_author: e.target.value })}
+                          placeholder="Tulis masukan, kritik konstruktif, dan perbaikan untuk penulis..."
+                          className="w-full border-0 focus:ring-0 focus:outline-none p-3 text-sm text-slate-700 placeholder-slate-400 bg-white leading-relaxed resize-y min-h-[150px]"
+                        />
+                      </div>
+                      <p className="text-xs text-slate-500">Komentar ini akan terlihat oleh penulis.</p>
+                    </div>
+
+                    {/* Komentar untuk Editor */}
+                    <div className="space-y-1.5">
+                      <label className="block text-sm font-bold text-slate-800">Komentar untuk Editor <span className="text-red-500">*</span></label>
+                      <div className="border border-slate-300 rounded-lg overflow-hidden bg-white focus-within:border-brand-500 focus-within:ring-1 focus-within:ring-brand-500 shadow-sm">
+                        {/* Editor Toolbar */}
+                        <div className="bg-slate-50 border-b border-slate-200 px-3 py-1.5 flex items-center gap-1 flex-wrap">
+                          <button
+                            type="button"
+                            onClick={() => insertFormat('comments_for_editor', 'bold')}
+                            title="Tebal (Bold)"
+                            className="p-1 rounded hover:bg-slate-200 text-slate-600 transition-colors"
+                          >
+                            <Bold className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => insertFormat('comments_for_editor', 'italic')}
+                            title="Miring (Italic)"
+                            className="p-1 rounded hover:bg-slate-200 text-slate-600 transition-colors"
+                          >
+                            <Italic className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => insertFormat('comments_for_editor', 'underline')}
+                            title="Garis Bawah (Underline)"
+                            className="p-1 rounded hover:bg-slate-200 text-slate-600 transition-colors"
+                          >
+                            <Underline className="w-4 h-4" />
+                          </button>
+                          
+                          <div className="w-[1px] h-4 bg-slate-300 mx-1" />
+
+                          <button
+                            type="button"
+                            onClick={() => insertFormat('comments_for_editor', 'link')}
+                            title="Sisipkan Tautan (Link)"
+                            className="p-1 rounded hover:bg-slate-200 text-slate-600 transition-colors"
+                          >
+                            <Link2 className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => alert("Fitur Unggah Gambar/Media disiapkan untuk editor visual.")}
+                            title="Sisipkan Gambar"
+                            className="p-1 rounded hover:bg-slate-200 text-slate-600 transition-colors"
+                          >
+                            <Image className="w-4 h-4" />
+                          </button>
+
+                          <div className="w-[1px] h-4 bg-slate-300 mx-1" />
+
+                          <button
+                            type="button"
+                            onClick={() => insertFormat('comments_for_editor', 'bullet')}
+                            title="Daftar Simbol (Bullet List)"
+                            className="p-1 rounded hover:bg-slate-200 text-slate-600 transition-colors"
+                          >
+                            <List className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => insertFormat('comments_for_editor', 'number')}
+                            title="Daftar Angka (Numbered List)"
+                            className="p-1 rounded hover:bg-slate-200 text-slate-600 transition-colors"
+                          >
+                            <ListOrdered className="w-4 h-4" />
+                          </button>
+
+                          <div className="w-[1px] h-4 bg-slate-300 mx-1" />
+
+                          <button
+                            type="button"
+                            onClick={() => alert("Fitur Unggah Lampiran berkas tambahan.")}
+                            title="Unggah File"
+                            className="p-1 rounded hover:bg-slate-200 text-slate-600 transition-colors"
+                          >
+                            <Upload className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => alert("Tampilan Layar Penuh disiapkan.")}
+                            title="Layar Penuh (Fullscreen)"
+                            className="p-1 rounded hover:bg-slate-200 text-slate-600 transition-colors"
+                          >
+                            <Maximize2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                        <textarea
+                          id="comments_for_editor"
+                          rows={6}
+                          value={reviewForm.comments_for_editor}
+                          onChange={(e) => setReviewForm({ ...reviewForm, comments_for_editor: e.target.value })}
+                          placeholder="Sampaikan catatan rahasia kepada editor (tidak terlihat oleh penulis)..."
+                          className="w-full border-0 focus:ring-0 focus:outline-none p-3 text-sm text-slate-700 placeholder-slate-400 bg-white leading-relaxed resize-y min-h-[150px]"
+                        />
+                      </div>
+                      <p className="text-xs text-slate-500">Komentar rahasia ini hanya bisa dibaca oleh editor/admin.</p>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div className="lg:w-[320px] shrink-0 overflow-y-auto space-y-4 text-xs lg:pr-2 pb-2">
@@ -341,45 +625,6 @@ export default function ReviewerDashboard() {
                       </select>
                     </div>
                   </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-academic-900 mb-1">Rekomendasi Keputusan *</label>
-                  <select
-                    value={reviewForm.recommendation}
-                    onChange={(e) => setReviewForm({ ...reviewForm, recommendation: e.target.value })}
-                    className="w-full border border-academic-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 py-1.5 text-xs bg-white"
-                  >
-                    <option value="">-- Pilih Rekomendasi --</option>
-                    <option value="accept">Accept Submission (Diterima)</option>
-                    <option value="minor_revision">Revisions Required (Revisi Minor)</option>
-                    <option value="major_revision">Resubmit for Review (Revisi Mayor)</option>
-                    <option value="reject">Decline Submission (Ditolak)</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-academic-900 mb-1">Komentar untuk Penulis (Author) *</label>
-                  <textarea
-                    rows={2}
-                    value={reviewForm.comments_for_author}
-                    onChange={(e) => setReviewForm({ ...reviewForm, comments_for_author: e.target.value })}
-                    placeholder="Tulis masukan, kritik konstruktif, dan perbaikan untuk penulis..."
-                    className="w-full border border-academic-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-xs px-3 py-2 bg-white"
-                  />
-                  <p className="text-[10px] text-academic-500 mt-0.5">Komentar ini akan terlihat oleh penulis.</p>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-academic-900 mb-1">Komentar untuk Editor *</label>
-                  <textarea
-                    rows={2}
-                    value={reviewForm.comments_for_editor}
-                    onChange={(e) => setReviewForm({ ...reviewForm, comments_for_editor: e.target.value })}
-                    placeholder="Sampaikan catatan rahasia kepada editor (tidak terlihat oleh penulis)..."
-                    className="w-full border border-academic-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-xs px-3 py-2 bg-white"
-                  />
-                  <p className="text-[10px] text-academic-500 mt-0.5">Komentar rahasia ini hanya bisa dibaca oleh editor/admin.</p>
                 </div>
               </div>
             </div>
