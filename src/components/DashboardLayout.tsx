@@ -1,7 +1,7 @@
 import { ReactNode, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { LogOut, LayoutDashboard, User, FileText, Bell, Settings, Edit, Users, BarChart, Menu, X, BookOpen, DollarSign, MessageSquare, GraduationCap } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { LogOut, LayoutDashboard, User, FileText, Bell, Settings, Edit, Users, BarChart, Menu, X, BookOpen, DollarSign, MessageSquare } from 'lucide-react';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -18,7 +18,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       return [
         { label: 'Dashboard', path: '/dashboard/author', icon: LayoutDashboard },
         { label: 'Artikel Saya', path: '/dashboard/author/articles', icon: FileText },
-        { label: 'Opini Saya', path: '/dashboard/author/opinions', icon: BookOpen },
+        { label: 'Jurnal Kampus', path: '/dashboard/author/jurnal-kampus', icon: GraduationCap },
         { label: 'Submit Artikel', path: '/dashboard/author/submit', icon: Edit },
         { label: 'Status Review', path: '/dashboard/author/review-status', icon: Bell },
         { label: 'Acceptance Letter', path: '/dashboard/author/loa', icon: Settings },

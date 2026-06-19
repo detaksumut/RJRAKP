@@ -5,6 +5,6 @@ export const MENU_ITEMS = [
   { label: 'Reviewer', href: '/panduan-reviewer' },
   { label: 'Editor', href: '/panduan-editor' },
   { label: 'Publikasi', href: '/publikasi' },
-  { label: 'Kontak', href: '#kontak' },
+  { label: 'Jurnal Kampus', href: '/jurnal-kampus' },
 ];
 

@@ -31,13 +31,6 @@ export default function Navbar() {
             </Link>
           </div>
 
-          <div className="flex flex-1 justify-center px-2">
-            <Link to="/opini" className="flex items-center gap-2 sm:gap-2.5 px-4 py-2 sm:px-5 sm:py-2.5 rounded-full bg-amber-50/50 hover:bg-amber-50 border border-amber-100 transition-all shadow-sm group">
-              <BookOpen className="w-6 h-6 sm:w-7 sm:h-7 text-amber-600 group-hover:scale-110 transition-transform" fill="currentColor" fillOpacity={0.2} />
-              <span className="text-sm sm:text-base font-black text-amber-900 tracking-wide whitespace-nowrap">Opini</span>
-            </Link>
-          </div>
-
           <div className="hidden lg:flex lg:items-center lg:space-x-2">
             {MENU_ITEMS.map((item) => (
               <a

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import DashboardLayout from '../../components/DashboardLayout';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
@@ -15,13 +16,14 @@ interface AuthorData {
 
 export default function AuthorSubmit() {
   const { user } = useAuth();
+  const [searchParams] = useSearchParams();
   const [journals, setJournals] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
   const [isTranslating, setIsTranslating] = useState(false);
 
-  const [publicationType, setPublicationType] = useState('international');
+  const [publicationType, setPublicationType] = useState(searchParams.get('type') || 'international');
   const [submittedPkg, setSubmittedPkg] = useState<any>(null);
   const [scopes, setScopes] = useState<any[]>([]);
   const [selectedScope, setSelectedScope] = useState('');

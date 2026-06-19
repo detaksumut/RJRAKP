@@ -68,6 +68,8 @@ import OpinionList from './pages/OpinionList';
 import OpinionDetail from './pages/OpinionDetail';
 import AuthorOpinions from './pages/dashboards/AuthorOpinions';
 import AuthorOpinionForm from './pages/dashboards/AuthorOpinionForm';
+import JurnalKampus from './pages/JurnalKampus';
+import AuthorJurnalKampus from './pages/dashboards/AuthorJurnalKampus';
 
 export default function App() {
   return (
@@ -100,6 +102,7 @@ export default function App() {
               <Route path="/article/:slug" element={<ArticleDetail />} />
               <Route path="/opini" element={<OpinionList />} />
               <Route path="/opini/:slug" element={<OpinionDetail />} />
+              <Route path="/jurnal-kampus" element={<JurnalKampus />} />
             <Route path="/panduan-penulis" element={<PanduanPenulis />} />
             <Route path="/panduan-reviewer" element={<PanduanReviewer />} />
             <Route path="/panduan-editor" element={<PanduanEditor />} />
@@ -133,6 +136,7 @@ export default function App() {
               <Route path="/dashboard/author/opinions" element={<AuthorOpinions />} />
               <Route path="/dashboard/author/opinions/new" element={<AuthorOpinionForm />} />
               <Route path="/dashboard/author/opinions/edit/:id" element={<AuthorOpinionForm />} />
+              <Route path="/dashboard/author/jurnal-kampus" element={<AuthorJurnalKampus />} />
               <Route path="/dashboard/author/submit" element={<AuthorSubmit />} />
               <Route path="/dashboard/author/review-status" element={<AuthorReviewStatus />} />
               <Route path="/dashboard/author/loa" element={<AuthorLoa />} />
