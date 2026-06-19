@@ -21,6 +21,53 @@ export default function ReviewerDashboard() {
     comments_for_editor: ''
   });
   const [submitting, setSubmitting] = useState(false);
+  const [activeTab, setActiveTab] = useState<'ringkasan' | 'aktivitas'>('ringkasan');
+  const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
+
+  const handleAcceptInvitation = async (assignmentId: string) => {
+    setUpdatingStatus(assignmentId);
+    try {
+      const { error } = await supabase
+        .from('review_assignments')
+        .update({ status: 'accepted' })
+        .eq('id', assignmentId);
+
+      if (error) throw error;
+      
+      // Update local state
+      setAssignments(prev => prev.map(a => a.id === assignmentId ? { ...a, status: 'accepted' } : a));
+      alert("Terima kasih! Anda telah menyetujui peninjauan ini. Sekarang Anda dapat membaca naskah lengkap dan mengisi ulasan.");
+    } catch (err: any) {
+      console.error(err);
+      alert("Gagal menerima undangan: " + (err.message || ''));
+    } finally {
+      setUpdatingStatus(null);
+    }
+  };
+
+  const handleDeclineInvitation = async (assignmentId: string) => {
+    const confirmDecline = window.confirm("Apakah Anda yakin ingin menolak undangan peninjauan ini?");
+    if (!confirmDecline) return;
+
+    setUpdatingStatus(assignmentId);
+    try {
+      const { error } = await supabase
+        .from('review_assignments')
+        .update({ status: 'declined' })
+        .eq('id', assignmentId);
+
+      if (error) throw error;
+      
+      // Update local state
+      setAssignments(prev => prev.map(a => a.id === assignmentId ? { ...a, status: 'declined' } : a));
+      alert("Undangan peninjauan telah ditolak.");
+    } catch (err: any) {
+      console.error(err);
+      alert("Gagal menolak undangan: " + (err.message || ''));
+    } finally {
+      setUpdatingStatus(null);
+    }
+  };
 
   useEffect(() => {
     if (user?.id) {
@@ -124,9 +171,9 @@ export default function ReviewerDashboard() {
     );
   }
 
-  const pendingCount = assignments.filter((a) => a.status !== 'completed' && !(a.reviews && a.reviews.length > 0)).length;
-  const completedCount = assignments.filter((a) => a.status === 'completed' || (a.reviews && a.reviews.length > 0)).length;
-  const overdueCount = assignments.filter((a) => a.status !== 'completed' && !(a.reviews && a.reviews.length > 0) && a.due_date && new Date(a.due_date) < new Date()).length;
+  const pendingCount = assignments.filter((a) => (a.status === 'assigned' || a.status === 'accepted') && a.status !== 'completed' && a.status !== 'declined').length;
+  const completedCount = assignments.filter((a) => a.status === 'completed').length;
+  const overdueCount = assignments.filter((a) => (a.status === 'assigned' || a.status === 'accepted') && a.status !== 'completed' && a.status !== 'declined' && a.due_date && new Date(a.due_date) < new Date()).length;
 
   return (
     <DashboardLayout>
@@ -233,6 +280,35 @@ export default function ReviewerDashboard() {
 
               <div className="lg:w-[320px] shrink-0 overflow-y-auto space-y-4 text-xs lg:pr-2 pb-2">
                 
+                {/* Timeline Section */}
+                <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                  <h4 className="font-bold text-academic-900 mb-3 text-sm flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-brand-600" />
+                    Timeline Review
+                  </h4>
+                  <div className="relative pl-5 border-l border-brand-200 space-y-4 text-[10px]">
+                    <div className="relative">
+                      <div className="absolute -left-[25px] top-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white"></div>
+                      <p className="font-bold text-academic-800">Undangan Review Dikirim</p>
+                      <p className="text-academic-500">
+                        {new Date(selectedAssignment.assigned_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+                      </p>
+                    </div>
+                    <div className="relative">
+                      <div className="absolute -left-[25px] top-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white"></div>
+                      <p className="font-bold text-academic-800">Undangan Disetujui</p>
+                      <p className="text-academic-500">Reviewer bersedia mengulas</p>
+                    </div>
+                    <div className="relative">
+                      <div className="absolute -left-[25px] top-0.5 w-2.5 h-2.5 rounded-full bg-brand-500 border-2 border-white"></div>
+                      <p className="font-bold text-academic-800">Batas Akhir Penyerahan</p>
+                      <p className="text-rose-600 font-bold">
+                        {selectedAssignment.due_date ? new Date(selectedAssignment.due_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '-'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
                 {/* Scoring Section */}
                 <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
                   <h4 className="font-bold text-academic-900 mb-3 text-sm flex items-center gap-2">
@@ -327,93 +403,225 @@ export default function ReviewerDashboard() {
         </div>
       )}
 
-      <div className="max-w-4xl">
-        <h1 className="text-2xl font-serif font-bold text-academic-900 mb-2">Dashboard Reviewer</h1>
-        <p className="text-academic-500 mb-8">Selamat datang kembali, {user?.full_name}</p>
+      <div className="max-w-6xl">
+        <div className="mb-8">
+          <h1 className="text-2xl font-serif font-bold text-academic-900 mb-2">Dashboard Reviewer</h1>
+          <p className="text-academic-500">Selamat datang kembali, {user?.full_name}</p>
+        </div>
 
+        {/* Stats Section */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="bg-white p-6 rounded-xl border border-academic-200 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
              <div className="flex justify-between items-start mb-4">
-               <h3 className="text-academic-500 text-xs font-bold uppercase tracking-widest">Pending Review</h3>
-               <FileText className="w-5 h-5 text-amber-500" />
+                <h3 className="text-academic-500 text-xs font-bold uppercase tracking-widest">Pending Review</h3>
+                <FileText className="w-5 h-5 text-amber-500" />
              </div>
              <p className="text-3xl font-bold font-serif text-academic-900">{loading ? '-' : pendingCount}</p>
           </div>
           <div className="bg-white p-6 rounded-xl border border-academic-200 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
              <div className="flex justify-between items-start mb-4">
-               <h3 className="text-academic-500 text-xs font-bold uppercase tracking-widest">Review Selesai</h3>
-               <CheckCircle className="w-5 h-5 text-emerald-500" />
+                <h3 className="text-academic-500 text-xs font-bold uppercase tracking-widest">Review Selesai</h3>
+                <CheckCircle className="w-5 h-5 text-emerald-500" />
              </div>
              <p className="text-3xl font-bold font-serif text-academic-900">{loading ? '-' : completedCount}</p>
           </div>
           <div className="bg-white p-6 rounded-xl border border-academic-200 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
              <div className="flex justify-between items-start mb-4">
-               <h3 className="text-academic-500 text-xs font-bold uppercase tracking-widest">Overdue</h3>
-               <Clock className="w-5 h-5 text-rose-500" />
+                <h3 className="text-academic-500 text-xs font-bold uppercase tracking-widest">Overdue</h3>
+                <Clock className="w-5 h-5 text-rose-500" />
              </div>
              <p className="text-3xl font-bold font-serif text-rose-600">{loading ? '-' : overdueCount}</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-academic-200 shadow-sm overflow-hidden mb-8">
-          <div className="px-6 py-4 border-b border-academic-200 bg-academic-50/50 flex justify-between items-center">
-            <h3 className="font-bold text-academic-900 text-sm uppercase tracking-wider">Tugas Review</h3>
-          </div>
+        {/* 2-Column Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
           
-          <div className="divide-y divide-academic-100">
-            {loading ? (
-              <div className="p-6 text-center text-academic-500">Memuat data...</div>
-            ) : assignments.length === 0 ? (
-              <div className="p-6 text-center text-academic-500">Belum ada tugas review.</div>
-            ) : (
-              assignments.map((assignment: any) => {
-                const isCompleted = assignment.status === 'completed' || (assignment.reviews && assignment.reviews.length > 0);
-                return (
-                  <div key={assignment.id} className="p-6 hover:bg-academic-50 transition-colors">
-                    <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
-                      <div className="flex-1">
-                        {isCompleted ? (
-                          <span className="inline-block px-2 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded mb-2 border border-emerald-200">
-                            <span className="flex items-center gap-1.5"><CheckCircle className="w-3 h-3" /> Selesai</span>
-                          </span>
-                        ) : (
-                          <span className="inline-block px-2 py-1 bg-amber-50 text-amber-700 text-xs font-bold rounded mb-2 border border-amber-200">
-                            <span className="flex items-center gap-1.5"><Clock className="w-3 h-3" /> Menunggu Review</span>
-                          </span>
-                        )}
-                        
-                        <h4 className="text-lg font-bold text-academic-900 font-serif leading-tight mt-1">
-                          {assignment.articles?.title || 'Judul Tidak Tersedia'}
-                        </h4>
-                        <p className="text-xs font-bold text-brand-600 mt-2 uppercase tracking-wider">
-                          {assignment.articles?.journals?.name || 'Jurnal Tidak Diketahui'}
-                        </p>
-                        
-                        <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-sm text-academic-500">
-                          <p>Ditugaskan: {new Date(assignment.assigned_date).toLocaleDateString('id-ID')}</p>
-                          {assignment.due_date && (
-                            <p className={new Date(assignment.due_date) < new Date() && !isCompleted ? 'text-rose-600 font-bold' : ''}>
-                              Batas Waktu: {new Date(assignment.due_date).toLocaleDateString('id-ID')}
-                            </p>
-                          )}
+          {/* Left Column: Tasks and Tabs */}
+          <div className="lg:col-span-2 space-y-6">
+            
+            {/* OJS style Tab Navigation */}
+            <div className="flex border-b border-academic-200 bg-white p-2.5 rounded-xl border">
+              <button
+                onClick={() => setActiveTab('ringkasan')}
+                className={`flex-1 py-2 text-center text-xs font-bold uppercase tracking-wider rounded-lg transition-all cursor-pointer ${
+                  activeTab === 'ringkasan'
+                    ? 'bg-brand-50 text-brand-800 shadow-sm'
+                    : 'text-academic-500 hover:text-academic-800'
+                }`}
+              >
+                Ringkasan (Antrean Aktif)
+              </button>
+              <button
+                onClick={() => setActiveTab('aktivitas')}
+                className={`flex-1 py-2 text-center text-xs font-bold uppercase tracking-wider rounded-lg transition-all cursor-pointer ${
+                  activeTab === 'aktivitas'
+                    ? 'bg-brand-50 text-brand-800 shadow-sm'
+                    : 'text-academic-500 hover:text-academic-800'
+                }`}
+              >
+                Aktivitas (Arsip Riwayat)
+              </button>
+            </div>
+
+            <div className="bg-white rounded-xl border border-academic-200 shadow-sm overflow-hidden">
+              <div className="divide-y divide-academic-100">
+                {loading ? (
+                  <div className="p-6 text-center text-academic-500 text-xs font-medium">Memuat data penugasan...</div>
+                ) : (() => {
+                  const filtered = assignments.filter((a) => {
+                    if (activeTab === 'ringkasan') {
+                      return (a.status === 'assigned' || a.status === 'accepted') && a.status !== 'completed' && a.status !== 'declined';
+                    } else {
+                      return a.status === 'completed' || a.status === 'declined';
+                    }
+                  });
+
+                  if (filtered.length === 0) {
+                    return (
+                      <div className="p-8 text-center text-academic-500 text-xs">
+                        Tidak ada tugas review pada kategori ini.
+                      </div>
+                    );
+                  }
+
+                  return filtered.map((assignment: any) => {
+                    const isAssignedOnly = assignment.status === 'assigned';
+                    const isDeclined = assignment.status === 'declined';
+                    const isCompleted = assignment.status === 'completed';
+
+                    return (
+                      <div key={assignment.id} className="p-6 hover:bg-academic-50/50 transition-colors">
+                        <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+                          <div className="flex-1 space-y-2.5">
+                            <div className="flex flex-wrap gap-2 items-center">
+                              {isCompleted && (
+                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-emerald-50 text-emerald-700 text-[10px] font-bold rounded-md border border-emerald-200 uppercase tracking-wide">
+                                  <CheckCircle className="w-3 h-3" /> Selesai
+                                </span>
+                              )}
+                              {isDeclined && (
+                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-rose-50 text-rose-700 text-[10px] font-bold rounded-md border border-rose-200 uppercase tracking-wide">
+                                  <X className="w-3 h-3" /> Ditolak
+                                </span>
+                              )}
+                              {isAssignedOnly && (
+                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-amber-50 text-amber-700 text-[10px] font-bold rounded-md border border-amber-200 uppercase tracking-wide">
+                                  <Clock className="w-3 h-3" /> Undangan Menunggu Konfirmasi
+                                </span>
+                              )}
+                              {!isCompleted && !isDeclined && !isAssignedOnly && (
+                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-blue-50 text-blue-700 text-[10px] font-bold rounded-md border border-blue-200 uppercase tracking-wide">
+                                  <Clock className="w-3 h-3" /> Ulasan Aktif
+                                </span>
+                              )}
+                              <span className="text-[10px] font-bold text-brand-700 bg-brand-50 border border-brand-100 px-2 py-0.5 rounded uppercase tracking-wide">
+                                {assignment.articles?.journals?.name || 'Jurnal'}
+                              </span>
+                            </div>
+
+                            <h4 className="text-base font-bold text-academic-900 font-serif leading-snug">
+                              {assignment.articles?.title || 'Judul Tidak Tersedia'}
+                            </h4>
+
+                            <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-academic-500">
+                              <span>Ditugaskan: {new Date(assignment.assigned_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                              {assignment.due_date && !isCompleted && !isDeclined && (
+                                <span className={new Date(assignment.due_date) < new Date() ? 'text-rose-600 font-bold' : ''}>
+                                  Batas Waktu: {new Date(assignment.due_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+                                </span>
+                              )}
+                            </div>
+
+                            {/* Invitation Consent Warning Box */}
+                            {isAssignedOnly && (
+                              <div className="bg-amber-50 border border-amber-200 p-4 rounded-xl text-xs text-amber-900 leading-normal space-y-2">
+                                <strong>⚠️ Pernyataan Etika & Konfidensialitas:</strong>
+                                <p className="text-amber-800 text-[11px] text-justify leading-relaxed">
+                                  Sebelum dapat mengakses naskah lengkap dan memberikan ulasan, Anda berkewajiban mengonfirmasi kesediaan. Dengan mengklik "Terima", Anda menyatakan bersedia mengulas secara profesional dan bebas dari benturan kepentingan dengan penulis.
+                                </p>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Action Buttons */}
+                          <div className="flex flex-col sm:items-end gap-2 shrink-0 self-start sm:self-center">
+                            {isAssignedOnly ? (
+                              <div className="flex gap-2 w-full sm:w-auto">
+                                <button
+                                  onClick={() => handleDeclineInvitation(assignment.id)}
+                                  disabled={updatingStatus === assignment.id}
+                                  className="px-3 py-2 border border-rose-300 bg-white text-rose-700 hover:bg-rose-50 rounded-lg text-xs font-bold transition-colors cursor-pointer"
+                                >
+                                  Tolak
+                                </button>
+                                <button
+                                  onClick={() => handleAcceptInvitation(assignment.id)}
+                                  disabled={updatingStatus === assignment.id}
+                                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-colors shadow-sm cursor-pointer"
+                                >
+                                  Terima Ulasan
+                                </button>
+                              </div>
+                            ) : (
+                              !isCompleted && !isDeclined && (
+                                <button 
+                                  onClick={() => setSelectedAssignment(assignment)}
+                                  className="bg-brand-700 hover:bg-brand-800 text-white px-5 py-2.5 rounded-lg text-xs font-bold transition-colors whitespace-nowrap shadow-sm cursor-pointer"
+                                >
+                                  Lanjutkan Review
+                                </button>
+                              )
+                            )}
+                          </div>
                         </div>
                       </div>
-                      
-                      {!isCompleted && (
-                        <button 
-                          onClick={() => setSelectedAssignment(assignment)}
-                          className="bg-brand-50 text-brand-700 border border-brand-200 hover:bg-brand-100 px-4 py-2 rounded text-sm font-bold transition-colors whitespace-nowrap self-start sm:self-center"
-                        >
-                          Lanjutkan Review
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                );
-              })
-            )}
+                    );
+                  });
+                })()}
+              </div>
+            </div>
+
           </div>
+
+          {/* Right Column: Widgets */}
+          <div className="space-y-6">
+            
+            {/* Widget Panduan Reviewer */}
+            <div className="bg-white p-5 rounded-xl border border-academic-200 shadow-sm space-y-3">
+              <h4 className="font-serif font-bold text-sm text-academic-900 border-b border-academic-100 pb-2">
+                Panduan Reviewer
+              </h4>
+              <p className="text-xs text-academic-500 leading-relaxed text-justify">
+                Unduh dokumen petunjuk teknis peninjauan artikel untuk memahami standar orisinalitas, validitas metodologi, serta format pelaporan ulasan di RJRAKP.
+              </p>
+              <button
+                onClick={() => alert("Fitur Unduh Panduan: Berkas panduan mitra bestari sedang disiapkan oleh dewan penyunting.")}
+                className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-brand-50 border border-brand-200 hover:bg-brand-100 text-brand-700 font-bold text-xs rounded-lg transition-colors cursor-pointer"
+              >
+                <Download className="w-3.5 h-3.5" /> Unduh Panduan Ulasan (PDF)
+              </button>
+            </div>
+
+            {/* Widget Kebijakan Review */}
+            <div className="bg-white p-5 rounded-xl border border-academic-200 shadow-sm space-y-3">
+              <h4 className="font-serif font-bold text-sm text-academic-900 border-b border-academic-100 pb-2">
+                Kebijakan Review Jurnal
+              </h4>
+              <ul className="text-xs text-academic-500 space-y-2 leading-relaxed text-justify">
+                <li>
+                  🔐 <strong>Double-Blind Peer Review</strong>: Identitas reviewer dan penulis disembunyikan secara timbal balik untuk menjaga objektivitas ulasan ilmiah.
+                </li>
+                <li>
+                  🤫 <strong>Kerahasiaan (Confidentiality)</strong>: Seluruh naskah adalah dokumen rahasia. Dilarang mendistribusikan, membagikan, atau menggunakan ide naskah sebelum terbit resmi.
+                </li>
+              </ul>
+            </div>
+
+          </div>
+
         </div>
+
       </div>
     </DashboardLayout>
   );
