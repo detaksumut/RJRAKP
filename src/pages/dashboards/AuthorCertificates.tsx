@@ -130,8 +130,8 @@ body { width: 297mm; height: 210mm; font-family: 'Inter', sans-serif; background
 }
 
 /* ==================== HEADER ==================== */
-.hdr { display: flex; align-items: center; justify-content: center; gap: 5mm; margin-bottom: 5mm; }
-.hdr-logo img { width: 19mm; height: auto; display: block; }
+.hdr { display: flex; align-items: center; justify-content: center; gap: 7mm; margin-bottom: 5mm; }
+.hdr-logo img { width: 28.5mm; height: auto; display: block; }
 .hdr-txt { text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; }
 .hdr-rj { font-family: 'Cinzel', 'Playfair Display', serif; font-size: 17px; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 6px; line-height: 1; }
 .hdr-name { font-family: 'Cinzel', 'Playfair Display', serif; font-size: 24px; font-weight: 900; color: #0a1a3f; line-height: 1.1; letter-spacing: 1.5px; margin-top: 2.3mm; }
@@ -447,8 +447,8 @@ body { width: 297mm; height: 210mm; font-family: 'Inter', sans-serif; background
                         <div className="absolute bottom-[5px] left-[5px] right-[5px] h-[1px] bg-gradient-to-r from-[#8b6914] via-[#f0d060] to-[#8b6914]"></div>
 
                         <div className="relative z-10 flex flex-col items-center justify-center h-full px-5 py-3">
-                          <div className="flex items-center gap-2 mb-1.5">
-                            <img src="/logo-rjrakp.png" alt="Logo" className="w-6 h-6 object-contain" />
+                          <div className="flex items-center gap-2.5 mb-1.5">
+                            <img src="/logo-rjrakp.png" alt="Logo" className="w-9 h-9 object-contain" />
                             <div className="text-center flex flex-col items-center font-serif">
                               <div className="text-[7px] text-[#475569] font-bold uppercase tracking-widest leading-none">RUMAH JURNAL</div>
                               <div className="text-[10px] font-black text-[#0a1a3f] leading-tight mt-0.5">RISET, ANALISIS & KEADILAN PUBLIK</div>
