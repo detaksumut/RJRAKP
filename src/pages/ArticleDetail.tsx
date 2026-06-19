@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { Helmet } from 'react-helmet-async';
-import { BookOpen, Calendar, Download, FileText, ArrowLeft, Building2, User, Eye, Quote, Check, Copy } from 'lucide-react';
+import { BookOpen, Calendar, Download, FileText, ArrowLeft, Building2, User, Eye, Quote, Check, Copy, X, ShieldCheck, CreditCard, DollarSign } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
@@ -15,6 +15,10 @@ export default function ArticleDetail() {
   const [showCitation, setShowCitation] = useState(false);
   const [scopusCitations, setScopusCitations] = useState<number | null>(null);
   const [crossrefCitations, setCrossrefCitations] = useState<number | null>(null);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [paymentActionType, setPaymentActionType] = useState<'view' | 'download'>('view');
+  const [copiedBankNumber, setCopiedBankNumber] = useState(false);
+  const [copiedAmount, setCopiedAmount] = useState(false);
 
   useEffect(() => {
     async function fetchArticle() {
@@ -33,9 +37,17 @@ export default function ArticleDetail() {
             slug, 
             created_at, 
             status,
+            submitter_id,
             article_authors (*),
             journals (*),
-            publications (*)
+            publications (*),
+            users!submitter_id (
+              id,
+              full_name,
+              bank_name,
+              bank_account_number,
+              bank_account_holder
+            )
           `)
           .eq('slug', slug)
           .eq('status', 'published')
@@ -172,6 +184,37 @@ export default function ArticleDetail() {
         }));
       } catch(e) {
         console.error(e);
+      }
+    }
+  };
+
+  const handleCopyText = (text: string, type: 'bank' | 'amount') => {
+    navigator.clipboard.writeText(text);
+    if (type === 'bank') {
+      setCopiedBankNumber(true);
+      setTimeout(() => setCopiedBankNumber(false), 2000);
+    } else {
+      setCopiedAmount(true);
+      setTimeout(() => setCopiedAmount(false), 2000);
+    }
+  };
+
+  const confirmPaymentAndProceed = () => {
+    setShowPaymentModal(false);
+    handleDownloadClick();
+    
+    // Proceed to open/download PDF
+    if (pub?.pdf_url) {
+      if (paymentActionType === 'view') {
+        window.open(pub.pdf_url, '_blank', 'noopener,noreferrer');
+      } else {
+        const a = document.createElement('a');
+        a.href = pub.pdf_url;
+        a.target = '_blank';
+        a.download = '';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
       }
     }
   };
@@ -431,27 +474,26 @@ export default function ArticleDetail() {
               <div className="mb-10 flex flex-wrap gap-4">
                 {pub?.pdf_url && (
                   <>
-                    <a 
-                      href={pub.pdf_url} 
-                      onClick={handleDownloadClick}
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-700 text-white px-6 py-3.5 rounded-xl font-bold transition-colors shadow-sm"
+                    <button 
+                      onClick={() => {
+                        setPaymentActionType('view');
+                        setShowPaymentModal(true);
+                      }}
+                      className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-700 text-white px-6 py-3.5 rounded-xl font-bold transition-colors shadow-sm cursor-pointer"
                     >
                       <FileText className="w-5 h-5" />
                       Lihat PDF Artikel
-                    </a>
-                    <a 
-                      href={pub.pdf_url} 
-                      onClick={handleDownloadClick}
-                      download
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-academic-100 hover:bg-academic-200 text-academic-800 px-6 py-3.5 rounded-xl font-bold transition-colors"
+                    </button>
+                    <button 
+                      onClick={() => {
+                        setPaymentActionType('download');
+                        setShowPaymentModal(true);
+                      }}
+                      className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-academic-100 hover:bg-academic-200 text-academic-800 px-6 py-3.5 rounded-xl font-bold transition-colors cursor-pointer"
                     >
                       <Download className="w-5 h-5 text-academic-600" />
                       Unduh
-                    </a>
+                    </button>
                   </>
                 )}
                 <button 
@@ -576,6 +618,143 @@ export default function ArticleDetail() {
       </main>
 
       <Footer />
+
+      {/* Payment / Royalties Transparency Modal */}
+      {showPaymentModal && (() => {
+        const submitter = article?.users;
+        const hasAuthorBankInfo = submitter?.bank_name && submitter?.bank_account_number && submitter?.bank_account_holder;
+
+        const bankName = hasAuthorBankInfo ? submitter.bank_name : "Bank Syariah Indonesia (BSI)";
+        const bankNumber = hasAuthorBankInfo ? submitter.bank_account_number : "7247822998";
+        const bankHolder = hasAuthorBankInfo ? submitter.bank_account_holder : "Yayasan Rumah Jurnal RJRAKP (Redaksi)";
+        const authorName = article?.article_authors?.[0]?.full_name || submitter?.full_name || "Penulis";
+
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+            <div className="bg-white rounded-2xl border border-academic-200 max-w-lg w-full overflow-hidden shadow-2xl flex flex-col max-h-[90vh] animate-fadeIn">
+              
+              {/* Header */}
+              <div className="bg-brand-900 text-white p-5 flex justify-between items-center shrink-0">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="w-6 h-6 text-brand-400" />
+                  <div>
+                    <h3 className="font-serif font-bold text-base leading-tight">Sistem Transparansi Royalti</h3>
+                    <p className="text-[10px] text-brand-300">RJRAKP Direct Author Royalties</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setShowPaymentModal(false)}
+                  className="text-white/80 hover:text-white transition-colors p-1"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Content */}
+              <div className="p-6 md:p-8 space-y-5 overflow-y-auto">
+                
+                {/* Introduction Banner */}
+                <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-4 flex gap-3 items-start">
+                  <DollarSign className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+                  <div className="text-xs text-emerald-800 leading-relaxed text-justify">
+                    Semua naskah di platform <strong>RJRAKP</strong> diterbitkan dengan prinsip kemandirian ekonomi penulis. Sesuai aturan transparansi, Anda diwajibkan untuk mentransfer biaya unduhan secara langsung ke rekening bank penulis artikel ini.
+                  </div>
+                </div>
+
+                {/* Transfer Details */}
+                <div className="space-y-4 pt-1">
+                  
+                  {/* Nominal */}
+                  <div className="border border-academic-200 rounded-xl p-4 bg-academic-50/50 flex justify-between items-center">
+                    <div>
+                      <span className="block text-[10px] font-bold text-academic-500 uppercase tracking-wider">Nominal Transfer</span>
+                      <span className="text-lg font-serif font-black text-academic-900">Rp 50.000</span>
+                    </div>
+                    <button 
+                      onClick={() => handleCopyText("50000", "amount")}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-academic-300 hover:bg-academic-50 text-academic-700 font-bold text-xs rounded-lg transition-colors shadow-sm"
+                    >
+                      {copiedAmount ? (
+                        <>
+                          <Check className="w-3.5 h-3.5 text-emerald-600" /> Tersalin
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3.5 h-3.5" /> Salin Nominal
+                        </>
+                      )}
+                    </button>
+                  </div>
+
+                  {/* Bank Account */}
+                  <div className="border border-academic-200 rounded-xl p-4 space-y-3 bg-white">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <span className="block text-[10px] font-bold text-academic-500 uppercase tracking-wider">Tujuan Rekening {hasAuthorBankInfo ? "Penulis" : "Redaksi (Cadangan)"}</span>
+                        <span className="text-sm font-bold text-brand-700">{bankName}</span>
+                      </div>
+                      <button 
+                        onClick={() => handleCopyText(bankNumber, "bank")}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-50 border border-brand-200 hover:bg-brand-100 text-brand-700 font-bold text-xs rounded-lg transition-colors"
+                      >
+                        {copiedBankNumber ? (
+                          <>
+                            <Check className="w-3.5 h-3.5 text-emerald-600" /> Tersalin
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3.5 h-3.5" /> Salin Rekening
+                          </>
+                        )}
+                      </button>
+                    </div>
+
+                    <div className="pt-2 border-t border-academic-100 grid grid-cols-2 gap-4">
+                      <div>
+                        <span className="block text-[9px] font-bold text-academic-400 uppercase tracking-wider">Nomor Rekening</span>
+                        <span className="text-sm font-black text-academic-900 select-all">{bankNumber}</span>
+                      </div>
+                      <div>
+                        <span className="block text-[9px] font-bold text-academic-400 uppercase tracking-wider">Atas Nama (A.N.)</span>
+                        <span className="text-xs font-bold text-academic-800 break-words">{bankHolder}</span>
+                      </div>
+                    </div>
+
+                    {!hasAuthorBankInfo && (
+                      <div className="text-[10px] text-amber-700 bg-amber-50 p-2.5 rounded border border-amber-100 leading-normal">
+                        💡 <strong>Catatan:</strong> Penulis belum melengkapi data rekening bank di profilnya. Dana yang dikirimkan ke rekening Redaksi di atas akan disalurkan secara manual kepada penulis <strong>{authorName}</strong> demi akuntabilitas.
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Warning/Terms */}
+                <p className="text-[10px] text-academic-500 leading-normal text-justify">
+                  Dengan melanjutkan, Anda menyatakan secara sadar berkomitmen untuk mendukung integritas akademik dan transparansi royalti penulis dengan mengirimkan dana sesuai rincian di atas.
+                </p>
+
+              </div>
+
+              {/* Footer Actions */}
+              <div className="p-5 border-t border-academic-100 bg-academic-50 flex gap-3 shrink-0">
+                <button 
+                  onClick={() => setShowPaymentModal(false)}
+                  className="flex-1 py-3 px-4 bg-white border border-academic-300 hover:bg-academic-50 text-academic-700 font-bold text-xs rounded-xl transition-colors text-center"
+                >
+                  Batal
+                </button>
+                <button 
+                  onClick={confirmPaymentAndProceed}
+                  className="flex-1 py-3 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-colors shadow-sm text-center cursor-pointer"
+                >
+                  Saya Sudah Transfer, Buka PDF
+                </button>
+              </div>
+
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }
