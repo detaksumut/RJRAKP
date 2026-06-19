@@ -58,6 +58,7 @@ export default function AuthorCertificates() {
       year: 'numeric'
     });
     const logoUrl = window.location.origin + '/logo-rjrakp.png';
+    const badgeUrl = window.location.origin + '/badge-terbit.png';
 
     const printWindow = window.open('', '_blank');
     if (printWindow) {
@@ -175,31 +176,12 @@ body { width: 297mm; height: 210mm; font-family: 'Inter', sans-serif; background
 /* TERBIT RESMI badge */
 .badge {
   position: absolute; left: -2mm; top: 50%; transform: translateY(-50%);
-  width: 22mm; height: 22mm; z-index: 20;
+  width: 25mm; height: auto; z-index: 20;
 }
-.badge-outer {
-  width: 100%; height: 100%; border-radius: 50%; position: relative;
-  background: linear-gradient(145deg, #c9a227 0%, #f0d060 40%, #c9a227 80%);
-  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-  display: flex; align-items: center; justify-content: center;
+.badge img {
+  width: 100%;
+  height: auto;
 }
-.badge-inner {
-  width: 17mm; height: 17mm; border-radius: 50%;
-  border: 1.5px solid #7a5a10;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  background: linear-gradient(145deg, #0a1a3f, #152a5a);
-}
-.badge-stars { font-size: 5px; color: #ffd700; letter-spacing: 1px; margin-bottom: 0.5mm; }
-.badge-txt { font-size: 8px; font-weight: 900; color: #ffd700; text-transform: uppercase; line-height: 1.2; text-align: center; }
-.badge-sub { font-size: 5px; font-weight: 700; color: #c9a227; text-transform: uppercase; letter-spacing: 0.8px; margin-top: 0.3mm; }
-
-/* Ribbon tails */
-.ribbon { position: absolute; bottom: -6mm; left: 50%; transform: translateX(-50%); width: 20mm; height: 10mm; z-index: -1; }
-.ribbon-l, .ribbon-r {
-  position: absolute; top: 0; width: 9mm; height: 10mm;
-}
-.ribbon-l { left: 0; background: linear-gradient(180deg, #0a1a3f, #071329); clip-path: polygon(0 0, 100% 0, 100% 60%, 50% 100%, 0 60%); }
-.ribbon-r { right: 0; background: linear-gradient(180deg, #0a1a3f, #071329); clip-path: polygon(0 0, 100% 0, 100% 60%, 50% 100%, 0 60%); }
 
 /* ==================== DETAILS ROW ==================== */
 .det-row { display: flex; justify-content: center; gap: 3mm; margin: 3mm 0; width: 100%; }
@@ -282,14 +264,7 @@ body { width: 297mm; height: 210mm; font-family: 'Inter', sans-serif; background
       <div class="body">
         <!-- TERBIT RESMI Badge -->
         <div class="badge">
-          <div class="badge-outer">
-            <div class="badge-inner">
-              <div class="badge-stars">★★★★★</div>
-              <div class="badge-txt">TERBIT<br/>RESMI</div>
-              <div class="badge-sub">RJRAKP</div>
-            </div>
-          </div>
-          <div class="ribbon"><div class="ribbon-l"></div><div class="ribbon-r"></div></div>
+          <img src="${badgeUrl}" alt="Terbit Resmi" />
         </div>
 
         <div class="cert-no">Nomor: ${certNumber}</div>
