@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { supabase } from '../lib/supabase';
+import { Eye, EyeOff } from 'lucide-react';
 
 export default function RegisterReviewer() {
   const navigate = useNavigate();
@@ -27,6 +28,8 @@ export default function RegisterReviewer() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -222,11 +225,41 @@ export default function RegisterReviewer() {
               <div className="border-t border-academic-100 pt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-xs font-bold text-academic-700 uppercase mb-2">Password *</label>
-                  <input type="password" required value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} className="w-full border border-academic-300 rounded-md px-4 py-2 text-sm focus:ring-brand-500" />
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      required
+                      value={formData.password}
+                      onChange={e => setFormData({...formData, password: e.target.value})}
+                      className="w-full border border-academic-300 rounded-md pl-4 pr-10 py-2 text-sm focus:ring-brand-500 focus:outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none"
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-academic-700 uppercase mb-2">Konfirmasi Password *</label>
-                  <input type="password" required value={formData.confirm_password} onChange={e => setFormData({...formData, confirm_password: e.target.value})} className="w-full border border-academic-300 rounded-md px-4 py-2 text-sm focus:ring-brand-500" />
+                  <div className="relative">
+                    <input
+                      type={showConfirmPassword ? "text" : "password"}
+                      required
+                      value={formData.confirm_password}
+                      onChange={e => setFormData({...formData, confirm_password: e.target.value})}
+                      className="w-full border border-academic-300 rounded-md pl-4 pr-10 py-2 text-sm focus:ring-brand-500 focus:outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none"
+                    >
+                      {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
                 </div>
               </div>
 

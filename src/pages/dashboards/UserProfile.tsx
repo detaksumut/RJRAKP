@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
-import { Save, Lock, CreditCard } from 'lucide-react';
+import { Save, Lock, CreditCard, Eye, EyeOff } from 'lucide-react';
 
 export default function UserProfile() {
   const { user } = useAuth();
@@ -23,6 +23,9 @@ export default function UserProfile() {
     newPassword: '',
     confirmPassword: '',
   });
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
     if (user?.id) {
@@ -216,28 +219,46 @@ export default function UserProfile() {
                 <label className="block text-sm font-bold text-academic-900 mb-1">
                   Password Baru
                 </label>
-                <input
-                  type="password"
-                  required
-                  value={passwords.newPassword}
-                  onChange={(e) => setPasswords({...passwords, newPassword: e.target.value})}
-                  className="w-full px-4 py-2 border border-academic-300 rounded-lg focus:ring-2 focus:ring-brand-500"
-                  placeholder="Masukkan password baru"
-                />
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    required
+                    value={passwords.newPassword}
+                    onChange={(e) => setPasswords({...passwords, newPassword: e.target.value})}
+                    className="w-full pl-4 pr-10 py-2 border border-academic-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none"
+                    placeholder="Masukkan password baru"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
               </div>
 
               <div>
                 <label className="block text-sm font-bold text-academic-900 mb-1">
                   Konfirmasi Password Baru
                 </label>
-                <input
-                  type="password"
-                  required
-                  value={passwords.confirmPassword}
-                  onChange={(e) => setPasswords({...passwords, confirmPassword: e.target.value})}
-                  className="w-full px-4 py-2 border border-academic-300 rounded-lg focus:ring-2 focus:ring-brand-500"
-                  placeholder="Ulangi password baru"
-                />
+                <div className="relative">
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    required
+                    value={passwords.confirmPassword}
+                    onChange={(e) => setPasswords({...passwords, confirmPassword: e.target.value})}
+                    className="w-full pl-4 pr-10 py-2 border border-academic-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none"
+                    placeholder="Ulangi password baru"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none"
+                  >
+                    {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
               </div>
 
               <div className="pt-4">
