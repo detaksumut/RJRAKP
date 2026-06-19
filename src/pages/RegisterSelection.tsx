@@ -23,7 +23,7 @@ export default function RegisterSelection() {
                 <BookOpen className="w-8 h-8" />
               </div>
               <h2 className="text-xl font-bold text-academic-900 mb-2">Penulis (Author)</h2>
-              <p className="text-sm text-academic-500 mb-4">Daftar untuk mengirimkan manuskrip dan melacak status publikasi Anda.</p>
+              <p className="text-sm text-academic-500 mb-4">Daftar untuk mengirimkan manuskrip jurnal umum, tugas perkuliahan, atau opini mahasiswa (Jurnal Kampus).</p>
               <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-200">Akses Langsung Disetujui</span>
             </Link>
 
