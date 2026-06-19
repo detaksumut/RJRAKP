@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import DashboardLayout from '../../components/DashboardLayout';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
-import { FileText, ArrowLeft, Upload, Send, Clock, MessageSquare, AlertCircle, CheckCircle, Edit3, Save, X, Eye, Download } from 'lucide-react';
+import { FileText, ArrowLeft, Upload, Send, Clock, MessageSquare, AlertCircle, CheckCircle, Edit3, Save, X, Eye, Download, Users } from 'lucide-react';
 
 export default function AuthorArticleDetail() {
   const { id } = useParams<{ id: string }>();
@@ -16,6 +16,7 @@ export default function AuthorArticleDetail() {
   const [newDiscussion, setNewDiscussion] = useState('');
   const [sendingDiscussion, setSendingDiscussion] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [authorsList, setAuthorsList] = useState<any[]>([]);
 
   // Upload revision states
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -29,6 +30,32 @@ export default function AuthorArticleDetail() {
   const [savingMetadata, setSavingMetadata] = useState(false);
   const [metadataSuccess, setMetadataSuccess] = useState('');
   const [isTranslating, setIsTranslating] = useState(false);
+
+  const getSection = (journalName: string) => {
+    if (!journalName) return 'Artikel Penelitian';
+    const name = journalName.toLowerCase();
+    if (name.includes('hukum')) return 'Hukum';
+    if (name.includes('pendidikan')) return 'Pendidikan';
+    if (name.includes('teknik') || name.includes('teknologi')) return 'Teknik & Teknologi';
+    if (name.includes('agama') || name.includes('islam')) return 'Kajian Islam';
+    if (name.includes('audit') || name.includes('kebijakan')) return 'Kebijakan Publik';
+    return 'Manajemen';
+  };
+
+  const getEditorName = () => {
+    if (editorialDecisions && editorialDecisions.length > 0) {
+      const decisionWithEditor = editorialDecisions.find(d => d.users?.full_name);
+      if (decisionWithEditor) return decisionWithEditor.users.full_name;
+    }
+    return 'Editor1'; // Fallback to OJS styling
+  };
+
+  const getReviewRound = () => {
+    if (reviews && reviews.length > 0) {
+      return reviews.length;
+    }
+    return 1;
+  };
 
   // Auto Translate function
   const handleAutoTranslate = async () => {
@@ -86,7 +113,7 @@ export default function AuthorArticleDetail() {
       // 2. Fetch Editorial Decisions
       const { data: decisionData } = await supabase
         .from('editorial_decisions')
-        .select('*')
+        .select('*, users!editor_id(full_name)')
         .eq('article_id', id)
         .order('decision_date', { ascending: false });
 
@@ -120,6 +147,15 @@ export default function AuthorArticleDetail() {
         .order('created_at', { ascending: true });
         
       if (discussionData) setDiscussions(discussionData);
+
+      // 5. Fetch Authors
+      const { data: authorsData } = await supabase
+        .from('article_authors')
+        .select('*')
+        .eq('article_id', id)
+        .order('author_order', { ascending: true });
+
+      if (authorsData) setAuthorsList(authorsData);
 
     } catch (error) {
       console.error('Error fetching article:', error);
@@ -294,6 +330,157 @@ export default function AuthorArticleDetail() {
             }`}>
               {(article.status || '').replace('_', ' ')}
             </span>
+          </div>
+        </div>
+
+        {/* OJS Submission Process (Timeline) */}
+        {(() => {
+          const status = (article.status || 'submitted').toLowerCase();
+          const dateStr = new Date(article.submission_date).toLocaleDateString('id-ID', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+          });
+
+          const stepStates = {
+            step1: 'completed',
+            step2: 'completed',
+            step3: ['in_review', 'under_review', 'revised', 'accepted', 'published', 'rejected'].includes(status) ? 'completed' : 'active',
+            step4: ['in_review', 'under_review', 'revised'].includes(status) ? 'active' : ['accepted', 'published', 'rejected'].includes(status) ? 'completed' : 'inactive',
+            step5: ['accepted', 'published', 'rejected'].includes(status) ? 'completed' : 'inactive'
+          };
+
+          const getStepText = (stepNum: number) => {
+            if (stepNum === 4) {
+              if (stepStates.step4 === 'active') return 'Sedang Berlangsung';
+              if (stepStates.step4 === 'completed') return 'Selesai';
+              return 'Belum Dimulai';
+            }
+            if (stepNum === 5) {
+              if (status === 'accepted') return 'Diterima';
+              if (status === 'published') return 'Terbit';
+              if (status === 'rejected') return 'Ditolak';
+              return 'Menunggu Keputusan';
+            }
+            return dateStr;
+          };
+
+          return (
+            <div className="bg-white p-6 rounded-xl border border-academic-200 shadow-sm mb-6">
+              <h3 className="font-serif font-bold text-base text-academic-800 uppercase tracking-wider mb-6 pb-2 border-b border-academic-100">
+                Proses Submisi
+              </h3>
+              
+              {/* Timeline Container */}
+              <div className="relative flex flex-col md:flex-row items-center justify-between w-full max-w-3xl mx-auto gap-8 md:gap-4 py-4">
+                
+                {/* Connecting Lines for Desktop */}
+                <div className="hidden md:block absolute top-1/2 left-0 right-0 h-1 bg-academic-200 -translate-y-1/2 z-0"></div>
+                <div 
+                  className="hidden md:block absolute top-1/2 left-0 h-1 bg-brand-600 -translate-y-1/2 z-0 transition-all duration-500"
+                  style={{
+                    width: stepStates.step5 === 'completed' ? '100%' :
+                           stepStates.step4 === 'completed' ? '75%' :
+                           stepStates.step4 === 'active' ? '62.5%' :
+                           stepStates.step3 === 'completed' ? '50%' : '25%'
+                  }}
+                ></div>
+
+                {/* Step 1: Mulai */}
+                <div className="relative flex flex-col items-center z-10 w-28 text-center">
+                  <div className="w-12 h-12 rounded-full border-2 bg-white flex items-center justify-center border-emerald-500 text-emerald-600 shadow-sm">
+                    <FileText className="w-5 h-5" />
+                  </div>
+                  <span className="text-xs font-bold text-academic-800 mt-2">1. Mulai</span>
+                  <span className="text-[10px] text-academic-500 mt-0.5">{getStepText(1)}</span>
+                </div>
+
+                {/* Step 2: Unggah Naskah */}
+                <div className="relative flex flex-col items-center z-10 w-28 text-center">
+                  <div className="w-12 h-12 rounded-full border-2 bg-white flex items-center justify-center border-emerald-500 text-emerald-600 shadow-sm">
+                    <Upload className="w-5 h-5" />
+                  </div>
+                  <span className="text-xs font-bold text-academic-800 mt-2">2. Unggah Naskah</span>
+                  <span className="text-[10px] text-academic-500 mt-0.5">{getStepText(2)}</span>
+                </div>
+
+                {/* Step 3: Konfirmasi */}
+                <div className="relative flex flex-col items-center z-10 w-28 text-center">
+                  <div className={`w-12 h-12 rounded-full border-2 bg-white flex items-center justify-center shadow-sm ${
+                    stepStates.step3 === 'completed' ? 'border-emerald-500 text-emerald-600' : 'border-brand-500 text-brand-600 ring-4 ring-brand-50'
+                  }`}>
+                    <Edit3 className="w-5 h-5" />
+                  </div>
+                  <span className="text-xs font-bold text-academic-800 mt-2">3. Konfirmasi</span>
+                  <span className="text-[10px] text-academic-500 mt-0.5">{getStepText(3)}</span>
+                </div>
+
+                {/* Step 4: Review */}
+                <div className="relative flex flex-col items-center z-10 w-28 text-center">
+                  <div className={`w-12 h-12 rounded-full border-2 bg-white flex items-center justify-center shadow-sm ${
+                    stepStates.step4 === 'completed' ? 'border-emerald-500 text-emerald-600' :
+                    stepStates.step4 === 'active' ? 'border-brand-500 text-brand-600 ring-4 ring-brand-50' : 'border-academic-300 text-academic-400'
+                  }`}>
+                    <Users className="w-5 h-5" />
+                  </div>
+                  <span className="text-xs font-bold text-academic-800 mt-2">4. Review</span>
+                  <span className="text-[10px] text-academic-500 mt-0.5">{getStepText(4)}</span>
+                </div>
+
+                {/* Step 5: Keputusan */}
+                <div className="relative flex flex-col items-center z-10 w-28 text-center">
+                  <div className={`w-12 h-12 rounded-full border-2 bg-white flex items-center justify-center shadow-sm ${
+                    stepStates.step5 === 'completed' ? (status === 'rejected' ? 'border-rose-500 text-rose-600' : 'border-emerald-500 text-emerald-600') : 'border-academic-300 text-academic-400'
+                  }`}>
+                    <CheckCircle className="w-5 h-5" />
+                  </div>
+                  <span className="text-xs font-bold text-academic-800 mt-2">5. Keputusan</span>
+                  <span className="text-[10px] text-academic-500 mt-0.5">{getStepText(5)}</span>
+                </div>
+
+              </div>
+            </div>
+          );
+        })()}
+
+        {/* OJS Submission Details Table */}
+        <div className="bg-white p-6 rounded-xl border border-academic-200 shadow-sm mb-6">
+          <h3 className="font-serif font-bold text-base text-academic-800 uppercase tracking-wider mb-4 pb-2 border-b border-academic-100">
+            Detail Submisi
+          </h3>
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm text-left border-collapse">
+              <tbody>
+                <tr className="border-b border-academic-100">
+                  <td className="py-3 pr-4 font-bold text-academic-500 uppercase tracking-widest text-[10px] w-1/4">Penulis</td>
+                  <td className="py-3 text-academic-800 font-semibold">
+                    {authorsList.length > 0
+                      ? authorsList.map(a => a.full_name).join(', ')
+                      : user?.full_name || 'Penulis'}
+                  </td>
+                </tr>
+                <tr className="border-b border-academic-100">
+                  <td className="py-3 pr-4 font-bold text-academic-500 uppercase tracking-widest text-[10px]">Judul</td>
+                  <td className="py-3 text-academic-800 font-serif font-bold">{article.title}</td>
+                </tr>
+                <tr className="border-b border-academic-100">
+                  <td className="py-3 pr-4 font-bold text-academic-500 uppercase tracking-widest text-[10px]">Jurnal</td>
+                  <td className="py-3 text-academic-800 font-medium">{article.journals?.name || 'Jurnal'}</td>
+                </tr>
+                <tr className="border-b border-academic-100">
+                  <td className="py-3 pr-4 font-bold text-academic-500 uppercase tracking-widest text-[10px]">Section</td>
+                  <td className="py-3 text-academic-800 font-medium">{getSection(article.journals?.name || '')}</td>
+                </tr>
+                <tr className="border-b border-academic-100">
+                  <td className="py-3 pr-4 font-bold text-academic-500 uppercase tracking-widest text-[10px]">Editor</td>
+                  <td className="py-3 text-academic-800 font-medium">{getEditorName()}</td>
+                </tr>
+                <tr>
+                  <td className="py-3 pr-4 font-bold text-academic-500 uppercase tracking-widest text-[10px]">Review Round</td>
+                  <td className="py-3 text-academic-800 font-medium">{getReviewRound()}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
 
