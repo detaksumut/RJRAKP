@@ -140,7 +140,7 @@ export default function AuthorJurnalKampus() {
               <div>
                 <h4 className="text-emerald-900 font-bold mb-1.5">Panduan Pengiriman Tugas Jurnal</h4>
                 <p className="text-xs text-emerald-800 leading-relaxed text-justify">
-                   Gunakan opsi ini untuk mengirimkan artikel luaran perkuliahan Anda. Jurnal yang Anda submit akan diproses oleh Editor dengan tarif terjangkau (Rp 300.000) dan diindeks langsung di Google Scholar setelah disetujui terbit.
+                   Gunakan opsi ini untuk mengirimkan artikel hasil Tugas Jurnal Anda. Jurnal yang Anda submit akan diproses oleh Editor dan diindeks langsung di Google Scholar setelah disetujui terbit.
                 </p>
               </div>
             </div>

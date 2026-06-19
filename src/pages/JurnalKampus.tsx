@@ -105,7 +105,7 @@ export default function JurnalKampus() {
             </p>
           </div>
           <p className="text-xs sm:text-sm md:text-base text-slate-100 max-w-2xl leading-relaxed drop-shadow-sm font-medium">
-            Selamat datang di inkubator publikasi ilmiah RJRAKP. Kami berdedikasi melatih mahasiswa dalam menyusun naskah ilmiah berkualitas hasil luaran perkuliahan dan opini kritis publik agar siap bersaing di kancah global dan terindeks internasional.
+            Selamat datang di inkubator publikasi ilmiah RJRAKP. Kami berdedikasi melatih mahasiswa dalam menyusun naskah ilmiah berkualitas hasil perkuliahan dan opini kritis publik agar siap bersaing di kancah global dan terindeks internasional.
           </p>
         </div>
       </div>
@@ -146,7 +146,7 @@ export default function JurnalKampus() {
                 <span className="text-[10px] font-black uppercase tracking-widest text-accent-400 bg-white/10 px-2.5 py-1 rounded-md">Untuk Mahasiswa</span>
                 <h3 className="text-xl md:text-2xl font-bold font-serif">Kirimkan Tugas Jurnal Anda</h3>
                 <p className="text-sm text-brand-100 leading-relaxed">
-                   RJRAKP memfasilitasi penerbitan luaran tugas artikel ilmiah dari mata kuliah Anda secara resmi dengan biaya yang terjangkau (Rp 300.000) dan terindeks Google Scholar secara otomatis.
+                   RJRAKP memfasilitasi penerbitan naskah artikel ilmiah hasil Tugas Jurnal Anda secara resmi dan terindeks Google Scholar secara otomatis.
                 </p>
               </div>
               <Link 
