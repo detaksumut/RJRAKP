@@ -127,7 +127,7 @@ export default function AuthorDashboard() {
                   <dd className="text-academic-900 font-medium">{profile.email}</dd>
                 </div>
                 
-                {(profile.orcid_id || profile.scopus_id || profile.wos_id || profile.sinta_id) && (
+                {(profile.orcid_id || profile.scopus_id || profile.wos_id || profile.sinta_id || profile.google_scholar_id) && (
                   <div className="col-span-1 sm:col-span-2 mt-2 pt-4 border-t border-academic-100">
                     <dt className="text-xs font-bold text-academic-400 uppercase tracking-widest mb-3">Identitas Peneliti Global</dt>
                     <div className="flex flex-wrap gap-4">
@@ -153,6 +153,12 @@ export default function AuthorDashboard() {
                         <a href={`https://sinta.kemdikbud.go.id/authors/profile/${profile.sinta_id}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-blue-100 text-blue-700 px-3 py-1.5 rounded-full text-sm font-bold hover:bg-blue-200 transition-colors">
                           <span className="font-sans font-black tracking-tight">SINTA</span>
                           {profile.sinta_id}
+                        </a>
+                      )}
+                      {profile.google_scholar_id && (
+                        <a href={`https://scholar.google.com/citations?user=${profile.google_scholar_id}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-full text-sm font-bold hover:bg-emerald-200 transition-colors">
+                          <span className="font-sans font-bold">Google Scholar</span>
+                          {profile.google_scholar_id}
                         </a>
                       )}
                     </div>

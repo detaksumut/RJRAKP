@@ -178,7 +178,12 @@ export default function AdminReviewers() {
                     <h4 className="text-xs font-bold text-academic-500 uppercase tracking-wider mb-1">ID Terintegrasi</h4>
                     <p className="text-sm">
                       <span className="font-bold text-academic-700">ORCID:</span> {selectedUser.orcid_id ? <a href={selectedUser.orcid_id} className="text-brand-600 hover:underline">{selectedUser.orcid_id}</a> : '-'} <br/>
-                      <span className="font-bold text-academic-700">Scholar:</span> {selectedUser.google_scholar ? <a href={selectedUser.google_scholar} className="text-brand-600 hover:underline">Link</a> : '-'}
+                      <span className="font-bold text-academic-700">Scholar:</span> {(() => {
+                        const val = selectedUser.google_scholar;
+                        if (!val) return '-';
+                        const url = val.startsWith('http') ? val : `https://scholar.google.com/citations?user=${val}`;
+                        return <a href={url} target="_blank" rel="noopener noreferrer" className="text-brand-600 hover:underline">Link</a>;
+                      })()}
                     </p>
                   </div>
                   <div className="md:col-span-2">
