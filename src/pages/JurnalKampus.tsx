@@ -80,17 +80,37 @@ export default function JurnalKampus() {
   return (
     <div className="min-h-screen flex flex-col bg-academic-50/50">
       <Navbar />
-      
-      <main className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-12">
-        <div className="mb-12 text-center max-w-3xl mx-auto">
-          <div className="inline-flex p-3 rounded-2xl bg-brand-50 text-brand-700 mb-4 shadow-sm border border-brand-100">
-            <GraduationCap className="w-8 h-8" />
+      {/* Hero Section */}
+      <div 
+        className="relative bg-cover bg-center py-16 md:py-24 text-white overflow-hidden"
+        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1498243691219-0f482d715694?auto=format&fit=crop&w=1920&q=80')" }}
+      >
+        {/* Dark Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-brand-950/95 via-brand-900/90 to-brand-800/80"></div>
+        
+        {/* Subtle Decorative Pattern */}
+        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+
+        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center md:text-left space-y-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/15 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-accent-400">
+            <GraduationCap className="w-4 h-4" />
+            Portal Akademik Mahasiswa
           </div>
-          <h1 className="text-3xl md:text-4xl font-serif font-bold text-academic-900 mb-4 tracking-tight">Jurnal Kampus RJRAKP</h1>
-          <p className="text-academic-600 text-lg leading-relaxed">
-            Portal khusus publikasi ilmiah tugas perkuliahan mahasiswa dan kumpulan artikel opini kritis terkait kebijakan publik dan keadilan sosial.
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-serif leading-tight tracking-tight">
+            Jurnal Kampus RJRAKP
+          </h1>
+          <div className="border-l-4 border-amber-400 pl-4 max-w-3xl py-1 text-left mx-auto md:mx-0">
+            <p className="text-lg sm:text-xl md:text-2xl font-bold text-amber-300 leading-relaxed italic">
+              "Wadah bagi para Mahasiswa melatih diri untuk menjadi penulis Jurnal go Internasional"
+            </p>
+          </div>
+          <p className="text-xs sm:text-sm md:text-base text-slate-300 max-w-2xl leading-relaxed">
+            Selamat datang di inkubator publikasi ilmiah RJRAKP. Kami berdedikasi melatih mahasiswa dalam menyusun naskah ilmiah berkualitas hasil luaran perkuliahan dan opini kritis publik agar siap bersaing di kancah global dan terindeks internasional.
           </p>
         </div>
+      </div>
+
+      <main className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-12">
 
         {/* Tab Navigation */}
         <div className="flex border-b border-slate-200 mb-8 bg-white p-1 rounded-xl border max-w-md mx-auto shadow-sm">
