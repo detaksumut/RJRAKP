@@ -5,8 +5,44 @@ import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
 import { 
   FileText, CheckSquare, Eye, ArrowLeft, Download, 
-  MessageSquare, User, Calendar, Award, Send, X, AlertCircle
+  MessageSquare, User, Calendar, Award, Send, X, AlertCircle,
+  Bold, Italic, Underline, Link2, Image, List, ListOrdered, Maximize2, Upload
 } from 'lucide-react';
+
+const parseEditorComments = (comments: string) => {
+  if (!comments) return { scores: null, notes: '' };
+  
+  if (comments.includes('[SKOR REVIEW]')) {
+    try {
+      const parts = comments.split('[CATATAN RAHASIA UNTUK EDITOR]');
+      const scoreSection = parts[0];
+      const notesSection = parts[1] || '';
+      
+      const scores: { label: string; value: string }[] = [];
+      const lines = scoreSection.split('\n');
+      lines.forEach(line => {
+        if (line.trim().startsWith('-')) {
+          const cleanLine = line.replace('-', '').trim();
+          const colonIndex = cleanLine.indexOf(':');
+          if (colonIndex !== -1) {
+            const label = cleanLine.substring(0, colonIndex).trim();
+            const value = cleanLine.substring(colonIndex + 1).trim();
+            scores.push({ label, value });
+          }
+        }
+      });
+      
+      return {
+        scores: scores.length > 0 ? scores : null,
+        notes: notesSection.trim()
+      };
+    } catch (e) {
+      return { scores: null, notes: comments };
+    }
+  }
+  
+  return { scores: null, notes: comments };
+};
 
 export default function EditorDecisions() {
   const { user } = useAuth();
@@ -215,6 +251,50 @@ export default function EditorDecisions() {
     }
   };
 
+  const insertFormat = (format: string) => {
+    const textarea = document.getElementById('decision-comments') as HTMLTextAreaElement;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const text = textarea.value;
+    const selectedText = text.substring(start, end);
+    
+    let replacement = '';
+    switch (format) {
+      case 'bold':
+        replacement = `**${selectedText || 'teks'}**`;
+        break;
+      case 'italic':
+        replacement = `*${selectedText || 'teks'}*`;
+        break;
+      case 'underline':
+        replacement = `<u>${selectedText || 'teks'}</u>`;
+        break;
+      case 'link':
+        replacement = `[${selectedText || 'teks'}](url)`;
+        break;
+      case 'bullet':
+        replacement = `\n- ${selectedText || 'butir'}`;
+        break;
+      case 'number':
+        replacement = `\n1. ${selectedText || 'butir'}`;
+        break;
+      default:
+        return;
+    }
+
+    const newValue = text.substring(0, start) + replacement + text.substring(end);
+    setDecisionForm(prev => ({ ...prev, comments: newValue }));
+    
+    // Refocus and select
+    setTimeout(() => {
+      textarea.focus();
+      const offset = format === 'bold' ? 2 : format === 'italic' ? 1 : format === 'underline' ? 3 : format === 'link' ? 1 : 3;
+      textarea.setSelectionRange(start + offset, start + offset + (selectedText || 'teks').length);
+    }, 0);
+  };
+
   return (
     <DashboardLayout>
       <div className="max-w-6xl">
@@ -407,32 +487,73 @@ export default function EditorDecisions() {
                                 </span>
                               </div>
 
-                              {hasReviewed && review ? (
-                                <div className="space-y-3 bg-white p-4 rounded-lg border border-academic-200 shadow-sm text-xs">
-                                  <div>
-                                    <span className="text-[9px] font-black text-academic-500 uppercase tracking-widest block mb-0.5">Rekomendasi Reviewer</span>
-                                    <span className={`inline-block px-2 py-0.5 rounded text-[9px] font-bold border ${
-                                      review.recommendation === 'accept' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
-                                      review.recommendation === 'reject' ? 'bg-rose-50 text-rose-700 border-rose-200' :
-                                      'bg-amber-50 text-amber-700 border-amber-200'
-                                    }`}>
-                                      {recommendLabels[review.recommendation as keyof typeof recommendLabels] || review.recommendation}
-                                    </span>
+                              {hasReviewed && review ? (() => {
+                                const parsed = parseEditorComments(review.comments_for_editor);
+                                return (
+                                  <div className="space-y-4 bg-white p-4 rounded-lg border border-academic-200 shadow-sm text-xs">
+                                    <div className="flex flex-wrap gap-4 justify-between items-center">
+                                      <div>
+                                        <span className="text-[9px] font-black text-academic-500 uppercase tracking-widest block mb-0.5">Rekomendasi Reviewer</span>
+                                        <span className={`inline-block px-2.5 py-1 rounded text-xs font-bold border ${
+                                          review.recommendation === 'accept' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                                          review.recommendation === 'reject' ? 'bg-rose-50 text-rose-700 border-rose-200' :
+                                          'bg-amber-50 text-amber-700 border-amber-200'
+                                        }`}>
+                                          {recommendLabels[review.recommendation as keyof typeof recommendLabels] || review.recommendation}
+                                        </span>
+                                      </div>
+                                      <div className="text-right">
+                                        <span className="text-[9px] font-black text-academic-500 uppercase tracking-widest block mb-0.5">Tanggal Review</span>
+                                        <span className="text-academic-700 font-medium">
+                                          {review.created_at ? new Date(review.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '-'}
+                                        </span>
+                                      </div>
+                                    </div>
+
+                                    {/* Scoring Parameters Rubric Table */}
+                                    {parsed.scores && (
+                                      <div className="border border-slate-200 rounded-lg overflow-hidden mt-3 shadow-sm bg-slate-50/50">
+                                        <div className="bg-slate-100 px-3 py-1.5 border-b border-slate-200 flex justify-between items-center">
+                                          <span className="font-bold text-[10px] text-slate-700 uppercase tracking-wider">Rubrik Penilaian Reviewer</span>
+                                          <span className="text-[9px] text-slate-500">Skala 1 - 5</span>
+                                        </div>
+                                        <div className="divide-y divide-slate-100">
+                                          {parsed.scores.map((score, sIdx) => {
+                                            const numericValue = parseInt(score.value.split('/')[0]);
+                                            let badgeColor = 'bg-slate-100 text-slate-700 border-slate-200';
+                                            if (numericValue >= 4) badgeColor = 'bg-emerald-50 text-emerald-700 border-emerald-200';
+                                            else if (numericValue === 3) badgeColor = 'bg-amber-50 text-amber-700 border-amber-200';
+                                            else if (numericValue <= 2) badgeColor = 'bg-rose-50 text-rose-700 border-rose-200';
+
+                                            return (
+                                              <div key={sIdx} className="flex justify-between items-center px-3 py-2 text-[11px]">
+                                                <span className="font-medium text-slate-600">{score.label}</span>
+                                                <span className={`px-2 py-0.5 rounded text-xs font-bold border ${badgeColor}`}>
+                                                  {score.value}
+                                                </span>
+                                              </div>
+                                            );
+                                          })}
+                                        </div>
+                                      </div>
+                                    )}
+
+                                    <div>
+                                      <span className="text-[9px] font-black text-academic-500 uppercase tracking-widest block mb-1">Komentar Untuk Penulis (Author)</span>
+                                      <p className="text-academic-700 bg-slate-50 p-3 rounded border border-slate-200 leading-relaxed font-serif text-xs italic whitespace-pre-wrap">
+                                        "{review.comments_for_author}"
+                                      </p>
+                                    </div>
+
+                                    <div>
+                                      <span className="text-[9px] font-black text-academic-500 uppercase tracking-widest block mb-1">Catatan Rahasia Untuk Editor</span>
+                                      <p className="text-academic-700 bg-amber-50/20 p-3 rounded border border-amber-200 leading-relaxed font-serif text-xs italic whitespace-pre-wrap">
+                                        "{parsed.notes || '-'}"
+                                      </p>
+                                    </div>
                                   </div>
-                                  <div>
-                                    <span className="text-[9px] font-black text-academic-500 uppercase tracking-widest block mb-0.5">Komentar Untuk Penulis (Author)</span>
-                                    <p className="text-academic-700 bg-slate-50 p-2.5 rounded border border-slate-100 leading-relaxed font-serif italic">
-                                      "{review.comments_for_author}"
-                                    </p>
-                                  </div>
-                                  <div>
-                                    <span className="text-[9px] font-black text-academic-500 uppercase tracking-widest block mb-0.5">Catatan Untuk Editor (Rahasia)</span>
-                                    <p className="text-academic-700 bg-amber-50/30 p-2.5 rounded border border-amber-100 leading-relaxed font-serif italic">
-                                      "{review.comments_for_editor}"
-                                    </p>
-                                  </div>
-                                </div>
-                              ) : (
+                                );
+                              })() : (
                                 <p className="text-[10px] text-academic-400 italic">Reviewer belum mengirimkan hasil peninjauan berkas.</p>
                               )}
                             </div>
@@ -488,16 +609,103 @@ export default function EditorDecisions() {
                         </select>
                       </div>
 
-                      <div>
-                        <label className="block text-xs font-bold text-academic-950 uppercase tracking-wider mb-2">Catatan Masukan Untuk Penulis</label>
-                        <textarea
-                          rows={6}
-                          value={decisionForm.comments}
-                          onChange={e => setDecisionForm({ ...decisionForm, comments: e.target.value })}
-                          disabled={editorDailyCount >= 20}
-                          placeholder="Masukkan masukan penyempurnaan, catatan revisi, atau alasan penolakan naskah..."
-                          className="w-full border border-academic-300 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white"
-                        />
+                      <div className="space-y-1.5">
+                        <label className="block text-xs font-bold text-academic-950 uppercase tracking-wider">Catatan Masukan Untuk Penulis</label>
+                        <div className={`border border-slate-300 rounded-lg overflow-hidden bg-white focus-within:border-brand-500 focus-within:ring-1 focus-within:ring-brand-500 shadow-sm ${editorDailyCount >= 20 ? 'opacity-50 pointer-events-none' : ''}`}>
+                          {/* Editor Toolbar */}
+                          <div className="bg-slate-50 border-b border-slate-200 px-3 py-1.5 flex items-center gap-1 flex-wrap">
+                            <button
+                              type="button"
+                              onClick={() => insertFormat('bold')}
+                              title="Tebal (Bold)"
+                              className="p-1 rounded hover:bg-slate-200 text-slate-600 transition-colors"
+                            >
+                              <Bold className="w-4 h-4" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => insertFormat('italic')}
+                              title="Miring (Italic)"
+                              className="p-1 rounded hover:bg-slate-200 text-slate-600 transition-colors"
+                            >
+                              <Italic className="w-4 h-4" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => insertFormat('underline')}
+                              title="Garis Bawah (Underline)"
+                              className="p-1 rounded hover:bg-slate-200 text-slate-600 transition-colors"
+                            >
+                              <Underline className="w-4 h-4" />
+                            </button>
+                            
+                            <div className="w-[1px] h-4 bg-slate-300 mx-1" />
+
+                            <button
+                              type="button"
+                              onClick={() => insertFormat('link')}
+                              title="Sisipkan Tautan (Link)"
+                              className="p-1 rounded hover:bg-slate-200 text-slate-600 transition-colors"
+                            >
+                              <Link2 className="w-4 h-4" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => alert("Fitur Unggah Gambar/Media disiapkan untuk editor visual.")}
+                              title="Sisipkan Gambar"
+                              className="p-1 rounded hover:bg-slate-200 text-slate-600 transition-colors"
+                            >
+                              <Image className="w-4 h-4" />
+                            </button>
+
+                            <div className="w-[1px] h-4 bg-slate-300 mx-1" />
+
+                            <button
+                              type="button"
+                              onClick={() => insertFormat('bullet')}
+                              title="Daftar Simbol (Bullet List)"
+                              className="p-1 rounded hover:bg-slate-200 text-slate-600 transition-colors"
+                            >
+                              <List className="w-4 h-4" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => insertFormat('number')}
+                              title="Daftar Angka (Numbered List)"
+                              className="p-1 rounded hover:bg-slate-200 text-slate-600 transition-colors"
+                            >
+                              <ListOrdered className="w-4 h-4" />
+                            </button>
+
+                            <div className="w-[1px] h-4 bg-slate-300 mx-1" />
+
+                            <button
+                              type="button"
+                              onClick={() => alert("Fitur Unggah Lampiran berkas tambahan.")}
+                              title="Unggah File"
+                              className="p-1 rounded hover:bg-slate-200 text-slate-600 transition-colors"
+                            >
+                              <Upload className="w-4 h-4" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => alert("Tampilan Layar Penuh disiapkan.")}
+                              title="Layar Penuh (Fullscreen)"
+                              className="p-1 rounded hover:bg-slate-200 text-slate-600 transition-colors"
+                            >
+                              <Maximize2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                          <textarea
+                            id="decision-comments"
+                            rows={6}
+                            value={decisionForm.comments}
+                            onChange={e => setDecisionForm({ ...decisionForm, comments: e.target.value })}
+                            disabled={editorDailyCount >= 20}
+                            placeholder="Masukkan masukan penyempurnaan, catatan revisi, atau alasan penolakan naskah..."
+                            className="w-full border-0 focus:ring-0 focus:outline-none p-3 text-xs text-slate-700 placeholder-slate-400 bg-white leading-relaxed resize-y min-h-[120px]"
+                          />
+                        </div>
                       </div>
 
                       <button

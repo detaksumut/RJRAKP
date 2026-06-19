@@ -827,11 +827,11 @@ export default function AdminArticles() {
                             <p className="text-[9px] font-black text-brand-800 uppercase tracking-widest">
                               Rekomendasi: <span className="font-bold">{assign.reviews[0].recommendation}</span>
                             </p>
-                            <div className="bg-white p-2 rounded border border-academic-100 text-[10px] text-academic-600 italic">
+                            <div className="bg-white p-2 rounded border border-academic-100 text-[10px] text-academic-600 italic whitespace-pre-wrap">
                               <strong>Komentar Penulis:</strong><br/>
                               "{assign.reviews[0].comments_for_author}"
                             </div>
-                            <div className="bg-white p-2 rounded border border-academic-100 text-[10px] text-academic-600 italic">
+                            <div className="bg-white p-2 rounded border border-academic-100 text-[10px] text-academic-600 italic whitespace-pre-wrap">
                               <strong>Komentar Editor:</strong><br/>
                               "{assign.reviews[0].comments_for_editor}"
                             </div>
