@@ -149,25 +149,7 @@ export default function AuthorArticles() {
               </button>
             </div>
 
-            {/* Payment Info Notification (Only for Active tab) */}
-            {activeTab === 'queue' && activeArticles.length > 0 && (
-              <div className="bg-brand-50 border border-brand-200 rounded-xl p-5 flex flex-col md:flex-row gap-4 items-start shadow-sm">
-                <div className="bg-brand-100 p-2.5 rounded-xl text-brand-600 shrink-0">
-                  <FileText className="w-6 h-6" />
-                </div>
-                <div>
-                  <h4 className="text-brand-900 font-bold mb-1.5">Informasi Biaya Review & Publikasi</h4>
-                  <p className="text-sm text-brand-700 leading-relaxed mb-3">
-                    Bagi artikel yang berstatus <strong>Baru Masuk (Submitted)</strong> atau sedang dalam proses, Penulis diminta untuk melakukan transfer <strong>Biaya Review & Publikasi</strong>. Biaya ini sudah mencakup keseluruhan proses penerbitan di <strong>Rumah Jurnal Internasional</strong>, termasuk indeksasi di <strong>Google Scholar</strong> dan <strong>Zenodo</strong>, penautan otomatis ke profil <strong>ORCID</strong>, indeksasi di <strong>OpenAIRE</strong>, serta penyematan nomor referensi <strong>DOI</strong> yang valid dan terbitnya sertifikat.
-                  </p>
-                  <div className="inline-flex flex-wrap items-center gap-3 bg-white px-4 py-2.5 rounded-lg border border-brand-200 shadow-sm">
-                     <span className="text-[10px] uppercase font-bold text-brand-500 tracking-wider">Rekening Tujuan:</span>
-                     <span className="font-black text-brand-900 text-lg tracking-wider">BRI 1341 0100 0081 562</span>
-                     <span className="text-sm text-brand-700 font-bold md:border-l border-brand-200 md:pl-3">a.n. Muhibbuddin</span>
-                  </div>
-                </div>
-              </div>
-            )}
+
 
             {/* List and Filters Header */}
             <div className="bg-white rounded-xl border border-academic-200 shadow-sm overflow-hidden">
