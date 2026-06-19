@@ -500,9 +500,9 @@ https://rjrakp.com`;
                 <DollarSign className="w-6 h-6 text-emerald-600" />
               </div>
               <div>
-                <h4 className="text-emerald-950 font-bold mb-1">✨ Informasi Benefit & Royalti Penulis</h4>
+                <h4 className="text-emerald-950 font-bold mb-1">✨ Informasi Program Reward & Apresiasi Penulis</h4>
                 <p className="text-sm text-emerald-700 leading-relaxed">
-                  Setiap artikel ilmiah yang Anda terbitkan melalui platform <strong>RJRAKP</strong> memiliki nilai ekonomi tinggi. Setiap kali pembaca ingin mengunduh naskah artikel Anda, <strong>pembaca tersebut wajib membayar biaya unduhan yang akan ditransfer secara langsung oleh pembaca ke nomor rekening bank terdaftar Anda</strong>.
+                  Setiap artikel ilmiah yang Anda terbitkan melalui platform <strong>RJRAKP</strong> didistribusikan secara terbuka (Open Access) untuk pembaca secara gratis demi menjaga integritas akademik. Sebagai bentuk apresiasi, RJRAKP akan memberikan <strong>Reward khusus</strong> kepada Penulis yang artikelnya berhasil diindeks di lembaga indeksasi jurnal dunia bergengsi (seperti Scopus, dll.) atau mencapai rekor unduhan tertinggi (top record download).
                 </p>
               </div>
             </div>

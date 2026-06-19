@@ -111,10 +111,10 @@ export default function AuthorArticles() {
               </div>
               <div>
                 <h4 className="text-emerald-950 font-bold mb-1 flex items-center gap-1.5">
-                  ✨ Karya Anda Sangat Berharga: Benefit & Royalti Penulis
+                  ✨ Karya Anda Sangat Berharga: Program Reward & Apresiasi Penulis
                 </h4>
                 <p className="text-sm text-emerald-700 leading-relaxed">
-                  Semua naskah jurnal yang diterbitkan di sistem <strong>RJRAKP</strong> akan menghasilkan keuntungan finansial bagi penulisnya. Setiap ada pembaca yang mengunduh naskah Anda, <strong>pembaca tersebut wajib membayar biaya unduh yang akan ditransfer secara langsung oleh pembaca ke nomor rekening bank Anda</strong>. Pastikan data rekening Anda sudah diisi dengan benar pada menu <Link to="/dashboard/profile" className="font-bold underline text-emerald-800 hover:text-emerald-950">Profil & Rekening</Link> agar pembaca dapat melakukan transfer langsung.
+                  Semua naskah jurnal yang diterbitkan di sistem <strong>RJRAKP</strong> didistribusikan secara terbuka (Open Access) untuk pembaca secara gratis demi menjaga integritas akademik. Sebagai bentuk apresiasi, RJRAKP akan memberikan <strong>Reward khusus</strong> kepada Penulis yang artikelnya berhasil diindeks di lembaga indeksasi jurnal dunia bergengsi (seperti Scopus, dll.) atau mencapai rekor unduhan tertinggi (top record download). Pastikan data rekening Anda sudah diisi dengan benar pada menu <Link to="/dashboard/profile" className="font-bold underline text-emerald-800 hover:text-emerald-950">Profil & Rekening</Link> agar kami dapat menyalurkan reward secara berkala.
                 </p>
               </div>
             </div>
