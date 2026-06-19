@@ -97,7 +97,7 @@ export default function Footer() {
                 className="w-full h-full object-cover scale-[1.8]"
               />
             </a>
-            <span className="text-white/60 text-[10px] uppercase font-bold tracking-widest">Fully Compatible with OJS 3</span>
+            <span className="text-white/60 text-[10px] uppercase font-bold tracking-widest">Fully Compatible OJS 3</span>
           </div>
 
           <div className="flex justify-center items-center gap-6 md:gap-10 mb-6">
