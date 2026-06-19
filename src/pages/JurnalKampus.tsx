@@ -123,7 +123,7 @@ export default function JurnalKampus() {
             }`}
           >
             <FileText className="w-4 h-4" />
-            Tugas Perkuliahan ({articles.length})
+            Tugas Jurnal ({articles.length})
           </button>
           <button
             onClick={() => setSearchParams({ tab: 'opini' })}
@@ -144,7 +144,7 @@ export default function JurnalKampus() {
             <div className="bg-gradient-to-r from-brand-900 via-brand-800 to-brand-950 rounded-2xl p-6 md:p-8 text-white shadow-md flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b-4 border-accent-500">
               <div className="space-y-2 max-w-2xl">
                 <span className="text-[10px] font-black uppercase tracking-widest text-accent-400 bg-white/10 px-2.5 py-1 rounded-md">Untuk Mahasiswa</span>
-                <h3 className="text-xl md:text-2xl font-bold font-serif">Kirimkan Tugas Jurnal Perkuliahan Anda</h3>
+                <h3 className="text-xl md:text-2xl font-bold font-serif">Kirimkan Tugas Jurnal Anda</h3>
                 <p className="text-sm text-brand-100 leading-relaxed">
                    RJRAKP memfasilitasi penerbitan luaran tugas artikel ilmiah dari mata kuliah Anda secara resmi dengan biaya yang terjangkau (Rp 300.000) dan terindeks Google Scholar secara otomatis.
                 </p>
@@ -160,12 +160,12 @@ export default function JurnalKampus() {
             {loadingArticles ? (
               <div className="text-center py-20">
                 <div className="inline-block w-8 h-8 border-4 border-brand-700 border-t-transparent rounded-full animate-spin"></div>
-                <p className="text-academic-500 mt-4 font-semibold text-sm">Memuat artikel tugas perkuliahan...</p>
+                <p className="text-academic-500 mt-4 font-semibold text-sm">Memuat artikel Tugas Jurnal...</p>
               </div>
             ) : articles.length === 0 ? (
               <div className="text-center py-20 bg-white rounded-2xl border border-academic-200 p-8 shadow-sm">
-                <p className="text-academic-500 text-lg mb-2">Belum ada tugas perkuliahan yang dipublikasikan.</p>
-                <p className="text-academic-400 text-sm">Jurnal tugas kuliah yang diterbitkan akan muncul di sini.</p>
+                <p className="text-academic-500 text-lg mb-2">Belum ada Tugas Jurnal yang dipublikasikan.</p>
+                <p className="text-academic-400 text-sm">Tugas Jurnal yang diterbitkan akan muncul di sini.</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 gap-6">

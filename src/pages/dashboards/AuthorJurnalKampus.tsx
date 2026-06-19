@@ -92,7 +92,7 @@ export default function AuthorJurnalKampus() {
             <GraduationCap className="w-7 h-7 text-brand-700" />
             Workspace Jurnal Kampus
           </h1>
-          <p className="text-academic-500">Kelola ulasan tugas jurnal perkuliahan Anda dan tulis artikel opini kritis di sini.</p>
+          <p className="text-academic-500">Kelola ulasan Tugas Jurnal Anda dan tulis artikel opini kritis di sini.</p>
         </div>
 
         {/* Tab Navigation */}
@@ -106,7 +106,7 @@ export default function AuthorJurnalKampus() {
             }`}
           >
             <FileText className="w-4 h-4" />
-            Tugas Kuliah ({articles.length})
+            Tugas Jurnal ({articles.length})
           </button>
           <button
             onClick={() => setSearchParams({ tab: 'opini' })}
@@ -124,7 +124,7 @@ export default function AuthorJurnalKampus() {
         {activeTab === 'tugas-jurnal' ? (
           <div className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-lg font-bold text-academic-800">Daftar Tugas Jurnal Perkuliahan</h2>
+              <h2 className="text-lg font-bold text-academic-800">Daftar Tugas Jurnal</h2>
               <Link 
                 to="/dashboard/author/submit?type=jurnal_kuliah" 
                 className="inline-flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg font-bold text-xs uppercase tracking-wider transition-colors shadow-sm"
@@ -147,11 +147,11 @@ export default function AuthorJurnalKampus() {
 
             <div className="bg-white rounded-xl border border-academic-200 shadow-sm overflow-hidden">
               {loadingArticles ? (
-                <div className="p-8 text-center text-academic-500 text-xs">Memuat tugas jurnal perkuliahan...</div>
+                <div className="p-8 text-center text-academic-500 text-xs">Memuat Tugas Jurnal...</div>
               ) : articles.length === 0 ? (
                 <div className="p-8 text-center py-12">
                   <FileText className="w-12 h-12 text-academic-300 mx-auto mb-4" />
-                  <p className="text-academic-650 font-medium mb-4 text-sm">Anda belum mengirimkan artikel tugas perkuliahan.</p>
+                  <p className="text-academic-650 font-medium mb-4 text-sm">Anda belum mengirimkan artikel Tugas Jurnal.</p>
                   <Link to="/dashboard/author/submit?type=jurnal_kuliah" className="text-brand-600 font-bold hover:underline text-sm uppercase tracking-wider">
                     Submit Tugas Pertama Sekarang
                   </Link>
@@ -220,7 +220,7 @@ export default function AuthorJurnalKampus() {
               <div>
                 <h4 className="text-amber-900 font-bold mb-1.5">Aturan Pengiriman Opini</h4>
                 <p className="text-xs text-amber-800 leading-relaxed text-justify">
-                   Gagasan opini Anda yang disubmit di sini akan otomatis mengirimkan tautan baca opini Anda langsung ke nomor WhatsApp Dosen pengampu mata kuliah Anda untuk penilaian tugas kuliah Anda.
+                   Gagasan opini Anda yang disubmit di sini akan otomatis mengirimkan tautan baca opini Anda langsung ke nomor WhatsApp Dosen pengampu mata kuliah Anda untuk penilaian Tugas Jurnal Anda.
                 </p>
               </div>
             </div>

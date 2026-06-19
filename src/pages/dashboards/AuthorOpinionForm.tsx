@@ -242,7 +242,7 @@ export default function AuthorOpinionForm() {
       // Kirim Notifikasi WhatsApp ke HP Dosen Pengampu
       const authorName = user?.full_name || 'Mahasiswa';
       const opinionUrl = `${window.location.origin}/opini/${finalSlug}`;
-      const waMessage = `*NOTIFIKASI OPINI MAHASISWA (RJRAKP)*\n\nHalo Bapak/Ibu Dosen,\n\nMahasiswa Anda yang bernama *${authorName}* baru saja mengirimkan tulisan opini sebagai pemenuhan tugas perkuliahan dengan judul:\n\n*"${title}"*\n\nBapak/Ibu dapat membaca tulisan opini lengkap mahasiswa tersebut melalui tautan publik berikut:\n${opinionUrl}\n\nTerima kasih.\n_Rumah Jurnal RJRAKP_`;
+      const waMessage = `*NOTIFIKASI OPINI MAHASISWA (RJRAKP)*\n\nHalo Bapak/Ibu Dosen,\n\nMahasiswa Anda yang bernama *${authorName}* baru saja mengirimkan tulisan opini sebagai pemenuhan Tugas Jurnal dengan judul:\n\n*"${title}"*\n\nBapak/Ibu dapat membaca tulisan opini lengkap mahasiswa tersebut melalui tautan publik berikut:\n${opinionUrl}\n\nTerima kasih.\n_Rumah Jurnal RJRAKP_`;
 
       try {
         await supabase.functions.invoke('send-wa', {
