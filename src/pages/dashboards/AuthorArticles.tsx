@@ -3,7 +3,7 @@ import DashboardLayout from '../../components/DashboardLayout';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
 import { Link } from 'react-router-dom';
-import { FileText, Eye, Search, Filter, Download, BookOpen, ChevronRight, HelpCircle } from 'lucide-react';
+import { FileText, Eye, Search, Filter, Download, BookOpen, ChevronRight, HelpCircle, DollarSign } from 'lucide-react';
 
 export default function AuthorArticles() {
   const { user } = useAuth();
@@ -102,6 +102,21 @@ export default function AuthorArticles() {
             <div>
               <h1 className="text-2xl font-serif font-bold text-academic-900 mb-2">Submisi</h1>
               <p className="text-academic-500 text-sm">Kelola dan pantau proses evaluasi berkas naskah artikel Anda.</p>
+            </div>
+
+            {/* Benefit & Monetization Info Card */}
+            <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-5 flex gap-4 items-start shadow-sm">
+              <div className="bg-emerald-100 p-2.5 rounded-xl text-emerald-600 shrink-0">
+                <DollarSign className="w-6 h-6 animate-pulse" />
+              </div>
+              <div>
+                <h4 className="text-emerald-950 font-bold mb-1 flex items-center gap-1.5">
+                  ✨ Karya Anda Sangat Berharga: Benefit & Royalti Penulis
+                </h4>
+                <p className="text-sm text-emerald-700 leading-relaxed">
+                  Semua naskah jurnal yang diterbitkan di sistem <strong>RJRAKP</strong> akan menghasilkan keuntungan finansial bagi penulisnya. Ketika pembaca mengunduh naskah Anda, mereka <strong>wajib membayar biaya unduh yang akan ditransfer langsung ke rekening bank terdaftar Anda</strong>. Pastikan rekening Anda terisi dengan benar di menu <Link to="/dashboard/profile" className="font-bold underline text-emerald-800 hover:text-emerald-950">Profil & Rekening</Link>.
+                </p>
+              </div>
             </div>
 
             {/* OJS Style Tabs */}

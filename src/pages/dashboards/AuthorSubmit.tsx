@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
-import { Send, Upload, FileText, Plus, Trash2, ChevronUp, ChevronDown, UserPlus } from 'lucide-react';
+import { Send, Upload, FileText, Plus, Trash2, ChevronUp, ChevronDown, UserPlus, DollarSign } from 'lucide-react';
 
 interface AuthorData {
   id: string;
@@ -461,7 +461,21 @@ https://rjrakp.com`;
             </button>
           </div>
         ) : (
-          <div className="bg-white rounded-2xl border border-academic-200 shadow-sm overflow-hidden">
+          <div className="space-y-6">
+            {/* Monetization Info Banner */}
+            <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-5 flex gap-4 items-start shadow-sm">
+              <div className="bg-emerald-100 p-2.5 rounded-xl text-emerald-600 shrink-0">
+                <DollarSign className="w-6 h-6 text-emerald-600" />
+              </div>
+              <div>
+                <h4 className="text-emerald-950 font-bold mb-1">✨ Informasi Benefit & Royalti Penulis</h4>
+                <p className="text-sm text-emerald-700 leading-relaxed">
+                  Setiap artikel ilmiah yang Anda terbitkan melalui platform <strong>RJRAKP</strong> memiliki nilai ekonomi yang tinggi. Ketika pembaca mengunduh naskah Anda, mereka wajib melakukan pembayaran biaya unduhan yang seluruhnya akan <strong>dikirimkan langsung ke nomor rekening terdaftar Anda</strong>.
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-2xl border border-academic-200 shadow-sm overflow-hidden">
             <form onSubmit={handleSubmit} className="divide-y divide-academic-100">
               
               {/* SECTION 1: METADATA ARTIKEL */}
@@ -752,6 +766,7 @@ https://rjrakp.com`;
                 </div>
               </div>
             </form>
+          </div>
           </div>
         )}
       </div>
