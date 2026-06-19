@@ -114,7 +114,7 @@ export default function AuthorArticles() {
                   ✨ Karya Anda Sangat Berharga: Benefit & Royalti Penulis
                 </h4>
                 <p className="text-sm text-emerald-700 leading-relaxed">
-                  Semua naskah jurnal yang diterbitkan di sistem <strong>RJRAKP</strong> akan menghasilkan keuntungan finansial bagi penulisnya. Ketika pembaca mengunduh naskah Anda, mereka <strong>wajib membayar biaya unduh yang akan ditransfer langsung ke rekening bank terdaftar Anda</strong>. Pastikan rekening Anda terisi dengan benar di menu <Link to="/dashboard/profile" className="font-bold underline text-emerald-800 hover:text-emerald-950">Profil & Rekening</Link>.
+                  Semua naskah jurnal yang diterbitkan di sistem <strong>RJRAKP</strong> akan menghasilkan keuntungan finansial bagi penulisnya. Setiap ada pembaca yang mengunduh naskah Anda, <strong>pembaca tersebut wajib membayar biaya unduh yang akan ditransfer secara langsung oleh pembaca ke nomor rekening bank Anda</strong>. Pastikan data rekening Anda sudah diisi dengan benar pada menu <Link to="/dashboard/profile" className="font-bold underline text-emerald-800 hover:text-emerald-950">Profil & Rekening</Link> agar pembaca dapat melakukan transfer langsung.
                 </p>
               </div>
             </div>

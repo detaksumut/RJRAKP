@@ -470,7 +470,7 @@ https://rjrakp.com`;
               <div>
                 <h4 className="text-emerald-950 font-bold mb-1">✨ Informasi Benefit & Royalti Penulis</h4>
                 <p className="text-sm text-emerald-700 leading-relaxed">
-                  Setiap artikel ilmiah yang Anda terbitkan melalui platform <strong>RJRAKP</strong> memiliki nilai ekonomi yang tinggi. Ketika pembaca mengunduh naskah Anda, mereka wajib melakukan pembayaran biaya unduhan yang seluruhnya akan <strong>dikirimkan langsung ke nomor rekening terdaftar Anda</strong>.
+                  Setiap artikel ilmiah yang Anda terbitkan melalui platform <strong>RJRAKP</strong> memiliki nilai ekonomi tinggi. Setiap kali pembaca ingin mengunduh naskah artikel Anda, <strong>pembaca tersebut wajib membayar biaya unduhan yang akan ditransfer secara langsung oleh pembaca ke nomor rekening bank terdaftar Anda</strong>.
                 </p>
               </div>
             </div>
