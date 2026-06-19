@@ -83,7 +83,7 @@ export default function JurnalKampus() {
       {/* Hero Section */}
       <div 
         className="relative bg-cover bg-center py-16 md:py-24 text-white overflow-hidden"
-        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1498243691219-0f482d715694?auto=format&fit=crop&w=1920&q=80')" }}
+        style={{ backgroundImage: "url('/campus.jpg')" }}
       >
         {/* Dark Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-brand-950/95 via-brand-900/90 to-brand-800/80"></div>
