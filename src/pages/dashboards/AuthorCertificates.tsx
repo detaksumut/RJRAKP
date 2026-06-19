@@ -52,6 +52,8 @@ export default function AuthorCertificates() {
     const certNumber = `CERT/RJRAKP/${(journal?.slug || 'JR').toUpperCase()}/${new Date(pub.publication_date).getFullYear()}/${pub.id.substring(0, 8).toUpperCase()}`;
     const verificationCode = pub.id.substring(0, 18).toUpperCase();
     const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(`https://rjrakp.ac.id/verify-cert/${verificationCode}`)}`;
+    const qrDirektur = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(`https://rjrakp.ac.id/verify-cert/${verificationCode}?sign=direktur`)}`;
+    const qrEditor = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(`https://rjrakp.ac.id/verify-cert/${verificationCode}?sign=editor`)}`;
     const formattedDate = new Date(pub.publication_date).toLocaleDateString('id-ID', {
       day: 'numeric',
       month: 'long',
@@ -204,8 +206,11 @@ body { width: 297mm; height: 210mm; font-family: 'Inter', sans-serif; background
 
 /* ==================== FOOTER ==================== */
 .ftr { width: 100%; display: flex; justify-content: space-between; align-items: flex-end; margin-top: auto; padding: 0 3mm; }
-.ftr-col { width: 50mm; text-align: center; }
-.ftr-role { font-size: 8.5px; font-weight: 800; color: #0a1a3f; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15mm; }
+.ftr-col { width: 50mm; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.ftr-role { font-size: 8.5px; font-weight: 800; color: #0a1a3f; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 1.5mm; }
+.ftr-sig-qr { display: flex; justify-content: center; align-items: center; margin: 1mm 0; }
+.ftr-sig-qr img { width: 13mm; height: 13mm; display: block; border: 1px solid #d1d5db; padding: 0.5mm; background: white; }
+.ftr-name { font-size: 9px; font-weight: 800; color: #0a1a3f; border-bottom: 1px solid #0a1a3f; display: inline-block; padding-bottom: 0.5mm; margin-top: 1mm; font-family: 'Inter', sans-serif; }
 .ftr-center { text-align: center; width: 40mm; display: flex; flex-direction: column; align-items: center; }
 .seal-ring {
   width: 22mm; height: 22mm; border: 2px solid #0a1a3f; border-radius: 50%;
@@ -313,6 +318,10 @@ body { width: 297mm; height: 210mm; font-family: 'Inter', sans-serif; background
       <div class="ftr">
         <div class="ftr-col">
           <div class="ftr-role">Direktur</div>
+          <div class="ftr-sig-qr">
+            <img src="${qrDirektur}" alt="QR Direktur" />
+          </div>
+          <div class="ftr-name">Muhibbuddin</div>
         </div>
         <div class="ftr-center">
           <div class="seal-ring">
@@ -321,6 +330,10 @@ body { width: 297mm; height: 210mm; font-family: 'Inter', sans-serif; background
         </div>
         <div class="ftr-col">
           <div class="ftr-role">Editor in Chief</div>
+          <div class="ftr-sig-qr">
+            <img src="${qrEditor}" alt="QR Editor" />
+          </div>
+          <div class="ftr-name">Dr. M. Faisal, SP, M.M</div>
         </div>
       </div>
 
