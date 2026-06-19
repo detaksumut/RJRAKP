@@ -85,26 +85,26 @@ export default function JurnalKampus() {
         className="relative bg-cover bg-center py-16 md:py-24 text-white overflow-hidden"
         style={{ backgroundImage: "url('/campus.jpg')" }}
       >
-        {/* Dark Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-brand-950/95 via-brand-900/90 to-brand-800/80"></div>
+        {/* Sleek Gradient Overlay - Dark on the left for text contrast, fading out to reveal the bright campus image on the right */}
+        <div className="absolute inset-0 bg-gradient-to-r from-brand-950/85 via-brand-900/40 to-transparent"></div>
         
         {/* Subtle Decorative Pattern */}
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
 
         <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center md:text-left space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/15 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-accent-400">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/15 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-accent-400 backdrop-blur-sm">
             <GraduationCap className="w-4 h-4" />
             Portal Akademik Mahasiswa
           </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-serif leading-tight tracking-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-serif leading-tight tracking-tight drop-shadow-md">
             Jurnal Kampus RJRAKP
           </h1>
-          <div className="border-l-4 border-amber-400 pl-4 max-w-3xl py-1 text-left mx-auto md:mx-0">
+          <div className="border-l-4 border-amber-400 pl-4 max-w-3xl py-1 text-left mx-auto md:mx-0 drop-shadow-sm">
             <p className="text-lg sm:text-xl md:text-2xl font-bold text-amber-300 leading-relaxed italic">
               "Wadah bagi para Mahasiswa melatih diri untuk menjadi penulis Jurnal go Internasional"
             </p>
           </div>
-          <p className="text-xs sm:text-sm md:text-base text-slate-300 max-w-2xl leading-relaxed">
+          <p className="text-xs sm:text-sm md:text-base text-slate-100 max-w-2xl leading-relaxed drop-shadow-sm font-medium">
             Selamat datang di inkubator publikasi ilmiah RJRAKP. Kami berdedikasi melatih mahasiswa dalam menyusun naskah ilmiah berkualitas hasil luaran perkuliahan dan opini kritis publik agar siap bersaing di kancah global dan terindeks internasional.
           </p>
         </div>
