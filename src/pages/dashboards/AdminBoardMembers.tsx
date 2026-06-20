@@ -161,8 +161,8 @@ export default function AdminBoardMembers() {
     <div className="space-y-6">
       <div className="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Dewan Pengurus</h2>
-          <p className="text-sm text-gray-500 mt-1">Kelola data Dewan Pengurus (Board of Directors) yang tampil di Halaman Depan</p>
+          <h2 className="text-2xl font-bold text-gray-900">Editorial Board</h2>
+          <p className="text-sm text-gray-500 mt-1">Kelola data Editorial Board yang tampil di Halaman Depan</p>
         </div>
         <button
           onClick={() => handleOpenModal()}
@@ -186,7 +186,7 @@ export default function AdminBoardMembers() {
               <AlertCircle className="w-8 h-8 text-gray-400" />
             </div>
             <h3 className="text-lg font-bold text-gray-900 mb-1">Belum ada Pengurus</h3>
-            <p className="text-gray-500 max-w-sm mb-6">Anda belum menambahkan data Dewan Pengurus. Silakan klik tombol Tambah Pengurus di atas.</p>
+            <p className="text-gray-500 max-w-sm mb-6">Anda belum menambahkan data Editorial Board. Silakan klik tombol Tambah Pengurus di atas.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">

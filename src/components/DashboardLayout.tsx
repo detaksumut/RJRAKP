@@ -48,7 +48,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         { label: 'Dashboard', path: '/dashboard/admin', icon: LayoutDashboard },
         { label: 'Verifikasi Reviewer', path: '/dashboard/admin/reviewers', icon: Users },
         { label: 'Verifikasi Editor', path: '/dashboard/admin/editors', icon: Users },
-        { label: 'Dewan Pengurus', path: '/dashboard/admin/board-members', icon: Users },
+        { label: 'Editorial Board', path: '/dashboard/admin/board-members', icon: Users },
         { label: 'Manajemen Jurnal', path: '/dashboard/admin/journals', icon: FileText },
         { label: 'Manajemen Terbitan', path: '/dashboard/admin/issues', icon: BookOpen },
         { label: 'Manajemen Artikel', path: '/dashboard/admin/articles', icon: FileText },

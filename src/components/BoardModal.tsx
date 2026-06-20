@@ -71,7 +71,7 @@ export default function BoardModal({ isOpen, onClose }: BoardModalProps) {
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-academic-800/50 bg-academic-950/50">
           <div>
-            <h2 className="text-2xl font-serif font-bold text-white mb-1">Dewan Pengurus</h2>
+            <h2 className="text-2xl font-serif font-bold text-white mb-1">EDITORIAL BOARD</h2>
             <p className="text-academic-400 text-sm">Rumah Jurnal Riset, Analisis & Keadilan Publik Indonesia</p>
           </div>
           <button 

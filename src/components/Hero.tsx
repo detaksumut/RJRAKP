@@ -108,7 +108,7 @@ export default function Hero() {
                 className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-800/40 border border-brand-500/30 text-brand-100 text-[10px] sm:text-xs font-bold tracking-wider uppercase shadow-inner backdrop-blur-md hover:bg-brand-700/60 hover:border-brand-400/50 hover:text-white transition-all cursor-pointer group"
               >
                 <Users className="w-3.5 h-3.5 text-brand-400 group-hover:text-brand-300" />
-                <span>Dewan Pengurus</span>
+                <span>EDITORIAL BOARD</span>
               </button>
             </div>
 
