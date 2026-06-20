@@ -82,7 +82,7 @@ export default function AdminArticles() {
         supabase.functions.invoke('send-wa', {
           body: {
             target: submitterPhone,
-            message: `*Letter of Acceptance (LoA) Terbit*\n\nHalo ${article.users?.full_name || 'Penulis'},\n\nAcceptance Letter (LoA) untuk artikel Anda yang berjudul *"${article.title.replace(/^\[.*?\]\s*/, '')}"* telah resmi diterbitkan oleh Redaksi RJRAKP.\n\nNomor LoA: *${letterNumber}*\n\nSilakan masuk ke dashboard RJRAKP Anda pada menu *Acceptance Letter (LoA)* untuk mengunduh/mencetak dokumen resmi LoA Anda.\n\nTerima kasih.`
+            message: `*Letter of Acceptance (LoA) Terbit*\n\nHalo ${article.users?.full_name || 'Penulis'},\n\nArtikel Anda yang berjudul *"${article.title.replace(/^\[.*?\]\s*/, '')}"* telah disetujui untuk diterbitkan oleh Redaksi RJRAKP.\n\nNomor LoA: *${letterNumber}*\n\nSilakan masuk ke dashboard RJRAKP Anda pada menu *Acceptance Letter (LoA)* untuk mengunduh/mencetak dokumen resmi LoA Anda.\n\nTerima kasih.`
           }
         }).catch(err => console.error("Gagal mengirim WA:", err));
       }
