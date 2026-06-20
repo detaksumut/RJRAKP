@@ -44,7 +44,6 @@ export default function AdminStaffRoles() {
         .from('users')
         .select('id, full_name, email, phone, role, status, position_key, position_label, affiliation, orcid_id, sinta_id, google_scholar_id, created_at')
         .in('role', ['editor', 'reviewer', 'admin'])
-        .eq('status', 'APPROVED')
         .order('role')
         .order('full_name');
 
@@ -234,7 +233,7 @@ export default function AdminStaffRoles() {
               <thead>
                 <tr className="bg-slate-50 border-b border-academic-200 text-[10px] font-bold text-academic-500 uppercase tracking-wider">
                   <th className="px-4 py-3">Nama & Kontak</th>
-                  <th className="px-4 py-3">Role Sistem</th>
+                  <th className="px-4 py-3">Role & Status</th>
                   <th className="px-4 py-3">Jabatan Saat Ini</th>
                   <th className="px-4 py-3">Honorarium Rate</th>
                   <th className="px-4 py-3 text-center">Aksi</th>
@@ -263,11 +262,21 @@ export default function AdminStaffRoles() {
                             {u.google_scholar_id && <span className="text-[9px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded font-bold">Scholar</span>}
                           </div>
                         </td>
-                        {/* Role sistem */}
+                        {/* Role & Status */}
                         <td className="px-4 py-3">
-                          <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full border ${getRoleColor(u.role)}`}>
-                            {getRoleIcon(u.role)} {u.role.charAt(0).toUpperCase() + u.role.slice(1)}
-                          </span>
+                          <div className="flex flex-col gap-1.5">
+                            <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full border w-fit ${getRoleColor(u.role)}`}>
+                              {getRoleIcon(u.role)} {u.role.charAt(0).toUpperCase() + u.role.slice(1)}
+                            </span>
+                            <span className={`inline-flex text-[9px] font-bold px-1.5 py-0.5 rounded w-fit ${
+                              u.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-700' :
+                              u.status === 'PENDING' ? 'bg-amber-100 text-amber-700' :
+                              u.status === 'REJECTED' ? 'bg-rose-100 text-rose-700' :
+                              'bg-slate-100 text-slate-600'
+                            }`}>
+                              {u.status || 'N/A'}
+                            </span>
+                          </div>
                         </td>
                         {/* Jabatan */}
                         <td className="px-4 py-3">
