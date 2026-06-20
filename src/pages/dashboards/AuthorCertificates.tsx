@@ -51,9 +51,9 @@ export default function AuthorCertificates() {
     
     const certNumber = `CERT/RJRAKP/${(journal?.slug || 'JR').toUpperCase()}/${new Date(pub.publication_date).getFullYear()}/${pub.id.substring(0, 8).toUpperCase()}`;
     const verificationCode = pub.id.substring(0, 18).toUpperCase();
-    const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(`https://rjrakp.ac.id/verify-cert/${verificationCode}`)}`;
-    const qrDirektur = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(`https://rjrakp.ac.id/verify-cert/${verificationCode}?sign=direktur`)}`;
-    const qrEditor = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(`https://rjrakp.ac.id/verify-cert/${verificationCode}?sign=editor`)}`;
+    const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(`https://rjrakp.com/verify-cert/${verificationCode}`)}`;
+    const qrDirektur = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(`https://rjrakp.com/verify-cert/${verificationCode}?sign=direktur`)}`;
+    const qrEditor = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(`https://rjrakp.com/verify-cert/${verificationCode}?sign=editor`)}`;
     const formattedDate = new Date(pub.publication_date).toLocaleDateString('id-ID', {
       day: 'numeric',
       month: 'long',

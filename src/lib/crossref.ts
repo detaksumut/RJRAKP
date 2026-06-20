@@ -42,7 +42,7 @@ export const generateCrossrefXML = (article: any) => {
     <timestamp>${Date.now()}</timestamp>
     <depositor>
       <depositor_name>${publisher}</depositor_name>
-      <email_address>admin@rjrakp.id</email_address>
+      <email_address>redaksi@rjrakp.com</email_address>
     </depositor>
     <registrant>${publisher}</registrant>
   </head>
@@ -83,7 +83,7 @@ export const generateCrossrefXML = (article: any) => {
         </pages>
         <doi_data>
           <doi>${publication.doi || `10.47822/rjrakp.${article.id}`}</doi>
-          <resource>https://rjrakp.id/article/${article.slug || article.id}</resource>
+          <resource>https://rjrakp.com/article/${article.slug || article.id}</resource>
         </doi_data>
       </journal_article>
     </journal>

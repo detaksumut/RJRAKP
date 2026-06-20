@@ -197,9 +197,9 @@ export default function Pedoman() {
             <h3 className="text-lg md:text-xl font-bold font-serif text-brand-900 pt-6 mt-8 border-t border-academic-100 mb-4">O. KONTAK REDAKSI</h3>
             <p className="mb-4 text-academic-700 font-medium leading-relaxed"><strong>Rumah Jurnal Riset, Analisis dan Keadilan Publik (RJRAKP)</strong></p>
             <ul className="list-none space-y-2 text-academic-700 font-medium leading-relaxed">
-              <li><strong>Email:</strong> admin@rjrakp.ac.id</li>
-              <li><strong>Website:</strong> rjrakp.ac.id</li>
-              <li><strong>Alamat:</strong> Gedung Rektorat Lt. 3, Jalan Pendidikan No. 123, DKI Jakarta, Indonesia 10110</li>
+              <li><strong>Email:</strong> redaksi@rjrakp.com</li>
+              <li><strong>Website:</strong> rjrakp.com</li>
+              <li><strong>Alamat:</strong> Gedung LSM MSRI, Jalan H.M. Joni No. 11, Kode Pos 20216, Medan, Sumatera Utara</li>
             </ul>
 
           </div>

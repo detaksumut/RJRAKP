@@ -8,7 +8,7 @@ export default function SetupAdmin() {
   const [message, setMessage] = useState('');
   const [formData, setFormData] = useState({
     name: 'Admin',
-    email: 'admin@rjrakp.ac.id',
+    email: 'redaksi@rjrakp.com',
     password: 'admin123'
   });
 
