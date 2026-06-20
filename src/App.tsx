@@ -22,6 +22,7 @@ import JurnalList from './pages/JurnalList';
 import JurnalDetail from './pages/JurnalDetail';
 import Publikasi from './pages/Publikasi';
 import ArticleDetail from './pages/ArticleDetail';
+import SimilarityReport from './pages/SimilarityReport';
 import LoaView from './pages/LoaView';
 import PanduanPenulis from './pages/PanduanPenulis';
 import PanduanReviewer from './pages/PanduanReviewer';
@@ -91,6 +92,7 @@ export default function App() {
               <Route path="/jurnal/:slug" element={<JurnalDetail />} />
               <Route path="/publikasi" element={<Publikasi />} />
               <Route path="/article/:slug" element={<ArticleDetail />} />
+              <Route path="/article/similarity-report/:articleId" element={<SimilarityReport />} />
               <Route path="/opini" element={<OpinionList />} />
               <Route path="/opini/:slug" element={<OpinionDetail />} />
               <Route path="/jurnal-kampus" element={<JurnalKampus />} />
