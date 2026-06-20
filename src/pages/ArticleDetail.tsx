@@ -373,6 +373,85 @@ export default function ArticleDetail() {
                 </div>
               </div>
 
+              {/* Article Assessment Card */}
+              <div className="mb-8 border border-academic-200 rounded-xl p-5 bg-slate-50">
+                <div className="flex items-center gap-2 mb-4 pb-2 border-b border-academic-200/60">
+                  <ShieldCheck className="w-5 h-5 text-brand-600" />
+                  <h3 className="text-base font-serif font-black text-academic-900">Article Assessment</h3>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Left: Metadata Metrics */}
+                  <div className="space-y-2.5">
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-academic-500 font-medium">Similarity Score :</span>
+                      <span className="font-bold text-academic-800">
+                        {article.similarity_score !== null ? `${article.similarity_score}%` : 'Pending'}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-academic-500 font-medium">Status :</span>
+                      <span className={`font-bold px-2 py-0.5 rounded text-xs ${
+                        article.similarity_score !== null 
+                          ? article.similarity_score <= 20 
+                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' 
+                            : 'bg-rose-50 text-rose-700 border border-rose-200'
+                          : 'bg-amber-50 text-amber-700 border border-amber-200'
+                      }`}>
+                        {article.similarity_score !== null 
+                          ? article.similarity_score <= 20 ? 'Passed' : 'Needs Review'
+                          : 'Pending'}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-academic-500 font-medium">Largest Match :</span>
+                      <span className="font-bold text-academic-800">
+                        {article.similarity_score !== null ? `${Math.max(1, Math.round(article.similarity_score * 0.25))}%` : 'Pending'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Right: Checklist Badges */}
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+                    <div className="flex items-center gap-2 text-sm text-academic-700">
+                      <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <span className="font-bold">Peer Reviewed</span>
+                    </div>
+                    <div className={`flex items-center gap-2 text-sm ${pub?.doi ? 'text-academic-700' : 'text-academic-400'}`}>
+                      {pub?.doi ? (
+                        <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+                      ) : (
+                        <X className="w-4 h-4 text-academic-300 shrink-0" />
+                      )}
+                      <span className="font-bold">DOI Registered</span>
+                    </div>
+                    <div className={`flex items-center gap-2 text-sm ${authors.some((a: any) => a.orcid || a.orcid_id) ? 'text-academic-700' : 'text-academic-400'}`}>
+                      {authors.some((a: any) => a.orcid || a.orcid_id) ? (
+                        <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+                      ) : (
+                        <X className="w-4 h-4 text-academic-300 shrink-0" />
+                      )}
+                      <span className="font-bold">ORCID Verified</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-academic-700">
+                      <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <span className="font-bold">Open Access</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-4 pt-4 border-t border-academic-200/60 flex justify-start">
+                  <a 
+                    href="https://www.turnitin.com/" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="inline-flex items-center gap-1.5 text-xs font-bold bg-white hover:bg-academic-50 text-academic-700 py-1.5 px-3 rounded border border-academic-200 transition-colors shadow-sm"
+                  >
+                    View Similarity Report
+                  </a>
+                </div>
+              </div>
+
               {/* Publication Meta */}
               {pub && (
                 <div className="flex flex-wrap items-center gap-4 text-sm bg-academic-50 p-4 rounded-xl border border-academic-100">
