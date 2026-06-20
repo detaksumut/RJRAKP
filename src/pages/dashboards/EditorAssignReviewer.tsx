@@ -244,7 +244,19 @@ export default function EditorAssignReviewer() {
         entity_id: selectedArticle.id
       });
 
+      // Fetch reviewer name
+      const reviewerName = reviewers.find(r => r.id === selectedReviewerId)?.full_name || 'Mitra Bestari';
+
+      // Log to article_editorial_history
+      await supabase.from('article_editorial_history').insert({
+        article_id: selectedArticle.id,
+        activity_type: 'reviewer_assigned',
+        description: `Mitra Bestari (${reviewerName}) ditugaskan untuk melakukan review naskah.`,
+        actor_name: user?.user_metadata?.full_name || 'Editor'
+      });
+
       setMessage({ text: 'Reviewer berhasil ditugaskan!', type: 'success' });
+
       setSelectedReviewerId('');
       setEditorDailyCount(prev => prev + 1);
       setReviewerWorkloads(prev => ({ ...prev, [selectedReviewerId]: (prev[selectedReviewerId] || 0) + 1 }));

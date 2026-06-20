@@ -82,6 +82,7 @@ export default function ReviewerDashboard() {
         .select(`
           id,
           status,
+          article_id,
           assigned_date,
           due_date,
           articles (
@@ -145,6 +146,14 @@ export default function ReviewerDashboard() {
         .eq('id', selectedAssignment.id);
 
       if (updateError) throw updateError;
+
+      // Log review completion to article_editorial_history
+      await supabase.from('article_editorial_history').insert({
+        article_id: selectedAssignment.article_id || selectedAssignment.articles?.id,
+        activity_type: 'review_completed',
+        description: `Reviewer menyerahkan hasil ulasan naskah dengan rekomendasi: ${reviewForm.recommendation}.`,
+        actor_name: 'Mitra Bestari (Reviewer)'
+      });
       
       setSelectedAssignment(null);
       setReviewForm({

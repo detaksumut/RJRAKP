@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import DashboardLayout from '../../components/DashboardLayout';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
-import { FileText, ArrowLeft, Upload, Send, Clock, MessageSquare, AlertCircle, CheckCircle, Edit3, Save, X, Eye, Download, Users } from 'lucide-react';
+import { FileText, ArrowLeft, Upload, Send, Clock, MessageSquare, AlertCircle, CheckCircle, Edit3, Save, X, Eye, Download, Users, ShieldCheck, Check } from 'lucide-react';
 
 export default function AuthorArticleDetail() {
   const { id } = useParams<{ id: string }>();
@@ -17,6 +17,8 @@ export default function AuthorArticleDetail() {
   const [sendingDiscussion, setSendingDiscussion] = useState(false);
   const [loading, setLoading] = useState(true);
   const [authorsList, setAuthorsList] = useState<any[]>([]);
+  const [similaritySources, setSimilaritySources] = useState<any[]>([]);
+  const [showReportModal, setShowReportModal] = useState(false);
 
   // Upload revision states
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -26,7 +28,14 @@ export default function AuthorArticleDetail() {
 
   // Edit metadata states
   const [isEditing, setIsEditing] = useState(false);
-  const [editForm, setEditForm] = useState({ title: '', abstract: '', abstract_en: '', bibliography: '' });
+  const [editForm, setEditForm] = useState({ 
+    title: '', 
+    abstract: '', 
+    abstract_en: '', 
+    bibliography: '',
+    ai_disclosure_type: 'none',
+    ai_disclosure_statement: ''
+  });
   const [savingMetadata, setSavingMetadata] = useState(false);
   const [metadataSuccess, setMetadataSuccess] = useState('');
   const [isTranslating, setIsTranslating] = useState(false);
@@ -116,7 +125,14 @@ export default function AuthorArticleDetail() {
 
       if (articleError) throw articleError;
       setArticle(articleData);
-      setEditForm({ title: articleData.title, abstract: articleData.abstract, bibliography: articleData.bibliography || '' });
+      setEditForm({ 
+        title: articleData.title, 
+        abstract: articleData.abstract, 
+        abstract_en: articleData.abstract_en || '',
+        bibliography: articleData.bibliography || '',
+        ai_disclosure_type: articleData.ai_disclosure_type || 'none',
+        ai_disclosure_statement: articleData.ai_disclosure_statement || ''
+      });
 
       // 2. Fetch Editorial Decisions
       const { data: decisionData } = await supabase
@@ -165,6 +181,15 @@ export default function AuthorArticleDetail() {
 
       if (authorsData) setAuthorsList(authorsData);
 
+      // 6. Fetch Similarity Sources
+      const { data: sourcesData } = await supabase
+        .from('article_similarity_sources')
+        .select('*')
+        .eq('article_id', id)
+        .order('source_percent', { ascending: false });
+
+      if (sourcesData) setSimilaritySources(sourcesData);
+
     } catch (error) {
       console.error('Error fetching article:', error);
     } finally {
@@ -205,12 +230,30 @@ export default function AuthorArticleDetail() {
           abstract: editForm.abstract,
           abstract_en: editForm.abstract_en,
           bibliography: editForm.bibliography,
+          ai_disclosure_type: editForm.ai_disclosure_type,
+          ai_disclosure_statement: editForm.ai_disclosure_type !== 'none' ? editForm.ai_disclosure_statement : null
         })
         .eq('id', article.id);
         
       if (error) throw error;
+
+      // Log metadata update to article_editorial_history
+      await supabase.from('article_editorial_history').insert({
+        article_id: article.id,
+        activity_type: 'metadata_update',
+        description: 'Penulis memperbarui metadata artikel (Judul/Abstrak/Pernyataan AI).',
+        actor_name: user?.user_metadata?.full_name || 'Penulis'
+      });
       
-      setArticle({ ...article, title: editForm.title, abstract: editForm.abstract, bibliography: editForm.bibliography });
+      setArticle({ 
+        ...article, 
+        title: editForm.title, 
+        abstract: editForm.abstract, 
+        abstract_en: editForm.abstract_en,
+        bibliography: editForm.bibliography,
+        ai_disclosure_type: editForm.ai_disclosure_type,
+        ai_disclosure_statement: editForm.ai_disclosure_type !== 'none' ? editForm.ai_disclosure_statement : null
+      });
       setIsEditing(false);
       setMetadataSuccess('Metadata artikel berhasil diperbarui.');
       
@@ -244,6 +287,32 @@ export default function AuthorArticleDetail() {
         
         manuscriptUrl = supabase.storage.from('manuscripts').getPublicUrl(fileName).data.publicUrl;
       }
+
+      // Save current version to history before updating
+      const { data: existingVers } = await supabase
+        .from('article_versions')
+        .select('version_number')
+        .eq('article_id', article.id)
+        .order('version_number', { ascending: false });
+        
+      const nextVerNum = (existingVers && existingVers.length > 0) ? (existingVers[0].version_number + 1) : 1;
+      
+      await supabase.from('article_versions').insert({
+        article_id: article.id,
+        version_number: nextVerNum,
+        title: article.title,
+        abstract: article.abstract,
+        abstract_en: article.abstract_en || '',
+        manuscript_file: article.manuscript_file
+      });
+
+      // Log revision submission to article_editorial_history
+      await supabase.from('article_editorial_history').insert({
+        article_id: article.id,
+        activity_type: 'revision_submitted',
+        description: `Penulis mengunggah naskah revisi (Revisi #${nextVerNum}). Status artikel diubah menjadi sedang ditinjau.`,
+        actor_name: user?.user_metadata?.full_name || 'Penulis'
+      });
 
       // Update article status and manuscript file
       const { error: updateError } = await supabase
@@ -498,6 +567,93 @@ export default function AuthorArticleDetail() {
           </div>
         </div>
 
+        {/* Plagiarism Similarity Assessment Card */}
+        {article && article.similarity_score !== null && (
+          <div className="bg-white p-6 rounded-xl border border-academic-200 shadow-sm mb-6">
+            <h3 className="font-serif font-bold text-lg text-academic-900 flex items-center gap-2 mb-4 pb-2 border-b border-academic-100">
+              <ShieldCheck className="w-5 h-5 text-brand-600" /> Hasil Pemeriksaan Plagiarisme (Turnitin)
+            </h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+              <div className="bg-academic-50 p-4 rounded-xl border border-academic-100 text-center">
+                <span className="block text-xs font-bold text-academic-500 uppercase tracking-wider mb-1">Similarity Index</span>
+                <span className={`text-2xl font-black ${article.similarity_score > 20 ? 'text-rose-600' : 'text-emerald-600'}`}>
+                  {article.similarity_score}%
+                </span>
+              </div>
+              <div className="bg-academic-50 p-4 rounded-xl border border-academic-100 text-center">
+                <span className="block text-xs font-bold text-academic-500 uppercase tracking-wider mb-1">Status Pemeriksaan</span>
+                <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold border mt-1 ${
+                  article.similarity_status === 'PASSED' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                  article.similarity_status === 'REVISION REQUIRED' ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                  'bg-rose-50 text-rose-700 border-rose-200'
+                }`}>
+                  {article.similarity_status === 'PASSED' ? 'Passed' :
+                   article.similarity_status === 'REVISION REQUIRED' ? 'Revision Required' : 'Attention'}
+                </span>
+              </div>
+              <div className="bg-academic-50 p-4 rounded-xl border border-academic-100 text-center">
+                <span className="block text-xs font-bold text-academic-500 uppercase tracking-wider mb-1">Kecocokan Terbesar</span>
+                <span className="text-2xl font-black text-academic-800">
+                  {article.largest_match !== null ? `${article.largest_match}%` : '-'}
+                </span>
+              </div>
+            </div>
+
+            {/* Top Matching Sources */}
+            {similaritySources && similaritySources.length > 0 && (
+              <div className="mb-6">
+                <h4 className="text-xs font-bold text-academic-700 uppercase tracking-wider mb-3">Sumber Kecocokan Terbesar</h4>
+                <div className="space-y-2 bg-academic-50/50 p-4 rounded-xl border border-academic-100">
+                  {similaritySources.map((source, idx) => (
+                    <div key={source.id || idx} className="flex justify-between items-center text-xs text-academic-800">
+                      <div className="flex items-center gap-1.5 min-w-0">
+                        <span className="font-bold text-academic-400">{idx + 1}.</span>
+                        {source.source_url ? (
+                          <a 
+                            href={source.source_url} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="text-brand-600 hover:text-brand-800 hover:underline truncate"
+                          >
+                            {source.source_name}
+                          </a>
+                        ) : (
+                          <span className="truncate">{source.source_name}</span>
+                        )}
+                      </div>
+                      <span className="font-mono font-bold shrink-0 pl-2">{source.source_percent}%</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Notes from Editor */}
+            {article.similarity_notes && (
+              <div className="mb-6">
+                <h4 className="text-xs font-bold text-academic-700 uppercase tracking-wider mb-2">Catatan Evaluasi Plagiarisme</h4>
+                <div className="bg-amber-50/60 p-4 rounded-xl border border-amber-100 text-academic-800 text-sm italic font-serif leading-relaxed">
+                  "{article.similarity_notes}"
+                </div>
+              </div>
+            )}
+
+            {/* View PDF Report Button */}
+            {article.similarity_report_url && (
+              <div className="flex justify-start border-t border-academic-100 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowReportModal(true)}
+                  className="inline-flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs px-4 py-2.5 rounded-lg transition-colors shadow-sm cursor-pointer"
+                >
+                  <FileText className="w-4 h-4" /> Lihat Laporan Similarity Lengkap
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* 1. Article Details Card */}
         <div className="bg-white p-6 rounded-xl border border-academic-200 shadow-sm mb-6 relative">
           <div className="flex justify-between items-start mb-3">
@@ -620,6 +776,39 @@ export default function AuthorArticleDetail() {
                 />
               </div>
               
+              {/* AI Disclosure Statement Edit */}
+              <div className="pt-2 border-t border-academic-100">
+                <label className="block text-xs font-bold text-academic-700 uppercase tracking-widest mb-1">Pernyataan Penggunaan AI (AI Disclosure)</label>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-1.5">
+                  <div className="md:col-span-1">
+                    <label className="block text-[10px] font-bold text-academic-500 uppercase tracking-wider mb-1">Tipe Penggunaan AI</label>
+                    <select
+                      value={editForm.ai_disclosure_type}
+                      onChange={e => setEditForm({...editForm, ai_disclosure_type: e.target.value})}
+                      className="w-full border border-academic-300 rounded-lg px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-brand-500 bg-white cursor-pointer"
+                    >
+                      <option value="none">Tidak Menggunakan AI (None)</option>
+                      <option value="assisted_writing">Bantuan Penulisan / Penyuntingan Teks</option>
+                      <option value="data_analysis">Analisis Data / Eksperimen</option>
+                      <option value="other">Lainnya</option>
+                    </select>
+                  </div>
+                  {editForm.ai_disclosure_type !== 'none' && (
+                    <div className="md:col-span-2">
+                      <label className="block text-[10px] font-bold text-academic-500 uppercase tracking-wider mb-1">Deskripsi Penggunaan AI</label>
+                      <textarea
+                        required={editForm.ai_disclosure_type !== 'none'}
+                        value={editForm.ai_disclosure_statement}
+                        onChange={e => setEditForm({...editForm, ai_disclosure_statement: e.target.value})}
+                        rows={3}
+                        className="w-full border border-academic-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-brand-500 bg-white"
+                        placeholder="Sebutkan alat AI yang digunakan dan bagaimana alat tersebut membantu..."
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+              
               <div className="flex gap-2 justify-end mt-4 pt-4 border-t border-academic-100">
                 <button 
                   onClick={() => {
@@ -712,6 +901,19 @@ export default function AuthorArticleDetail() {
                   <span className="block text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Daftar Pustaka</span>
                   <div className="bg-academic-50 p-4 rounded-lg border border-academic-100 text-sm text-academic-700 leading-relaxed whitespace-pre-wrap">
                     {article.bibliography}
+                  </div>
+                </div>
+              )}
+
+              {article.ai_disclosure_type && article.ai_disclosure_type !== 'none' && (
+                <div className="mt-4 pt-4 border-t border-academic-100">
+                  <span className="block text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Pernyataan Penggunaan AI (AI Disclosure)</span>
+                  <div className="bg-slate-50 p-4 rounded-lg border border-academic-100 text-sm text-academic-700 leading-relaxed">
+                    <p className="font-bold text-academic-800 text-xs mb-1">
+                      Tipe: {article.ai_disclosure_type === 'assisted_writing' ? 'Bantuan Penulisan / Penyuntingan Teks' : 
+                             article.ai_disclosure_type === 'data_analysis' ? 'Analisis Data / Eksperimen' : 'Lainnya'}
+                    </p>
+                    <p className="italic">"{article.ai_disclosure_statement}"</p>
                   </div>
                 </div>
               )}
@@ -960,6 +1162,31 @@ export default function AuthorArticleDetail() {
           </div>
         )}
 
+        {showReportModal && article?.similarity_report_url && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+            <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl h-[85vh] flex flex-col overflow-hidden">
+              <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="w-5 h-5 text-brand-600" />
+                  <h3 className="font-serif font-bold text-academic-900">Laporan Similarity Turnitin</h3>
+                </div>
+                <button 
+                  onClick={() => setShowReportModal(false)}
+                  className="p-1.5 text-academic-400 hover:text-academic-600 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <div className="flex-1 bg-slate-100 relative">
+                <iframe
+                  src={`${article.similarity_report_url}#toolbar=1`}
+                  className="w-full h-full border-none"
+                  title="Similarity Report PDF"
+                />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </DashboardLayout>
   );

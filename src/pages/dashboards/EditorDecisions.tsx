@@ -6,8 +6,9 @@ import { supabase } from '../../lib/supabase';
 import { 
   CheckCircle2, AlertCircle, RefreshCw, Send, Check, 
   Bold, Italic, Underline, Link2, Image, List, ListOrdered, Upload, Maximize2, Download,
-  Fingerprint, ArrowLeft, CheckSquare, Calendar
+  Fingerprint, ArrowLeft, CheckSquare, Calendar, Plus, Trash2, ShieldCheck, X
 } from 'lucide-react';
+
 
 const parseEditorComments = (comments: string) => {
   if (!comments) return { scores: null, notes: '' };
@@ -54,40 +55,223 @@ export default function EditorDecisions() {
   const [selectedArticle, setSelectedArticle] = useState<any | null>(null);
   const [reviewAssignments, setReviewAssignments] = useState<any[]>([]);
   const [similarityScore, setSimilarityScore] = useState<string>('');
-  const [savingSimilarity, setSavingSimilarity] = useState(false);
+  const [largestMatch, setLargestMatch] = useState<string>('');
+  const [similarityStatus, setSimilarityStatus] = useState<string>('PASSED');
+  const [similarityReportUrl, setSimilarityReportUrl] = useState<string>('');
+  const [peerReviewStatus, setPeerReviewStatus] = useState<string>('PENDING');
+  const [isOpenAccess, setIsOpenAccess] = useState<boolean>(true);
+  const [similaritySources, setSimilaritySources] = useState<any[]>([]);
+  const [similarityNotes, setSimilarityNotes] = useState<string>('');
+  const [uploadingReport, setUploadingReport] = useState(false);
+  const [savingAssessment, setSavingAssessment] = useState(false);
+  const [activeTab, setActiveTab] = useState<'files' | 'assessment'>('files');
+  const [editorialHistory, setEditorialHistory] = useState<any[]>([]);
+
+  const fetchAssessmentData = async (artId: string) => {
+    try {
+      const { data: sourcesData, error: err } = await supabase
+        .from('article_similarity_sources')
+        .select('*')
+        .eq('article_id', artId)
+        .order('source_percent', { ascending: false });
+
+      if (err) throw err;
+      setSimilaritySources(sourcesData || []);
+    } catch (e) {
+      console.error('Error fetching similarity sources:', e);
+      setSimilaritySources([]);
+    }
+  };
+
+  const fetchEditorialHistory = async (artId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('article_editorial_history')
+        .select('*')
+        .eq('article_id', artId)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setEditorialHistory(data || []);
+    } catch (e) {
+      console.error('Error fetching editorial history:', e);
+      setEditorialHistory([]);
+    }
+  };
 
   useEffect(() => {
     if (selectedArticle) {
       setSimilarityScore(selectedArticle.similarity_score !== null ? String(selectedArticle.similarity_score) : '');
+      setLargestMatch(selectedArticle.largest_match !== null ? String(selectedArticle.largest_match) : '');
+      setSimilarityStatus(selectedArticle.similarity_status || 'PASSED');
+      setSimilarityReportUrl(selectedArticle.similarity_report_url || '');
+      setPeerReviewStatus(selectedArticle.peer_review_status || 'PENDING');
+      setIsOpenAccess(selectedArticle.is_open_access !== false); // default to true
+      setSimilarityNotes(selectedArticle.similarity_notes || '');
+      fetchAssessmentData(selectedArticle.id);
+      fetchEditorialHistory(selectedArticle.id);
     } else {
       setSimilarityScore('');
+      setLargestMatch('');
+      setSimilarityStatus('PASSED');
+      setSimilarityReportUrl('');
+      setPeerReviewStatus('PENDING');
+      setIsOpenAccess(true);
+      setSimilarityNotes('');
+      setSimilaritySources([]);
+      setEditorialHistory([]);
     }
   }, [selectedArticle]);
 
-  const handleSaveSimilarity = async () => {
-    if (!selectedArticle) return;
-    setSavingSimilarity(true);
+  const handleScoreChange = (val: string) => {
+    setSimilarityScore(val);
+    if (val !== '') {
+      const score = parseInt(val);
+      if (!isNaN(score)) {
+        if (score <= 20) {
+          setSimilarityStatus('PASSED');
+        } else if (score <= 30) {
+          setSimilarityStatus('REVISION REQUIRED');
+        } else {
+          setSimilarityStatus('ATTENTION');
+        }
+      }
+    }
+  };
+
+  const handleReportUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !selectedArticle) return;
+
+    setUploadingReport(true);
+    setError('');
+    setSuccess('');
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `similarity_report_${selectedArticle.id}_${Date.now()}.${fileExt}`;
+      const { error: uploadErr } = await supabase.storage
+        .from('manuscripts')
+        .upload(fileName, file);
+
+      if (uploadErr) throw uploadErr;
+
+      const { data: urlData } = supabase.storage
+        .from('manuscripts')
+        .getPublicUrl(fileName);
+
+      const publicUrl = urlData?.publicUrl || '';
+      setSimilarityReportUrl(publicUrl);
+      setSuccess('Laporan PDF similarity berhasil diunggah.');
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || 'Gagal mengunggah laporan similarity.');
+    } finally {
+      setUploadingReport(false);
+    }
+  };
+
+  const handleSaveAssessment = async () => {
+    if (!selectedArticle || !user) return;
+    setSavingAssessment(true);
     setError('');
     setSuccess('');
     try {
       const score = similarityScore === '' ? null : parseInt(similarityScore);
+      const match = largestMatch === '' ? null : parseInt(largestMatch);
+
+      // 1. Update articles table
       const { error: updateErr } = await supabase
         .from('articles')
-        .update({ similarity_score: score })
+        .update({
+          similarity_score: score,
+          largest_match: match,
+          similarity_status: similarityStatus,
+          similarity_report_url: similarityReportUrl,
+          peer_review_status: peerReviewStatus,
+          is_open_access: isOpenAccess,
+          similarity_notes: similarityNotes,
+          similarity_checked_at: new Date().toISOString(),
+          similarity_checked_by: user.id
+        })
         .eq('id', selectedArticle.id);
 
       if (updateErr) throw updateErr;
 
-      setSuccess('Similarity Index berhasil diperbarui.');
-      setSelectedArticle(prev => prev ? { ...prev, similarity_score: score } : null);
+      // 2. Synchronize matching sources
+      const { error: deleteErr } = await supabase
+        .from('article_similarity_sources')
+        .delete()
+        .eq('article_id', selectedArticle.id);
+
+      if (deleteErr) throw deleteErr;
+
+      if (similaritySources.length > 0) {
+        const insertData = similaritySources.map(s => ({
+          article_id: selectedArticle.id,
+          source_name: s.source_name,
+          source_percent: parseInt(s.source_percent) || 0,
+          source_url: s.source_url || null
+        }));
+
+        const { error: insertErr } = await supabase
+          .from('article_similarity_sources')
+          .insert(insertData);
+
+        if (insertErr) throw insertErr;
+      }
+
+      setSuccess('Editorial Assessment berhasil disimpan.');
+
+      // Write log to article_editorial_history
+      await supabase.from('article_editorial_history').insert({
+        article_id: selectedArticle.id,
+        activity_type: 'assessment',
+        description: `Editor memperbarui penilaian editorial: Turnitin score ${score !== null ? score : '-'}%, largest match ${match !== null ? match : '-'}%, status similarity: ${similarityStatus}, status peer review: ${peerReviewStatus}.`,
+        actor_name: user.user_metadata?.full_name || 'Editor'
+      });
+
+      fetchEditorialHistory(selectedArticle.id);
+      
+      // Update selectedArticle locally
+      setSelectedArticle(prev => prev ? {
+        ...prev,
+        similarity_score: score,
+        largest_match: match,
+        similarity_status: similarityStatus,
+        similarity_report_url: similarityReportUrl,
+        peer_review_status: peerReviewStatus,
+        is_open_access: isOpenAccess,
+        similarity_notes: similarityNotes
+      } : null);
+
       fetchArticles();
     } catch (err: any) {
       console.error(err);
-      setError(err.message || 'Gagal memperbarui Similarity Index.');
+      setError(err.message || 'Gagal menyimpan Editorial Assessment.');
     } finally {
-      setSavingSimilarity(false);
+      setSavingAssessment(false);
     }
   };
+
+  const handleAddSource = () => {
+    setSimilaritySources(prev => [
+      ...prev,
+      { source_name: '', source_percent: '', source_url: '' }
+    ]);
+  };
+
+  const handleSourceChange = (index: number, field: string, value: any) => {
+    setSimilaritySources(prev => {
+      const copy = [...prev];
+      copy[index] = { ...copy[index], [field]: value };
+      return copy;
+    });
+  };
+
+  const handleRemoveSource = (index: number) => {
+    setSimilaritySources(prev => prev.filter((_, idx) => idx !== index));
+  };
+
   
   const [decisionForm, setDecisionForm] = useState({
     decision: '',
@@ -120,6 +304,12 @@ export default function EditorDecisions() {
           status,
           submission_date,
           similarity_score,
+          largest_match,
+          similarity_status,
+          similarity_report_url,
+          similarity_notes,
+          peer_review_status,
+          is_open_access,
           journals (name, slug),
           users!submitter_id(full_name, phone)
         `)
@@ -275,6 +465,21 @@ export default function EditorDecisions() {
       setSuccess(`Keputusan berhasil disimpan sebagai: ${targetStatus.toUpperCase()}`);
       setDecisionForm({ decision: '', comments: '' });
       setEditorDailyCount(prev => prev + 1);
+
+      // Write log to article_editorial_history
+      let decisionLabel = 'Menunggu';
+      if (decisionForm.decision === 'accept') decisionLabel = 'Disetujui (Accepted)';
+      else if (decisionForm.decision === 'revision') decisionLabel = 'Perlu Revisi (Revision Required)';
+      else if (decisionForm.decision === 'reject') decisionLabel = 'Ditolak (Rejected)';
+
+      await supabase.from('article_editorial_history').insert({
+        article_id: selectedArticle.id,
+        activity_type: 'decision',
+        description: `Editor mengirimkan keputusan editorial: ${decisionLabel}.`,
+        actor_name: user?.user_metadata?.full_name || 'Editor'
+      });
+
+      fetchEditorialHistory(selectedArticle.id);
       fetchArticles();
     } catch (err: any) {
       console.error(err);
@@ -386,122 +591,355 @@ export default function EditorDecisions() {
                   </div>
 
                   {selectedArticle && (
-                    <div className="space-y-4">
-                      <div className="bg-white p-5 rounded-xl border border-academic-200 shadow-sm space-y-4">
-                        <div className="flex justify-between items-center border-b border-academic-100 pb-2">
-                          <div>
-                            <h3 className="font-serif font-bold text-sm text-academic-900">Naskah Tanpa Nama</h3>
-                            <p className="text-[10px] text-academic-500">File yang dikirim ke Reviewer</p>
-                          </div>
-                          {selectedArticle.anonymous_manuscript_file && (
-                            <a 
-                              href={selectedArticle.anonymous_manuscript_file}
-                              target="_blank"
-                              rel="noopener noreferrer" 
-                              className="inline-flex items-center gap-1 text-[10px] font-bold text-brand-700 bg-brand-50 hover:bg-brand-100 border border-brand-200 px-2 py-1 rounded transition-colors"
-                            >
-                              <Download className="w-3.5 h-3.5" /> Unduh Pratinjau
-                            </a>
-                          )}
-                        </div>
-                        
-                        {selectedArticle.anonymous_manuscript_file ? (() => {
-                          const url = selectedArticle.anonymous_manuscript_file;
-                          const isPdf = url.toLowerCase().endsWith('.pdf') || url.includes('/pdf/') || url.includes('dummy.pdf');
-                          const isWord = url.toLowerCase().endsWith('.docx') || url.toLowerCase().endsWith('.doc');
-                          
-                          let embedUrl = '';
-                          if (isPdf) {
-                            embedUrl = url;
-                          } else if (isWord) {
-                            embedUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(url)}`;
-                          }
+                    <>
+                      {/* Tab Navigation */}
+                      <div className="flex border border-academic-200 rounded-xl p-1 bg-white shadow-sm mb-5">
+                        <button
+                          type="button"
+                          onClick={() => setActiveTab('files')}
+                          className={`flex-1 text-center py-2 text-xs font-bold rounded-lg transition-colors uppercase tracking-wider cursor-pointer ${
+                            activeTab === 'files'
+                              ? 'bg-brand-50 text-brand-700 font-black'
+                              : 'text-academic-500 hover:text-brand-600'
+                          }`}
+                        >
+                          Naskah & Identitas
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setActiveTab('assessment')}
+                          className={`flex-1 text-center py-2 text-xs font-bold rounded-lg transition-colors uppercase tracking-wider cursor-pointer ${
+                            activeTab === 'assessment'
+                              ? 'bg-brand-50 text-brand-700 font-black'
+                              : 'text-academic-500 hover:text-brand-600'
+                          }`}
+                        >
+                          Editorial Assessment
+                        </button>
+                      </div>
 
-                          if (!embedUrl) {
-                            return (
-                              <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg text-center text-xs">
-                                <p className="text-academic-500">Pratinjau tidak didukung untuk tipe file ini.</p>
+                      {activeTab === 'files' ? (
+                        <div className="space-y-4 animate-fadeIn">
+                          <div className="bg-white p-5 rounded-xl border border-academic-200 shadow-sm space-y-4">
+                            <div className="flex justify-between items-center border-b border-academic-100 pb-2">
+                              <div>
+                                <h3 className="font-serif font-bold text-sm text-academic-900">Naskah Tanpa Nama</h3>
+                                <p className="text-[10px] text-academic-500">File yang dikirim ke Reviewer</p>
                               </div>
-                            );
-                          }
+                              {selectedArticle.anonymous_manuscript_file && (
+                                <a 
+                                  href={selectedArticle.anonymous_manuscript_file}
+                                  target="_blank"
+                                  rel="noopener noreferrer" 
+                                  className="inline-flex items-center gap-1 text-[10px] font-bold text-brand-700 bg-brand-50 hover:bg-brand-100 border border-brand-200 px-2 py-1 rounded transition-colors"
+                                >
+                                  <Download className="w-3.5 h-3.5" /> Unduh Pratinjau
+                                </a>
+                              )}
+                            </div>
+                            
+                            {selectedArticle.anonymous_manuscript_file ? (() => {
+                              const url = selectedArticle.anonymous_manuscript_file;
+                              const isPdf = url.toLowerCase().endsWith('.pdf') || url.includes('/pdf/') || url.includes('dummy.pdf');
+                              const isWord = url.toLowerCase().endsWith('.docx') || url.toLowerCase().endsWith('.doc');
+                              
+                              let embedUrl = '';
+                              if (isPdf) {
+                                embedUrl = url;
+                              } else if (isWord) {
+                                embedUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(url)}`;
+                              }
 
-                          return (
-                            <div className="w-full border border-slate-200 rounded-lg overflow-hidden bg-slate-100 shadow-inner">
-                              <iframe
-                                src={embedUrl}
-                                className="w-full border-0 block"
-                                title="Pratinjau Manuskrip Anonim"
-                                style={{ height: '400px', minHeight: '400px', overflow: 'hidden' }}
+                              if (!embedUrl) {
+                                return (
+                                  <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg text-center text-xs">
+                                    <p className="text-academic-500">Pratinjau tidak didukung untuk tipe file ini.</p>
+                                  </div>
+                                );
+                              }
+
+                              return (
+                                <div className="w-full border border-slate-200 rounded-lg overflow-hidden bg-slate-100 shadow-inner">
+                                  <iframe
+                                    src={embedUrl}
+                                    className="w-full border-0 block"
+                                    title="Pratinjau Manuskrip Anonim"
+                                    style={{ height: '400px', minHeight: '400px', overflow: 'hidden' }}
+                                  />
+                                </div>
+                              );
+                            })() : selectedArticle.manuscript_file ? (
+                              <div className="p-4 bg-rose-50 border border-rose-200 rounded-lg text-center text-xs space-y-2">
+                                <p className="font-bold text-rose-700">⚠️ Perhatian: File Anonim Belum Ada</p>
+                                <p className="text-rose-600">Penulis menggunakan format lama. Anda mungkin melihat nama penulis di dalam file ini.</p>
+                                <a href={selectedArticle.manuscript_file} target="_blank" rel="noopener noreferrer" className="inline-flex text-brand-700 font-bold border border-brand-200 bg-white px-3 py-1 rounded">
+                                  Lihat Naskah Lama
+                                </a>
+                              </div>
+                            ) : (
+                              <div className="p-4 bg-slate-50 border border-dashed border-slate-200 rounded-lg text-center text-xs space-y-1">
+                                <p className="font-bold text-academic-700">Tidak ada naskah terunggah</p>
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="bg-white p-5 rounded-xl border border-academic-200 shadow-sm space-y-4">
+                            <div className="flex justify-between items-center border-b border-academic-100 pb-2">
+                              <div>
+                                <h3 className="font-serif font-bold text-sm text-academic-900">Halaman Judul (Title Page)</h3>
+                                <p className="text-[10px] text-academic-500">Info lengkap identitas penulis</p>
+                              </div>
+                              {selectedArticle.title_page_file && (
+                                <a 
+                                  href={selectedArticle.title_page_file}
+                                  target="_blank"
+                                  rel="noopener noreferrer" 
+                                  className="inline-flex items-center gap-1 text-[10px] font-bold text-slate-700 bg-slate-50 hover:bg-slate-100 border border-slate-200 px-2 py-1 rounded transition-colors"
+                                >
+                                  <Download className="w-3.5 h-3.5" /> Unduh Title Page
+                                </a>
+                              )}
+                            </div>
+                            {!selectedArticle.title_page_file && (
+                              <div className="p-4 bg-slate-50 border border-dashed border-slate-200 rounded-lg text-center text-xs space-y-1">
+                                <p className="font-bold text-academic-700">Tidak ada title page terunggah</p>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="bg-white p-6 rounded-xl border border-academic-200 shadow-sm space-y-6 animate-fadeIn">
+                          <div className="flex items-center gap-2 mb-4 pb-2 border-b border-academic-100">
+                            <ShieldCheck className="w-5 h-5 text-brand-600" />
+                            <h3 className="text-base font-serif font-black text-academic-900">Editorial Assessment</h3>
+                          </div>
+
+                          <div className="space-y-4">
+                            {/* Score & Largest Match */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div>
+                                <label className="block text-xs font-bold text-academic-700 uppercase tracking-wider mb-1.5">Similarity Score (%)</label>
+                                <input
+                                  type="number"
+                                  min="0"
+                                  max="100"
+                                  placeholder="Contoh: 15"
+                                  value={similarityScore}
+                                  onChange={e => handleScoreChange(e.target.value)}
+                                  className="w-full border border-academic-300 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-xs font-bold text-academic-700 uppercase tracking-wider mb-1.5">Largest Match (%)</label>
+                                <input
+                                  type="number"
+                                  min="0"
+                                  max="100"
+                                  placeholder="Contoh: 4"
+                                  value={largestMatch}
+                                  onChange={e => setLargestMatch(e.target.value)}
+                                  className="w-full border border-academic-300 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white"
+                                />
+                              </div>
+                            </div>
+
+                            {/* Similarity Status & Peer Review Status */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div>
+                                <label className="block text-xs font-bold text-academic-700 uppercase tracking-wider mb-1.5">Similarity Status</label>
+                                <select
+                                  value={similarityStatus}
+                                  onChange={e => setSimilarityStatus(e.target.value)}
+                                  className="w-full border border-academic-300 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white cursor-pointer"
+                                >
+                                  <option value="PASSED">PASSED</option>
+                                  <option value="REVISION REQUIRED">REVISION REQUIRED</option>
+                                  <option value="ATTENTION">ATTENTION</option>
+                                </select>
+                              </div>
+                              <div>
+                                <label className="block text-xs font-bold text-academic-700 uppercase tracking-wider mb-1.5">Peer Review Status</label>
+                                <select
+                                  value={peerReviewStatus}
+                                  onChange={e => setPeerReviewStatus(e.target.value)}
+                                  className="w-full border border-academic-300 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white cursor-pointer"
+                                >
+                                  <option value="PENDING">PENDING (Menunggu)</option>
+                                  <option value="UNDER REVIEW">UNDER REVIEW (Sedang Ditinjau)</option>
+                                  <option value="REVISION REQUIRED">REVISION REQUIRED (Butuh Revisi)</option>
+                                  <option value="APPROVED">APPROVED (Disetujui)</option>
+                                  <option value="REJECTED">REJECTED (Ditolak)</option>
+                                </select>
+                              </div>
+                            </div>
+
+                            {/* Open Access Option */}
+                            <div className="flex items-center gap-2 pt-2">
+                              <input
+                                type="checkbox"
+                                id="is-open-access"
+                                checked={isOpenAccess}
+                                onChange={e => setIsOpenAccess(e.target.checked)}
+                                className="w-4 h-4 text-brand-600 border-academic-300 rounded focus:ring-brand-500 cursor-pointer"
+                              />
+                              <label htmlFor="is-open-access" className="text-xs font-bold text-academic-700 uppercase tracking-wider cursor-pointer">Is Open Access</label>
+                            </div>
+
+                            {/* Similarity Report PDF Upload */}
+                            <div>
+                              <label className="block text-xs font-bold text-academic-700 uppercase tracking-wider mb-1.5">Laporan PDF Similarity</label>
+                              <div className="flex flex-col gap-2 bg-academic-50 p-4 rounded-xl border border-academic-200">
+                                {similarityReportUrl ? (
+                                  <div className="flex items-center justify-between gap-3">
+                                    <a 
+                                      href={similarityReportUrl} 
+                                      target="_blank" 
+                                      rel="noopener noreferrer"
+                                      className="text-xs font-semibold text-brand-600 hover:text-brand-800 underline truncate max-w-[300px] flex items-center gap-1"
+                                    >
+                                      <FileText className="w-4 h-4 shrink-0" /> Lihat Laporan Terunggah
+                                    </a>
+                                    <button
+                                      type="button"
+                                      onClick={() => setSimilarityReportUrl('')}
+                                      className="text-xs font-bold text-rose-600 hover:text-rose-800 flex items-center gap-1 cursor-pointer"
+                                    >
+                                      <X className="w-3.5 h-3.5" /> Hapus
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-xs text-academic-400 italic">Belum ada file terunggah</span>
+                                    <label className="bg-white hover:bg-academic-100 text-academic-800 border border-academic-300 font-bold text-xs px-3 py-2 rounded-lg cursor-pointer transition-colors flex items-center gap-1">
+                                      <Upload className="w-3.5 h-3.5" /> {uploadingReport ? 'Mengunggah...' : 'Upload Laporan PDF'}
+                                      <input
+                                        type="file"
+                                        accept=".pdf"
+                                        onChange={handleReportUpload}
+                                        disabled={uploadingReport}
+                                        className="hidden"
+                                      />
+                                    </label>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Top Matching Sources */}
+                            <div className="pt-4 border-t border-academic-100">
+                              <div className="flex justify-between items-center mb-3">
+                                <label className="block text-xs font-bold text-academic-700 uppercase tracking-wider">Top Matching Sources</label>
+                                <button
+                                  type="button"
+                                  onClick={handleAddSource}
+                                  className="inline-flex items-center gap-1 text-xs font-bold text-brand-700 hover:text-brand-800 cursor-pointer"
+                                >
+                                  <Plus className="w-3.5 h-3.5" /> Tambah Sumber
+                                </button>
+                              </div>
+
+                              {similaritySources.length === 0 ? (
+                                <p className="text-xs text-academic-400 italic bg-academic-50 p-4 rounded-xl text-center border border-dashed border-academic-200">
+                                  Belum ada sumber kecocokan ditambahkan.
+                                </p>
+                              ) : (
+                                <div className="space-y-3">
+                                  {similaritySources.map((source, idx) => (
+                                    <div key={idx} className="flex gap-2 items-center bg-academic-50 p-3 rounded-xl border border-academic-200">
+                                      <span className="text-xs font-bold text-academic-500 w-4">{idx + 1}.</span>
+                                      <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-2">
+                                        <input
+                                          type="text"
+                                          placeholder="Nama Sumber (e.g. Journal Article A)"
+                                          value={source.source_name}
+                                          onChange={e => handleSourceChange(idx, 'source_name', e.target.value)}
+                                          className="col-span-2 border border-academic-300 rounded px-2.5 py-1.5 text-xs bg-white focus:outline-none focus:ring-1 focus:ring-brand-500"
+                                          required
+                                        />
+                                        <div className="flex gap-2">
+                                          <input
+                                            type="number"
+                                            min="0"
+                                            max="100"
+                                            placeholder="Match %"
+                                            value={source.source_percent}
+                                            onChange={e => handleSourceChange(idx, 'source_percent', e.target.value)}
+                                            className="w-20 border border-academic-300 rounded px-2.5 py-1.5 text-xs bg-white text-center focus:outline-none focus:ring-1 focus:ring-brand-500"
+                                            required
+                                          />
+                                          <input
+                                            type="text"
+                                            placeholder="URL (Opsional)"
+                                            value={source.source_url || ''}
+                                            onChange={e => handleSourceChange(idx, 'source_url', e.target.value)}
+                                            className="flex-1 border border-academic-300 rounded px-2.5 py-1.5 text-xs bg-white focus:outline-none focus:ring-1 focus:ring-brand-500"
+                                          />
+                                        </div>
+                                      </div>
+                                      <button
+                                        type="button"
+                                        onClick={() => handleRemoveSource(idx)}
+                                        className="p-1.5 text-rose-500 hover:bg-rose-50 rounded transition-colors cursor-pointer"
+                                      >
+                                        <Trash2 className="w-4 h-4" />
+                                      </button>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Additional Notes */}
+                            <div className="pt-4 border-t border-academic-100">
+                              <label className="block text-xs font-bold text-academic-700 uppercase tracking-wider mb-1.5">Catatan Evaluasi Plagiarisme</label>
+                              <textarea
+                                rows={4}
+                                placeholder="Masukkan catatan penelaahan kesamaan atau saran untuk penulis..."
+                                value={similarityNotes}
+                                onChange={e => setSimilarityNotes(e.target.value)}
+                                className="w-full border border-academic-300 rounded-xl p-3 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white"
                               />
                             </div>
-                          );
-                        })() : selectedArticle.manuscript_file ? (
-                          <div className="p-4 bg-rose-50 border border-rose-200 rounded-lg text-center text-xs space-y-2">
-                            <p className="font-bold text-rose-700">⚠️ Perhatian: File Anonim Belum Ada</p>
-                            <p className="text-rose-600">Penulis menggunakan format lama. Anda mungkin melihat nama penulis di dalam file ini.</p>
-                            <a href={selectedArticle.manuscript_file} target="_blank" rel="noopener noreferrer" className="inline-flex text-brand-700 font-bold border border-brand-200 bg-white px-3 py-1 rounded">
-                              Lihat Naskah Lama
-                            </a>
-                          </div>
-                        ) : (
-                          <div className="p-4 bg-slate-50 border border-dashed border-slate-200 rounded-lg text-center text-xs space-y-1">
-                            <p className="font-bold text-academic-700">Tidak ada naskah terunggah</p>
-                          </div>
-                        )}
-                      </div>
 
-                      <div className="bg-white p-5 rounded-xl border border-academic-200 shadow-sm space-y-4">
-                        <div className="flex justify-between items-center border-b border-academic-100 pb-2">
-                          <div>
-                            <h3 className="font-serif font-bold text-sm text-academic-900">Halaman Judul (Title Page)</h3>
-                            <p className="text-[10px] text-academic-500">Info lengkap identitas penulis</p>
-                          </div>
-                          {selectedArticle.title_page_file && (
-                            <a 
-                              href={selectedArticle.title_page_file}
-                              target="_blank"
-                              rel="noopener noreferrer" 
-                              className="inline-flex items-center gap-1 text-[10px] font-bold text-slate-700 bg-slate-50 hover:bg-slate-100 border border-slate-200 px-2 py-1 rounded transition-colors"
-                            >
-                              <Download className="w-3.5 h-3.5" /> Unduh Title Page
-                            </a>
-                          )}
-                        </div>
-                        {!selectedArticle.title_page_file && (
-                          <div className="p-4 bg-slate-50 border border-dashed border-slate-200 rounded-lg text-center text-xs space-y-1">
-                            <p className="font-bold text-academic-700">Tidak ada title page terunggah</p>
-                          </div>
-                        )}
-                      </div>
+                            {/* Save Button */}
+                            <div className="pt-4 border-t border-academic-100">
+                              <button
+                                type="button"
+                                onClick={handleSaveAssessment}
+                                disabled={savingAssessment || uploadingReport}
+                                className="w-full bg-brand-700 hover:bg-brand-800 text-white font-bold py-2.5 rounded-xl transition-colors shadow-sm disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+                              >
+                                {savingAssessment ? 'Menyimpan Assessment...' : 'Simpan Editorial Assessment'}
+                              </button>
+                            </div>
 
-                      <div className="bg-white p-5 rounded-xl border border-academic-200 shadow-sm space-y-4">
-                        <div className="flex justify-between items-center border-b border-academic-100 pb-2">
-                          <div>
-                            <h3 className="font-serif font-bold text-sm text-academic-900">Similarity Check</h3>
-                            <p className="text-[10px] text-academic-500">Hasil cek Turnitin (%)</p>
+                            {/* Editorial History Log (Admin/Editor Only) */}
+                            <div className="pt-6 border-t border-academic-100 mt-4">
+                              <label className="block text-xs font-bold text-academic-700 uppercase tracking-wider mb-2">Riwayat Proses Editorial (Log Audit)</label>
+                              {editorialHistory.length === 0 ? (
+                                <p className="text-xs text-academic-400 italic bg-academic-50 p-3 rounded-lg border border-dashed border-academic-200">
+                                  Belum ada catatan log riwayat editorial.
+                                </p>
+                              ) : (
+                                <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+                                  {editorialHistory.map((log) => (
+                                    <div key={log.id} className="text-xs bg-academic-50 border border-academic-200 rounded-lg p-2.5 flex justify-between items-start gap-3">
+                                      <div className="space-y-1">
+                                        <p className="font-semibold text-academic-800">{log.description}</p>
+                                        <p className="text-[10px] text-academic-400">Oleh: {log.actor_name || '-'}</p>
+                                      </div>
+                                      <span className="text-[9px] font-mono text-academic-400 shrink-0 font-bold">
+                                        {new Date(log.created_at).toLocaleDateString('id-ID')} {new Date(log.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
+                                      </span>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </div>
-                        <div className="flex items-center gap-3">
-                          <input
-                            type="number"
-                            min="0"
-                            max="100"
-                            placeholder="Belum diperiksa"
-                            value={similarityScore}
-                            onChange={e => setSimilarityScore(e.target.value)}
-                            className="w-24 border border-academic-300 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white"
-                          />
-                          <button
-                            type="button"
-                            onClick={handleSaveSimilarity}
-                            disabled={savingSimilarity}
-                            className="bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs px-3 py-1.5 rounded transition-colors disabled:opacity-50"
-                          >
-                            {savingSimilarity ? 'Menyimpan...' : 'Simpan'}
-                          </button>
-                        </div>
-                      </div>
-                    </div>
+                      )}
+                    </>
                   )}
 
                 </div>

@@ -64,6 +64,8 @@ export default function AuthorSubmit() {
     bibliography: '',
     funding_source: '',
     conflict_of_interest: '',
+    ai_disclosure_type: 'none',
+    ai_disclosure_statement: '',
   });
 
   const fetchScopes = async (journalId: string) => {
@@ -291,12 +293,22 @@ export default function AuthorSubmit() {
           status: 'submitted',
           title_page_file: titlePageUrl,
           anonymous_manuscript_file: anonymousUrl,
-          manuscript_file: titlePageUrl // fallback/legacy
+          manuscript_file: titlePageUrl, // fallback/legacy
+          ai_disclosure_type: formData.ai_disclosure_type,
+          ai_disclosure_statement: formData.ai_disclosure_type !== 'none' ? formData.ai_disclosure_statement : null
         }])
         .select()
         .single();
         
       if (articleError) throw articleError;
+
+      // Log submission to editorial history
+      await supabase.from('article_editorial_history').insert({
+        article_id: currentArticle.id,
+        activity_type: 'submitted',
+        description: 'Naskah berhasil diajukan oleh penulis.',
+        actor_name: user.user_metadata?.full_name || 'Penulis'
+      });
 
       // 4. Insert all authors
       const authorsToInsert = authors.map((author, index) => ({
@@ -714,7 +726,49 @@ https://rjrakp.com`;
                 </div>
               </div>
 
-              {/* SECTION 4: KETENTUAN JURNAL & ETIKA */}
+              {/* SECTION 4: PERNYATAAN PENGGUNAAN AI (AI DISCLOSURE) */}
+              <div className="p-6 md:p-8 space-y-6 border-t border-academic-100 bg-white">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center font-bold font-mono">4</div>
+                  <h2 className="text-xl font-bold text-academic-900">Pernyataan Penggunaan AI (AI Disclosure)</h2>
+                </div>
+                <p className="text-xs text-academic-500 mb-2 leading-relaxed">
+                  Deklarasikan apakah Anda menggunakan alat kecerdasan buatan (generative AI) dalam riset atau penulisan naskah ini.
+                </p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="md:col-span-1">
+                    <label className="block text-xs font-bold text-academic-700 mb-1.5">Tipe Penggunaan AI <span className="text-red-500">*</span></label>
+                    <select
+                      name="ai_disclosure_type"
+                      value={formData.ai_disclosure_type}
+                      onChange={handleChange}
+                      className="w-full border border-academic-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 bg-academic-50 cursor-pointer"
+                    >
+                      <option value="none">Tidak Menggunakan AI (None)</option>
+                      <option value="assisted_writing">Bantuan Penulisan / Penyuntingan Teks</option>
+                      <option value="data_analysis">Analisis Data / Eksperimen</option>
+                      <option value="other">Lainnya</option>
+                    </select>
+                  </div>
+                  {formData.ai_disclosure_type !== 'none' && (
+                    <div className="md:col-span-2">
+                      <label className="block text-xs font-bold text-academic-700 mb-1.5">Deskripsi Penggunaan AI <span className="text-red-500">*</span></label>
+                      <textarea
+                        name="ai_disclosure_statement"
+                        required={formData.ai_disclosure_type !== 'none'}
+                        value={formData.ai_disclosure_statement}
+                        onChange={handleChange}
+                        rows={3}
+                        className="w-full border border-academic-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500"
+                        placeholder="Sebutkan alat AI yang digunakan (misal: ChatGPT, Claude) dan bagaimana alat tersebut membantu riset/penulisan Anda secara spesifik..."
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* SECTION 5: KETENTUAN JURNAL & ETIKA */}
               <div className="p-6 md:p-8 space-y-4 border-t border-academic-100 bg-amber-50/30">
                 <div className="flex items-start gap-3">
                   <div className="mt-0.5">
