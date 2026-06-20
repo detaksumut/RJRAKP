@@ -569,6 +569,22 @@ export default function ArticleDetail() {
                   </div>
                 )}
               </div>
+
+              {/* PDF Viewer Integration (Zenodo Style) */}
+              {pub?.pdf_url && (
+                <div className="mt-12 border-t border-academic-100 pt-8">
+                  <h3 className="text-lg font-serif font-black text-academic-900 mb-4 flex items-center gap-2">
+                    <FileText className="w-5 h-5 text-brand-600" /> Baca PDF Artikel Secara Langsung
+                  </h3>
+                  <div className="w-full h-[650px] md:h-[750px] rounded-2xl overflow-hidden border border-academic-200 shadow-md bg-slate-100 relative">
+                    <iframe
+                      src={`${pub.pdf_url}#toolbar=1`}
+                      className="w-full h-full border-none"
+                      title={`PDF Preview for ${article.title}`}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
             
             {/* Footer Meta & Creative Commons */}
