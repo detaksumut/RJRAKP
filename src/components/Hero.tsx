@@ -45,7 +45,7 @@ export default function Hero() {
           </div>
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-5 md:gap-6 opacity-80 hover:opacity-100 transition-opacity duration-500">
             
-            <a href="https://www.scopus.com/dashboard.uri?origin=&zone=TopNavBar" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.scopus.com/feedback/results/authorNamesList.uri?origin=searchauthorlookup&src=al&edit=&poppUp=&st1=Amal&st2=Bakhrul&authSubject=LFSC&_authSubject=on&authSubject=HLSC&_authSubject=on&authSubject=PHSC&_authSubject=on&authSubject=SOSC&_authSubject=on&s=AUTHLASTNAME%28Amal%29+AND+AUTHFIRST%28Bakhrul%29&sdt=&sot=&searchId=&authorIdSearch=&activeFlag=true&showDocument=true&sl=41&exactSearch=off&sid=&carsError=&timeDelay=&redirectURL=&requestFlowType=" target="_blank" rel="noopener noreferrer">
               <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Scopus_logo.svg" alt="Scopus" className="h-10 md:h-14 transition-all duration-300 transform hover:scale-110 cursor-pointer" />
             </a>
             
