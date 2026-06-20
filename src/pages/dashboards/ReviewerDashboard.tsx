@@ -21,8 +21,44 @@ export default function ReviewerDashboard() {
     comments_for_editor: ''
   });
   const [submitting, setSubmitting] = useState(false);
-  const [activeTab, setActiveTab] = useState<'ringkasan' | 'aktivitas'>('ringkasan');
+  const [activeTab, setActiveTab] = useState<'ringkasan' | 'aktivitas' | 'honorarium'>('ringkasan');
   const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
+  const [honorariums, setHonorariums] = useState<any[]>([]);
+  const [loadingHonorariums, setLoadingHonorariums] = useState(false);
+
+  useEffect(() => {
+    if (activeTab === 'honorarium') {
+      fetchHonorariums();
+    }
+  }, [activeTab]);
+
+  const fetchHonorariums = async () => {
+    if (!user?.id) return;
+    setLoadingHonorariums(true);
+    try {
+      const { data, error } = await supabase
+        .from('honorarium_payments')
+        .select(`
+          id,
+          amount,
+          description,
+          status,
+          payment_date,
+          articles (
+            title
+          )
+        `)
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setHonorariums(data || []);
+    } catch (err) {
+      console.error('Error fetching honorariums:', err);
+    } finally {
+      setLoadingHonorariums(false);
+    }
+  };
 
   const handleAcceptInvitation = async (assignmentId: string) => {
     setUpdatingStatus(assignmentId);
@@ -716,125 +752,206 @@ export default function ReviewerDashboard() {
               >
                 Aktivitas (Arsip Riwayat)
               </button>
+              <button
+                onClick={() => setActiveTab('honorarium')}
+                className={`flex-1 py-2 text-center text-xs font-bold uppercase tracking-wider rounded-lg transition-all cursor-pointer ${
+                  activeTab === 'honorarium'
+                    ? 'bg-brand-50 text-brand-800 shadow-sm'
+                    : 'text-academic-500 hover:text-academic-800'
+                }`}
+              >
+                Honorarium Saya
+              </button>
             </div>
 
-            <div className="bg-white rounded-xl border border-academic-200 shadow-sm overflow-hidden">
-              <div className="divide-y divide-academic-100">
-                {loading ? (
-                  <div className="p-6 text-center text-academic-500 text-xs font-medium">Memuat data penugasan...</div>
-                ) : (() => {
-                  const filtered = assignments.filter((a) => {
-                    if (activeTab === 'ringkasan') {
-                      return (a.status === 'assigned' || a.status === 'accepted') && a.status !== 'completed' && a.status !== 'declined';
-                    } else {
-                      return a.status === 'completed' || a.status === 'declined';
+            {activeTab === 'honorarium' ? (
+              <div className="space-y-6">
+                {/* Stats row */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="bg-slate-50 border border-academic-200 p-5 rounded-xl">
+                    <div className="text-xs font-bold text-academic-500 uppercase tracking-wider mb-1">Total Review Selesai</div>
+                    <div className="text-2xl font-bold text-academic-800">
+                      {assignments.filter(a => a.status === 'completed').length}
+                    </div>
+                  </div>
+                  <div className="bg-emerald-50 border border-emerald-200 p-5 rounded-xl">
+                    <div className="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-1">Honorarium Terbayar</div>
+                    <div className="text-2xl font-bold text-emerald-800">
+                      Rp {honorariums.filter(h => h.status === 'PAID').reduce((sum, h) => sum + h.amount, 0).toLocaleString('id-ID')}
+                    </div>
+                  </div>
+                  <div className="bg-amber-50 border border-amber-200 p-5 rounded-xl">
+                    <div className="text-xs font-bold text-amber-600 uppercase tracking-wider mb-1">Menunggu Pembayaran</div>
+                    <div className="text-2xl font-bold text-amber-800">
+                      Rp {honorariums.filter(h => h.status === 'PENDING').reduce((sum, h) => sum + h.amount, 0).toLocaleString('id-ID')}
+                    </div>
+                  </div>
+                </div>
+
+                {/* History Table */}
+                <div className="bg-white rounded-xl border border-academic-200 shadow-sm overflow-hidden">
+                  <div className="px-6 py-4 border-b border-academic-100 bg-slate-50/50">
+                    <h3 className="font-bold text-academic-900 text-sm uppercase tracking-wider text-xs">Riwayat Pembayaran Honorarium</h3>
+                  </div>
+                  {loadingHonorariums ? (
+                    <div className="p-8 text-center text-academic-500 text-sm">Memuat data...</div>
+                  ) : honorariums.length === 0 ? (
+                    <div className="p-8 text-center text-academic-500 text-sm">Belum ada catatan honorarium terdaftar.</div>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse">
+                        <thead>
+                          <tr className="bg-slate-50 border-b border-academic-200 text-[10px] font-bold text-academic-500 uppercase">
+                            <th className="px-4 py-2">Artikel</th>
+                            <th className="px-4 py-2 text-right">Jumlah</th>
+                            <th className="px-4 py-2 text-center">Status</th>
+                            <th className="px-4 py-2">Tanggal Bayar</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-academic-100 text-xs text-academic-800">
+                          {honorariums.map((h) => (
+                            <tr key={h.id} className="hover:bg-slate-50/50">
+                              <td className="px-4 py-3 font-medium line-clamp-1 max-w-[200px]" title={h.articles?.title}>{h.articles?.title || 'Artikel Terbit'}</td>
+                              <td className="px-4 py-3 text-right font-mono font-bold">Rp {h.amount.toLocaleString('id-ID')}</td>
+                              <td className="px-4 py-3 text-center">
+                                <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                                  h.status === 'PAID' 
+                                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' 
+                                    : 'bg-amber-50 text-amber-700 border border-amber-200'
+                                }`}>
+                                  {h.status}
+                                </span>
+                              </td>
+                              <td className="px-4 py-3 text-[10px] font-medium text-academic-500">
+                                {h.payment_date ? new Date(h.payment_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-'}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="bg-white rounded-xl border border-academic-200 shadow-sm overflow-hidden">
+                <div className="divide-y divide-academic-100">
+                  {loading ? (
+                    <div className="p-6 text-center text-academic-500 text-xs font-medium">Memuat data penugasan...</div>
+                  ) : (() => {
+                    const filtered = assignments.filter((a) => {
+                      if (activeTab === 'ringkasan') {
+                        return (a.status === 'assigned' || a.status === 'accepted') && a.status !== 'completed' && a.status !== 'declined';
+                      } else {
+                        return a.status === 'completed' || a.status === 'declined';
+                      }
+                    });
+
+                    if (filtered.length === 0) {
+                      return (
+                        <div className="p-8 text-center text-academic-500 text-xs">
+                          Tidak ada tugas review pada kategori ini.
+                        </div>
+                      );
                     }
-                  });
 
-                  if (filtered.length === 0) {
-                    return (
-                      <div className="p-8 text-center text-academic-500 text-xs">
-                        Tidak ada tugas review pada kategori ini.
-                      </div>
-                    );
-                  }
+                    return filtered.map((assignment: any) => {
+                      const isAssignedOnly = assignment.status === 'assigned';
+                      const isDeclined = assignment.status === 'declined';
+                      const isCompleted = assignment.status === 'completed';
 
-                  return filtered.map((assignment: any) => {
-                    const isAssignedOnly = assignment.status === 'assigned';
-                    const isDeclined = assignment.status === 'declined';
-                    const isCompleted = assignment.status === 'completed';
-
-                    return (
-                      <div key={assignment.id} className="p-6 hover:bg-academic-50/50 transition-colors">
-                        <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
-                          <div className="flex-1 space-y-2.5">
-                            <div className="flex flex-wrap gap-2 items-center">
-                              {isCompleted && (
-                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-emerald-50 text-emerald-700 text-[10px] font-bold rounded-md border border-emerald-200 uppercase tracking-wide">
-                                  <CheckCircle className="w-3 h-3" /> Selesai
+                      return (
+                        <div key={assignment.id} className="p-6 hover:bg-academic-50/50 transition-colors">
+                          <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+                            <div className="flex-1 space-y-2.5">
+                              <div className="flex flex-wrap gap-2 items-center">
+                                {isCompleted && (
+                                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-emerald-50 text-emerald-700 text-[10px] font-bold rounded-md border border-emerald-200 uppercase tracking-wide">
+                                    <CheckCircle className="w-3 h-3" /> Selesai
+                                  </span>
+                                )}
+                                {isDeclined && (
+                                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-rose-50 text-rose-700 text-[10px] font-bold rounded-md border border-rose-200 uppercase tracking-wide">
+                                    <X className="w-3 h-3" /> Ditolak
+                                  </span>
+                                )}
+                                {isAssignedOnly && (
+                                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-amber-50 text-amber-700 text-[10px] font-bold rounded-md border border-amber-200 uppercase tracking-wide">
+                                    <Clock className="w-3 h-3" /> Undangan Menunggu Konfirmasi
+                                  </span>
+                                )}
+                                {!isCompleted && !isDeclined && !isAssignedOnly && (
+                                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-blue-50 text-blue-700 text-[10px] font-bold rounded-md border border-blue-200 uppercase tracking-wide">
+                                    <Clock className="w-3 h-3" /> Ulasan Aktif
+                                  </span>
+                                )}
+                                <span className="text-[10px] font-bold text-brand-700 bg-brand-50 border border-brand-100 px-2 py-0.5 rounded uppercase tracking-wide">
+                                  {assignment.articles?.journals?.name || 'Jurnal'}
                                 </span>
-                              )}
-                              {isDeclined && (
-                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-rose-50 text-rose-700 text-[10px] font-bold rounded-md border border-rose-200 uppercase tracking-wide">
-                                  <X className="w-3 h-3" /> Ditolak
-                                </span>
-                              )}
+                              </div>
+
+                              <h4 className="text-base font-bold text-academic-900 font-serif leading-snug">
+                                {assignment.articles?.title || 'Judul Tidak Tersedia'}
+                              </h4>
+
+                              <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-academic-500">
+                                <span>Ditugaskan: {new Date(assignment.assigned_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                                {assignment.due_date && !isCompleted && !isDeclined && (
+                                  <span className={new Date(assignment.due_date) < new Date() ? 'text-rose-600 font-bold' : ''}>
+                                    Batas Waktu: {new Date(assignment.due_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+                                  </span>
+                                )}
+                              </div>
+
+                              {/* Invitation Consent Warning Box */}
                               {isAssignedOnly && (
-                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-amber-50 text-amber-700 text-[10px] font-bold rounded-md border border-amber-200 uppercase tracking-wide">
-                                  <Clock className="w-3 h-3" /> Undangan Menunggu Konfirmasi
-                                </span>
-                              )}
-                              {!isCompleted && !isDeclined && !isAssignedOnly && (
-                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-blue-50 text-blue-700 text-[10px] font-bold rounded-md border border-blue-200 uppercase tracking-wide">
-                                  <Clock className="w-3 h-3" /> Ulasan Aktif
-                                </span>
-                              )}
-                              <span className="text-[10px] font-bold text-brand-700 bg-brand-50 border border-brand-100 px-2 py-0.5 rounded uppercase tracking-wide">
-                                {assignment.articles?.journals?.name || 'Jurnal'}
-                              </span>
-                            </div>
-
-                            <h4 className="text-base font-bold text-academic-900 font-serif leading-snug">
-                              {assignment.articles?.title || 'Judul Tidak Tersedia'}
-                            </h4>
-
-                            <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-academic-500">
-                              <span>Ditugaskan: {new Date(assignment.assigned_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
-                              {assignment.due_date && !isCompleted && !isDeclined && (
-                                <span className={new Date(assignment.due_date) < new Date() ? 'text-rose-600 font-bold' : ''}>
-                                  Batas Waktu: {new Date(assignment.due_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
-                                </span>
+                                <div className="bg-amber-50 border border-amber-200 p-4 rounded-xl text-xs text-amber-900 leading-normal space-y-2">
+                                  <strong>⚠️ Pernyataan Etika & Konfidensialitas:</strong>
+                                  <p className="text-amber-800 text-[11px] text-justify leading-relaxed">
+                                    Sebelum dapat mengakses naskah lengkap dan memberikan ulasan, Anda berkewajiban mengonfirmasi kesediaan. Dengan mengklik "Terima", Anda menyatakan bersedia mengulas secara profesional dan bebas dari benturan kepentingan dengan penulis.
+                                  </p>
+                                </div>
                               )}
                             </div>
 
-                            {/* Invitation Consent Warning Box */}
-                            {isAssignedOnly && (
-                              <div className="bg-amber-50 border border-amber-200 p-4 rounded-xl text-xs text-amber-900 leading-normal space-y-2">
-                                <strong>⚠️ Pernyataan Etika & Konfidensialitas:</strong>
-                                <p className="text-amber-800 text-[11px] text-justify leading-relaxed">
-                                  Sebelum dapat mengakses naskah lengkap dan memberikan ulasan, Anda berkewajiban mengonfirmasi kesediaan. Dengan mengklik "Terima", Anda menyatakan bersedia mengulas secara profesional dan bebas dari benturan kepentingan dengan penulis.
-                                </p>
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Action Buttons */}
-                          <div className="flex flex-col sm:items-end gap-2 shrink-0 self-start sm:self-center">
-                            {isAssignedOnly ? (
-                              <div className="flex gap-2 w-full sm:w-auto">
-                                <button
-                                  onClick={() => handleDeclineInvitation(assignment.id)}
-                                  disabled={updatingStatus === assignment.id}
-                                  className="px-3 py-2 border border-rose-300 bg-white text-rose-700 hover:bg-rose-50 rounded-lg text-xs font-bold transition-colors cursor-pointer"
-                                >
-                                  Tolak
-                                </button>
-                                <button
-                                  onClick={() => handleAcceptInvitation(assignment.id)}
-                                  disabled={updatingStatus === assignment.id}
-                                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-colors shadow-sm cursor-pointer"
-                                >
-                                  Terima Ulasan
-                                </button>
-                              </div>
-                            ) : (
-                              !isCompleted && !isDeclined && (
-                                <button 
-                                  onClick={() => setSelectedAssignment(assignment)}
-                                  className="bg-brand-700 hover:bg-brand-800 text-white px-5 py-2.5 rounded-lg text-xs font-bold transition-colors whitespace-nowrap shadow-sm cursor-pointer"
-                                >
-                                  Lanjutkan Review
-                                </button>
-                              )
-                            )}
+                            {/* Action Buttons */}
+                            <div className="flex flex-col sm:items-end gap-2 shrink-0 self-start sm:self-center">
+                              {isAssignedOnly ? (
+                                <div className="flex gap-2 w-full sm:w-auto">
+                                  <button
+                                    onClick={() => handleDeclineInvitation(assignment.id)}
+                                    disabled={updatingStatus === assignment.id}
+                                    className="px-3 py-2 border border-rose-300 bg-white text-rose-700 hover:bg-rose-50 rounded-lg text-xs font-bold transition-colors cursor-pointer"
+                                  >
+                                    Tolak
+                                  </button>
+                                  <button
+                                    onClick={() => handleAcceptInvitation(assignment.id)}
+                                    disabled={updatingStatus === assignment.id}
+                                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-colors shadow-sm cursor-pointer"
+                                  >
+                                    Terima Ulasan
+                                  </button>
+                                </div>
+                              ) : (
+                                !isCompleted && !isDeclined && (
+                                  <button 
+                                    onClick={() => setSelectedAssignment(assignment)}
+                                    className="bg-brand-700 hover:bg-brand-800 text-white px-5 py-2.5 rounded-lg text-xs font-bold transition-colors whitespace-nowrap shadow-sm cursor-pointer"
+                                  >
+                                    Lanjutkan Review
+                                  </button>
+                                )
+                              )}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    );
-                  });
-                })()}
+                      );
+                    });
+                  })()}
+                </div>
               </div>
-            </div>
+            )}
 
           </div>
 

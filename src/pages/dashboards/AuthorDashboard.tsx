@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
 import { useAuth } from '../../contexts/AuthContext';
-import { FileText, Clock, CheckCircle, ArrowRight } from 'lucide-react';
+import { FileText, Clock, CheckCircle, ArrowRight, Award, Send, BookOpen, User } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { Link } from 'react-router-dom';
 
@@ -168,6 +168,58 @@ export default function AuthorDashboard() {
             </div>
           </div>
         )}
+
+        {/* Quick Actions */}
+        <div className="mb-8">
+          <h2 className="text-xs font-bold text-academic-500 uppercase tracking-widest mb-4">Akses Cepat</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <Link to="/dashboard/author/submit" className="group bg-white border border-academic-200 hover:border-brand-400 p-4 rounded-xl shadow-sm hover:shadow-md transition-all text-center">
+              <div className="w-10 h-10 bg-brand-50 group-hover:bg-brand-600 text-brand-600 group-hover:text-white rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors">
+                <Send className="w-5 h-5" />
+              </div>
+              <p className="text-xs font-bold text-academic-800 group-hover:text-brand-700 transition-colors">Submit Artikel</p>
+            </Link>
+            <Link to="/dashboard/author/articles" className="group bg-white border border-academic-200 hover:border-brand-400 p-4 rounded-xl shadow-sm hover:shadow-md transition-all text-center">
+              <div className="w-10 h-10 bg-emerald-50 group-hover:bg-brand-600 text-emerald-600 group-hover:text-white rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors">
+                <FileText className="w-5 h-5" />
+              </div>
+              <p className="text-xs font-bold text-academic-800 group-hover:text-brand-700 transition-colors">Artikel Saya</p>
+            </Link>
+            <Link to="/dashboard/author/loa" className="group bg-white border border-academic-200 hover:border-brand-400 p-4 rounded-xl shadow-sm hover:shadow-md transition-all text-center">
+              <div className="w-10 h-10 bg-amber-50 group-hover:bg-brand-600 text-amber-600 group-hover:text-white rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors">
+                <BookOpen className="w-5 h-5" />
+              </div>
+              <p className="text-xs font-bold text-academic-800 group-hover:text-brand-700 transition-colors">Acceptance Letter</p>
+            </Link>
+            <Link to="/dashboard/profile" className="group bg-white border border-academic-200 hover:border-brand-400 p-4 rounded-xl shadow-sm hover:shadow-md transition-all text-center">
+              <div className="w-10 h-10 bg-indigo-50 group-hover:bg-brand-600 text-indigo-600 group-hover:text-white rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors">
+                <User className="w-5 h-5" />
+              </div>
+              <p className="text-xs font-bold text-academic-800 group-hover:text-brand-700 transition-colors">Profil & Rekening</p>
+            </Link>
+          </div>
+        </div>
+
+        {/* Program Reward & Apresiasi */}
+        <div className="bg-gradient-to-br from-brand-700 to-brand-900 rounded-xl p-6 text-white overflow-hidden relative">
+          <div className="absolute top-0 right-0 opacity-10 text-[120px] leading-none font-black font-serif select-none">★</div>
+          <div className="flex items-start gap-4 relative">
+            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center shrink-0">
+              <Award className="w-7 h-7 text-amber-300" />
+            </div>
+            <div>
+              <h3 className="text-base font-serif font-bold mb-1">Program Reward & Apresiasi Penulis RJRAKP</h3>
+              <p className="text-brand-200 text-xs leading-relaxed">
+                Artikel Anda dapat diakses secara <strong className="text-white">gratis (Open Access)</strong> oleh seluruh pembaca tanpa biaya apapun. RJRAKP memberikan reward khusus kepada penulis apabila artikel berhasil terindeks di indeksasi global (Scopus, WoS) atau mencapai rekor jumlah unduhan tertinggi di platform RJRAKP.
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2 text-[10px] font-bold">
+                <span className="bg-white/20 px-2.5 py-1 rounded-full">✓ Open Access</span>
+                <span className="bg-white/20 px-2.5 py-1 rounded-full">✓ Reward Scopus/WoS Indexing</span>
+                <span className="bg-white/20 px-2.5 py-1 rounded-full">✓ Reward Top Download</span>
+              </div>
+            </div>
+          </div>
+        </div>
 
       </div>
     </DashboardLayout>
