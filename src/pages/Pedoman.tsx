@@ -147,15 +147,15 @@ export default function Pedoman() {
             <h3 className="text-lg md:text-xl font-bold font-serif text-brand-900 pt-6 mt-8 border-t border-academic-100 mb-4">K. FORMAT PENULISAN</h3>
             <ol className="list-decimal list-outside ml-5 space-y-2 text-academic-700 font-medium leading-relaxed mb-8">
               <li>Ukuran kertas: A4.</li>
-              <li>Font: Times New Roman.</li>
-              <li>Ukuran font: 12 pt.</li>
-              <li>Spasi: 1,5.</li>
+              <li>Font: Arial.</li>
+              <li>Ukuran font: 11 pt.</li>
+              <li>Spasi: 1,15.</li>
               <li>Margin:
                 <ul className="list-disc list-outside ml-5 mt-2 space-y-1">
-                  <li>Atas: 3 cm</li>
-                  <li>Bawah: 3 cm</li>
-                  <li>Kiri: 4 cm</li>
-                  <li>Kanan: 3 cm</li>
+                  <li>Atas: 2,54 cm (1 inci)</li>
+                  <li>Bawah: 2,54 cm (1 inci)</li>
+                  <li>Kiri: 2,54 cm (1 inci)</li>
+                  <li>Kanan: 2,54 cm (1 inci)</li>
                 </ul>
               </li>
               <li>Panjang artikel:
