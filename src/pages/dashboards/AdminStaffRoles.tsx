@@ -42,7 +42,7 @@ export default function AdminStaffRoles() {
     try {
       const { data, error } = await supabase
         .from('users')
-        .select('id, full_name, email, phone, role, status, position_key, position_label, affiliation, orcid_id, sinta_id, google_scholar_id, created_at')
+        .select('id, full_name, email, phone, role, status, position_key, position_label, affiliation:institution, orcid_id, sinta_id, google_scholar_id, created_at')
         .in('role', ['editor', 'reviewer', 'admin'])
         .order('role')
         .order('full_name');
