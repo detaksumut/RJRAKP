@@ -34,6 +34,7 @@ export default function ArticleDetail() {
             created_at, 
             status,
             submitter_id,
+            similarity_score,
             article_authors (*),
             journals (*),
             publications (*),
@@ -536,9 +537,19 @@ export default function ArticleDetail() {
               <div className="prose prose-academic max-w-none">
                 <div className="flex items-center justify-between border-b-2 border-academic-100 pb-2 mb-4">
                   <h3 className="text-xl font-bold text-academic-900 m-0">Abstrak</h3>
-                  <a href="https://www.turnitin.com/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold border border-emerald-200 hover:bg-emerald-100 transition-colors">
-                    <Check className="w-3.5 h-3.5" /> Similarity Check
-                  </a>
+                  {article.similarity_score !== null ? (
+                    <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${
+                      article.similarity_score > 20 
+                        ? 'bg-rose-50 text-rose-700 border-rose-200' 
+                        : 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                    }`}>
+                      <Check className="w-3.5 h-3.5" /> Similarity: {article.similarity_score}%
+                    </div>
+                  ) : (
+                    <a href="https://www.turnitin.com/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold border border-emerald-200 hover:bg-emerald-100 transition-colors">
+                      <Check className="w-3.5 h-3.5" /> Similarity Check
+                    </a>
+                  )}
                 </div>
                 <div className="text-academic-700 leading-relaxed text-justify whitespace-pre-wrap">
                   {article.abstract || 'Abstrak tidak tersedia untuk artikel ini.'}

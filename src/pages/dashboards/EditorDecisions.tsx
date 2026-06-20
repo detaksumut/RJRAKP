@@ -4,9 +4,9 @@ import DashboardLayout from '../../components/DashboardLayout';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
 import { 
-  FileText, CheckSquare, Eye, ArrowLeft, Download, 
-  MessageSquare, User, Calendar, Award, Send, X, AlertCircle,
-  Bold, Italic, Underline, Link2, Image, List, ListOrdered, Maximize2, Upload
+  CheckCircle2, AlertCircle, RefreshCw, Send, Check, 
+  Bold, Italic, Underline, Link2, Image, List, ListOrdered, Upload, Maximize2, Download,
+  Fingerprint, ArrowLeft, CheckSquare, Calendar
 } from 'lucide-react';
 
 const parseEditorComments = (comments: string) => {
@@ -53,6 +53,41 @@ export default function EditorDecisions() {
   const [articles, setArticles] = useState<any[]>([]);
   const [selectedArticle, setSelectedArticle] = useState<any | null>(null);
   const [reviewAssignments, setReviewAssignments] = useState<any[]>([]);
+  const [similarityScore, setSimilarityScore] = useState<string>('');
+  const [savingSimilarity, setSavingSimilarity] = useState(false);
+
+  useEffect(() => {
+    if (selectedArticle) {
+      setSimilarityScore(selectedArticle.similarity_score !== null ? String(selectedArticle.similarity_score) : '');
+    } else {
+      setSimilarityScore('');
+    }
+  }, [selectedArticle]);
+
+  const handleSaveSimilarity = async () => {
+    if (!selectedArticle) return;
+    setSavingSimilarity(true);
+    setError('');
+    setSuccess('');
+    try {
+      const score = similarityScore === '' ? null : parseInt(similarityScore);
+      const { error: updateErr } = await supabase
+        .from('articles')
+        .update({ similarity_score: score })
+        .eq('id', selectedArticle.id);
+
+      if (updateErr) throw updateErr;
+
+      setSuccess('Similarity Index berhasil diperbarui.');
+      setSelectedArticle(prev => prev ? { ...prev, similarity_score: score } : null);
+      fetchArticles();
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || 'Gagal memperbarui Similarity Index.');
+    } finally {
+      setSavingSimilarity(false);
+    }
+  };
   
   const [decisionForm, setDecisionForm] = useState({
     decision: '',
@@ -73,7 +108,6 @@ export default function EditorDecisions() {
   const fetchArticles = async () => {
     setLoading(true);
     try {
-      // Fetch articles that are submitted or in review
       const { data, error: artError } = await supabase
         .from('articles')
         .select(`
@@ -85,6 +119,7 @@ export default function EditorDecisions() {
           manuscript_file,
           status,
           submission_date,
+          similarity_score,
           journals (name, slug),
           users!submitter_id(full_name, phone)
         `)
@@ -178,7 +213,6 @@ export default function EditorDecisions() {
     setSuccess('');
 
     try {
-      // 1. Insert into editorial_decisions
       const { error: decError } = await supabase
         .from('editorial_decisions')
         .insert({
@@ -190,8 +224,6 @@ export default function EditorDecisions() {
 
       if (decError) throw decError;
 
-      // Map choice to database status column values
-      // db check constraint is: 'submitted', 'in_review', 'revised', 'accepted', 'published', 'rejected'
       let targetStatus = 'submitted';
       let statusLabel = '';
       if (decisionForm.decision === 'accept') {
@@ -205,8 +237,11 @@ export default function EditorDecisions() {
         statusLabel = 'DITOLAK';
       }
 
-      // 2. Update status of article
-      const updatePayload: any = { status: targetStatus };
+      const score = similarityScore === '' ? null : parseInt(similarityScore);
+      const updatePayload: any = { 
+        status: targetStatus,
+        similarity_score: score
+      };
       if (targetStatus === 'accepted') {
         updatePayload.accepted_date = new Date().toISOString();
       } else if (targetStatus === 'revised') {
@@ -220,7 +255,6 @@ export default function EditorDecisions() {
 
       if (artUpdateError) throw artUpdateError;
 
-      // 3. Log activity
       await supabase.from('activity_logs').insert({
         user_id: user?.id,
         action: `Submitted editorial decision (${decisionForm.decision}) for article: ${selectedArticle.title}`,
@@ -228,7 +262,6 @@ export default function EditorDecisions() {
         entity_id: selectedArticle.id
       });
 
-      // 4. Send WhatsApp Notification
       const submitterPhone = selectedArticle.users?.phone;
       if (submitterPhone) {
         supabase.functions.invoke('send-wa', {
@@ -287,7 +320,6 @@ export default function EditorDecisions() {
     const newValue = text.substring(0, start) + replacement + text.substring(end);
     setDecisionForm(prev => ({ ...prev, comments: newValue }));
     
-    // Refocus and select
     setTimeout(() => {
       textarea.focus();
       const offset = format === 'bold' ? 2 : format === 'italic' ? 1 : format === 'underline' ? 3 : format === 'link' ? 1 : 3;
@@ -321,10 +353,8 @@ export default function EditorDecisions() {
             ) : (
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
                 
-                {/* Left/Main Column - Article Info & Reviews */}
                 <div className="lg:col-span-2 space-y-6">
                   
-                  {/* Selector and core info */}
                   <div className="bg-white p-6 rounded-xl border border-academic-200 shadow-sm space-y-5">
                     <div>
                       <label className="block text-xs font-black text-academic-500 uppercase tracking-wider mb-2">Pilih Artikel Sasaran</label>
@@ -346,15 +376,17 @@ export default function EditorDecisions() {
                         <span className="inline-block text-[9px] font-black text-brand-700 bg-brand-50 border border-brand-100 px-2 py-0.5 rounded uppercase">
                           {selectedArticle.journals?.name}
                         </span>
-                        <h2 className="font-serif font-bold text-academic-900 text-lg leading-snug">{selectedArticle.title}</h2>
+                        <h2 className="font-serif font-bold text-academic-900 text-lg leading-snug mb-2">{selectedArticle.title}</h2>
+                        <div className="flex flex-wrap gap-x-4 gap-y-2 text-xs font-semibold text-academic-500 pt-1">
+                          <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> Ditransfer: {new Date(selectedArticle.submission_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                          <span className="flex items-center gap-1"><Fingerprint className="w-3.5 h-3.5 text-emerald-600" /> Similarity: {selectedArticle.similarity_score !== null ? `${selectedArticle.similarity_score}%` : 'Belum diperiksa'}</span>
+                        </div>
                       </div>
                     )}
                   </div>
 
-                  {/* Manuscript Files Card */}
                   {selectedArticle && (
                     <div className="space-y-4">
-                      {/* Anonymous Manuscript (For Reviewer) */}
                       <div className="bg-white p-5 rounded-xl border border-academic-200 shadow-sm space-y-4">
                         <div className="flex justify-between items-center border-b border-academic-100 pb-2">
                           <div>
@@ -418,7 +450,6 @@ export default function EditorDecisions() {
                         )}
                       </div>
 
-                      {/* Title Page (For Editor) */}
                       <div className="bg-white p-5 rounded-xl border border-academic-200 shadow-sm space-y-4">
                         <div className="flex justify-between items-center border-b border-academic-100 pb-2">
                           <div>
@@ -442,15 +473,41 @@ export default function EditorDecisions() {
                           </div>
                         )}
                       </div>
+
+                      <div className="bg-white p-5 rounded-xl border border-academic-200 shadow-sm space-y-4">
+                        <div className="flex justify-between items-center border-b border-academic-100 pb-2">
+                          <div>
+                            <h3 className="font-serif font-bold text-sm text-academic-900">Similarity Check</h3>
+                            <p className="text-[10px] text-academic-500">Hasil cek Turnitin (%)</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <input
+                            type="number"
+                            min="0"
+                            max="100"
+                            placeholder="Belum diperiksa"
+                            value={similarityScore}
+                            onChange={e => setSimilarityScore(e.target.value)}
+                            className="w-24 border border-academic-300 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white"
+                          />
+                          <button
+                            type="button"
+                            onClick={handleSaveSimilarity}
+                            disabled={savingSimilarity}
+                            className="bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs px-3 py-1.5 rounded transition-colors disabled:opacity-50"
+                          >
+                            {savingSimilarity ? 'Menyimpan...' : 'Simpan'}
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   )}
 
                 </div>
 
-                {/* Right Column - Reviewer Results & Submit Decision Form */}
                 <div className="space-y-6">
                   
-                  {/* Reviewer Results Card */}
                   <div className="bg-white rounded-xl border border-academic-200 shadow-sm overflow-hidden">
                     <div className="px-5 py-3 border-b border-academic-200 bg-academic-50/50 flex justify-between items-center">
                       <h3 className="font-serif font-bold text-sm text-academic-900">Hasil Peninjauan Mitra Bestari (Reviewer)</h3>
@@ -510,7 +567,6 @@ export default function EditorDecisions() {
                                       </div>
                                     </div>
 
-                                    {/* Scoring Parameters Rubric Table */}
                                     {parsed.scores && (
                                       <div className="border border-slate-200 rounded-lg overflow-hidden mt-3 shadow-sm bg-slate-50/50">
                                         <div className="bg-slate-100 px-3 py-1.5 border-b border-slate-200 flex justify-between items-center">

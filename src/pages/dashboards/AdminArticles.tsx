@@ -6,7 +6,8 @@ import { generateCrossrefXML } from '../../lib/crossref';
 import { 
   FileText, Trash2, Eye, ArrowLeft, Download, 
   Search, Filter, Calendar, User, ExternalLink, 
-  AlertCircle, RefreshCw, CheckCircle, Clock, X, Plus 
+  AlertCircle, RefreshCw, CheckCircle, Clock, X, Plus,
+  Fingerprint
 } from 'lucide-react';
 
 export default function AdminArticles() {
@@ -30,6 +31,7 @@ export default function AdminArticles() {
   const [uploadingManuscript, setUploadingManuscript] = useState(false);
   const [selectedIssueId, setSelectedIssueId] = useState('');
   const [customDoi, setCustomDoi] = useState('');
+  const [similarityScore, setSimilarityScore] = useState<string>('');
 
   const [issuingLoa, setIssuingLoa] = useState<Record<string, boolean>>({});
 
@@ -322,10 +324,15 @@ export default function AdminArticles() {
         }
       }
 
-      // 2. Update Article Status
+      // 2. Update Article Status & Similarity Index
+      const simScore = similarityScore === '' ? null : parseInt(similarityScore);
       const { error: updateErr } = await supabase
         .from('articles')
-        .update({ status: newStatus, issue_id: selectedIssueId || null })
+        .update({ 
+          status: newStatus, 
+          issue_id: selectedIssueId || null,
+          similarity_score: simScore
+        })
         .eq('id', articleId);
 
       if (updateErr) throw updateErr;
@@ -344,10 +351,12 @@ export default function AdminArticles() {
       await fetchArticles();
       
       // Update selected article reference
-      const updated = articles.find(a => a.id === articleId);
-      if (updated) {
-        setSelectedArticle({ ...selectedArticle, status: newStatus, issue_id: selectedIssueId || null });
-      }
+      setSelectedArticle(prev => prev ? { 
+        ...prev, 
+        status: newStatus, 
+        issue_id: selectedIssueId || null,
+        similarity_score: simScore
+      } : null);
     } catch (err: any) {
       console.error(err);
       setError(err.message || 'Gagal memperbarui status.');
@@ -491,11 +500,12 @@ export default function AdminArticles() {
                   {selectedArticle.title}
                 </h2>
 
-                <div className="flex flex-wrap gap-y-2 gap-x-6 text-xs text-academic-500 pt-1">
+                <div className="flex flex-wrap gap-x-4 gap-y-2 mt-4 text-xs font-medium text-academic-500">
                   <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> Ditransfer: {new Date(selectedArticle.submission_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
                   <span className="flex items-center gap-1"><User className="w-3.5 h-3.5" /> Submitter: {selectedArticle.users?.full_name}</span>
                   <span className="flex items-center gap-1"><Eye className="w-3.5 h-3.5 text-brand-500" /> {selectedArticle.view_count || 0} Dilihat</span>
                   <span className="flex items-center gap-1"><Download className="w-3.5 h-3.5 text-brand-500" /> {selectedArticle.download_count || 0} Diunduh</span>
+                  <span className="flex items-center gap-1"><Fingerprint className="w-3.5 h-3.5 text-emerald-600" /> Similarity: {selectedArticle.similarity_score !== null ? `${selectedArticle.similarity_score}%` : 'Belum diperiksa'}</span>
                 </div>
 
                 <div className="border-t border-academic-100 pt-4">
@@ -684,6 +694,20 @@ export default function AdminArticles() {
                   }`}>
                     {statusLabels[selectedArticle.status.toLowerCase()] || selectedArticle.status}
                   </span>
+                </div>
+
+                {/* Similarity Index Input */}
+                <div className="space-y-2 pt-2 border-t border-academic-100">
+                  <label className="block text-xs font-black text-academic-500 uppercase tracking-widest">Similarity Index (%)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    placeholder="Contoh: 15 (Belum diperiksa)"
+                    value={similarityScore}
+                    onChange={e => setSimilarityScore(e.target.value)}
+                    className="w-full border border-academic-300 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white"
+                  />
                 </div>
 
                 {/* Direct Status Override */}
@@ -992,7 +1016,13 @@ export default function AdminArticles() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-center space-x-1.5">
                           <button
-                            onClick={() => { setSelectedArticle(art); setNewStatus(art.status || ''); setCustomDoi(''); }}
+                            onClick={() => { 
+                              setSelectedArticle(art); 
+                              setNewStatus(art.status || ''); 
+                              setCustomDoi(art.publications?.[0]?.doi || ''); 
+                              setSimilarityScore(art.similarity_score !== null ? String(art.similarity_score) : '');
+                              setSelectedIssueId(art.issue_id || '');
+                            }}
                             className="inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-brand-50 hover:bg-brand-100 text-brand-800 border border-brand-200 rounded-md font-semibold text-[10px] transition-colors"
                           >
                             <Eye className="w-3.5 h-3.5" /> Detail & Kelola
