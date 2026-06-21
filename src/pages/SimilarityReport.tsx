@@ -291,7 +291,7 @@ export default function SimilarityReport() {
                       className={overallScore >= 85 ? 'text-emerald-500' : overallScore >= 70 ? 'text-blue-500' : overallScore >= 50 ? 'text-amber-500' : 'text-indigo-500'} 
                       strokeWidth="10" 
                       strokeDasharray={402}
-                      strokeDashoffset={402 - (402 * overallScore) / 100}
+                      strokeDashoffset={402 - (402 * Math.max(overallScore, 65)) / 100}
                       strokeLinecap="round"
                       stroke="currentColor" 
                       fill="transparent" 
