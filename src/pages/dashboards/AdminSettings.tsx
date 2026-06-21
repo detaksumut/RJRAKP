@@ -63,7 +63,10 @@ export default function AdminSettings() {
 
   const fetchUsersAndStaff = async () => {
     try {
-      const { data: usersData } = await supabase.from('users').select('id, full_name, role').order('full_name');
+      const { data: usersData } = await supabase
+        .from('users')
+        .select('id, full_name, email, role, partner_type, npwp, bank_name, bank_account_number, bank_account_holder')
+        .order('full_name');
       if (usersData) setUsers(usersData);
 
       const { data: staffData } = await supabase
@@ -324,6 +327,64 @@ export default function AdminSettings() {
                 })
               )}
             </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl border border-academic-200 shadow-sm overflow-hidden mb-6">
+          <div className="px-6 py-4 border-b border-academic-100 flex items-center gap-2 bg-academic-50">
+            <TrendingUp className="w-5 h-5 text-rose-600" />
+            <h2 className="font-bold text-lg text-academic-900 font-serif">Daftar Mitra Penerima Royalti</h2>
+          </div>
+          <div className="p-6">
+            <p className="text-sm text-academic-600 mb-6">
+              Berikut adalah daftar seluruh Mitra Lembaga dan Perujuk Perorangan yang terdaftar untuk menerima royalti. Anda dapat mengelola tipe kemitraan mereka di halaman Manajemen Pengguna.
+            </p>
+            {users.filter(u => u.partner_type === 'lembaga' || u.partner_type === 'personal').length === 0 ? (
+              <p className="text-academic-500 text-sm italic">Belum ada Mitra Royalti yang terdaftar.</p>
+            ) : (
+              <div className="overflow-x-auto border border-academic-200 rounded-lg">
+                <table className="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr className="bg-slate-50 border-b border-academic-200 text-[10px] font-bold text-academic-500 uppercase">
+                      <th className="px-4 py-3">Nama Mitra</th>
+                      <th className="px-4 py-3 text-center">Tipe Kemitraan</th>
+                      <th className="px-4 py-3 text-center">NPWP</th>
+                      <th className="px-4 py-3">Informasi Rekening Bank</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-academic-100 text-academic-800">
+                    {users.filter(u => u.partner_type === 'lembaga' || u.partner_type === 'personal').map((p) => (
+                      <tr key={p.id} className="hover:bg-slate-50/50">
+                        <td className="px-4 py-3">
+                          <span className="font-bold text-academic-900 block">{p.full_name}</span>
+                          <span className="text-xs text-academic-500">{p.email}</span>
+                        </td>
+                        <td className="px-4 py-3 text-center">
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
+                            p.partner_type === 'lembaga' 
+                              ? 'bg-amber-50 text-amber-700 border border-amber-200' 
+                              : 'bg-yellow-50 text-yellow-700 border border-yellow-200'
+                          }`}>
+                            {p.partner_type === 'lembaga' ? 'Lembaga' : 'Personal'}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-center font-mono text-xs">{p.npwp || '-'}</td>
+                        <td className="px-4 py-3 text-xs">
+                          {p.bank_name ? (
+                            <div>
+                              <span className="font-semibold">{p.bank_name}</span> - {p.bank_account_number} <br/>
+                              <span className="text-academic-500">a.n {p.bank_account_holder}</span>
+                            </div>
+                          ) : (
+                            <span className="text-rose-500 italic">Belum melengkapi info bank</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         </div>
       </div>
