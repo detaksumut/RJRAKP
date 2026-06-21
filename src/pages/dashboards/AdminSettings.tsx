@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
 import { supabase } from '../../lib/supabase';
-import { Save, Lock, Shield, BookOpen, Award, TrendingUp } from 'lucide-react';
+import { Save, Lock, Shield, BookOpen, Award, TrendingUp, X } from 'lucide-react';
 
 const ROLE_ORDER = [
   'direktur',
@@ -56,6 +56,18 @@ export default function AdminSettings() {
   const [users, setUsers] = useState<any[]>([]);
   const [globalStaff, setGlobalStaff] = useState<any[]>([]);
 
+  const [showAddPartnerModal, setShowAddPartnerModal] = useState(false);
+  const [partnerForm, setPartnerForm] = useState({
+    email: '',
+    full_name: '',
+    partner_type: 'lembaga',
+    npwp: '',
+    bank_name: '',
+    bank_account_number: '',
+    bank_account_holder: ''
+  });
+  const [partnerSubmitting, setPartnerSubmitting] = useState(false);
+
   useEffect(() => {
     fetchRates();
     fetchUsersAndStaff();
@@ -77,6 +89,46 @@ export default function AdminSettings() {
       if (staffData) setGlobalStaff(staffData);
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const handleAddPartnerSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!partnerForm.email || !partnerForm.full_name || !partnerForm.partner_type) {
+      alert('Mohon isi nama, email, dan tipe kemitraan.');
+      return;
+    }
+    setPartnerSubmitting(true);
+    try {
+      const { error } = await supabase.rpc('admin_create_partner', {
+        p_email: partnerForm.email.trim(),
+        p_full_name: partnerForm.full_name,
+        p_partner_type: partnerForm.partner_type,
+        p_npwp: partnerForm.npwp || null,
+        p_bank_name: partnerForm.bank_name || null,
+        p_bank_account_number: partnerForm.bank_account_number || null,
+        p_bank_account_holder: partnerForm.bank_account_holder || null
+      });
+
+      if (error) throw error;
+
+      alert('Mitra Royalti berhasil ditambahkan!');
+      setShowAddPartnerModal(false);
+      setPartnerForm({
+        email: '',
+        full_name: '',
+        partner_type: 'lembaga',
+        npwp: '',
+        bank_name: '',
+        bank_account_number: '',
+        bank_account_holder: ''
+      });
+      fetchUsersAndStaff();
+    } catch (err: any) {
+      console.error(err);
+      alert('Gagal menambahkan mitra: ' + err.message);
+    } finally {
+      setPartnerSubmitting(false);
     }
   };
 
@@ -331,9 +383,17 @@ export default function AdminSettings() {
         </div>
 
         <div className="bg-white rounded-xl border border-academic-200 shadow-sm overflow-hidden mb-6">
-          <div className="px-6 py-4 border-b border-academic-100 flex items-center gap-2 bg-academic-50">
-            <TrendingUp className="w-5 h-5 text-rose-600" />
-            <h2 className="font-bold text-lg text-academic-900 font-serif">Daftar Mitra Penerima Royalti</h2>
+          <div className="px-6 py-4 border-b border-academic-100 flex justify-between items-center bg-academic-50">
+            <div className="flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-rose-600" />
+              <h2 className="font-bold text-lg text-academic-900 font-serif">Daftar Mitra Penerima Royalti</h2>
+            </div>
+            <button 
+              onClick={() => setShowAddPartnerModal(true)} 
+              className="inline-flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition-colors shadow-sm cursor-pointer"
+            >
+              Tambah Mitra Baru
+            </button>
           </div>
           <div className="p-6">
             <p className="text-sm text-academic-600 mb-6">
@@ -388,6 +448,138 @@ export default function AdminSettings() {
           </div>
         </div>
       </div>
+
+      {showAddPartnerModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-xl max-w-lg w-full shadow-2xl border border-academic-100 flex flex-col overflow-hidden">
+            <div className="px-6 py-4 border-b border-academic-100 flex justify-between items-center bg-academic-50/50">
+              <h3 className="text-lg font-bold text-academic-900 font-serif">Tambah Mitra Royalti Baru</h3>
+              <button onClick={() => setShowAddPartnerModal(false)} className="text-academic-400 hover:text-rose-500 transition-colors cursor-pointer">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <form onSubmit={handleAddPartnerSubmit} className="p-6 space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-academic-700 uppercase tracking-wider mb-1">
+                  Nama Mitra / Lembaga <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={partnerForm.full_name}
+                  onChange={e => setPartnerForm({...partnerForm, full_name: e.target.value})}
+                  className="w-full px-3 py-2 border border-academic-300 rounded-lg text-sm"
+                  placeholder="Contoh: LPPM Universitas X atau Nama Orang"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-academic-700 uppercase tracking-wider mb-1">
+                    Email Kontak <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={partnerForm.email}
+                    onChange={e => setPartnerForm({...partnerForm, email: e.target.value})}
+                    className="w-full px-3 py-2 border border-academic-300 rounded-lg text-sm"
+                    placeholder="mitra@domain.com"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-academic-700 uppercase tracking-wider mb-1">
+                    Tipe Kemitraan <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    required
+                    value={partnerForm.partner_type}
+                    onChange={e => setPartnerForm({...partnerForm, partner_type: e.target.value})}
+                    className="w-full px-3 py-2 border border-academic-300 rounded-lg text-sm bg-white cursor-pointer"
+                  >
+                    <option value="lembaga">Lembaga Perujuk (Lembaga)</option>
+                    <option value="personal">Perujuk Perorangan (Personal)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-academic-700 uppercase tracking-wider mb-1">
+                  Nomor NPWP
+                </label>
+                <input
+                  type="text"
+                  value={partnerForm.npwp}
+                  onChange={e => setPartnerForm({...partnerForm, npwp: e.target.value})}
+                  className="w-full px-3 py-2 border border-academic-300 rounded-lg text-sm font-mono"
+                  placeholder="00.000.000.0-000.000"
+                />
+              </div>
+
+              <div className="border-t border-academic-100 pt-4">
+                <h4 className="text-xs font-bold text-academic-900 uppercase tracking-wider mb-3">Informasi Rekening Bank</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-academic-700 uppercase tracking-wider mb-1">
+                      Nama Bank
+                    </label>
+                    <input
+                      type="text"
+                      value={partnerForm.bank_name}
+                      onChange={e => setPartnerForm({...partnerForm, bank_name: e.target.value})}
+                      className="w-full px-3 py-2 border border-academic-300 rounded-lg text-sm"
+                      placeholder="Contoh: BNI, Mandiri, BRI"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-academic-700 uppercase tracking-wider mb-1">
+                      Nomor Rekening
+                    </label>
+                    <input
+                      type="text"
+                      value={partnerForm.bank_account_number}
+                      onChange={e => setPartnerForm({...partnerForm, bank_account_number: e.target.value})}
+                      className="w-full px-3 py-2 border border-academic-300 rounded-lg text-sm font-mono"
+                      placeholder="Masukkan no. rekening"
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="block text-xs font-bold text-academic-700 uppercase tracking-wider mb-1">
+                      Nama Pemilik Rekening
+                    </label>
+                    <input
+                      type="text"
+                      value={partnerForm.bank_account_holder}
+                      onChange={e => setPartnerForm({...partnerForm, bank_account_holder: e.target.value})}
+                      className="w-full px-3 py-2 border border-academic-300 rounded-lg text-sm"
+                      placeholder="Nama sesuai buku tabungan"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-4 flex justify-end gap-2 border-t border-academic-100">
+                <button
+                  type="button"
+                  onClick={() => setShowAddPartnerModal(false)}
+                  className="px-4 py-2 border border-academic-300 rounded-lg text-sm font-bold text-academic-700 hover:bg-academic-50 transition-colors"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  disabled={partnerSubmitting}
+                  className="px-6 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-sm font-bold transition-colors disabled:opacity-50"
+                >
+                  {partnerSubmitting ? 'Menyimpan...' : 'Simpan Mitra'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </DashboardLayout>
   );
 }
