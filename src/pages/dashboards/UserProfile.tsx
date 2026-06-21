@@ -22,6 +22,7 @@ export default function UserProfile() {
   });
 
   const [partners, setPartners] = useState<any[]>([]);
+  const [hasReferral, setHasReferral] = useState<'yes' | 'no'>('no');
 
   const [passwords, setPasswords] = useState({
     newPassword: '',
@@ -54,6 +55,7 @@ export default function UserProfile() {
           npwp: data.npwp || '',
           referred_by: data.referred_by || ''
         });
+        setHasReferral(data.referred_by ? 'yes' : 'no');
       }
 
       const { data: partnersData, error: partnersError } = await supabase.rpc('get_active_partners');
@@ -208,20 +210,58 @@ export default function UserProfile() {
 
               <div>
                 <label className="block text-sm font-bold text-academic-900 mb-1">
-                  Direkomendasikan Oleh (Rujukan Mitra) <span className="text-academic-400 font-normal">(Opsional)</span>
+                  Apakah Anda memiliki Rujukan Mitra? *
                 </label>
-                <select
-                  value={formData.referred_by}
-                  onChange={(e) => setFormData({...formData, referred_by: e.target.value})}
-                  className="w-full px-4 py-2 border border-academic-300 rounded-lg focus:ring-2 focus:ring-brand-500 bg-white cursor-pointer"
-                >
-                  <option value="">-- Tanpa Rujukan Mitra --</option>
-                  {partners.map(p => (
-                    <option key={p.id} value={p.id}>
-                      {p.full_name} ({p.partner_type === 'lembaga' ? 'Lembaga' : 'Personal'})
-                    </option>
-                  ))}
-                </select>
+                <div className="flex gap-6 mb-3 mt-1">
+                  <label className="flex items-center text-sm font-medium text-academic-750 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="has_referral"
+                      value="yes"
+                      checked={hasReferral === 'yes'}
+                      onChange={() => {
+                        setHasReferral('yes');
+                      }}
+                      className="mr-2 text-brand-600 focus:ring-brand-500 w-4 h-4"
+                    />
+                    Ya, Ada Rujukan
+                  </label>
+                  <label className="flex items-center text-sm font-medium text-academic-750 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="has_referral"
+                      value="no"
+                      checked={hasReferral === 'no'}
+                      onChange={() => {
+                        setHasReferral('no');
+                        setFormData({...formData, referred_by: ''});
+                      }}
+                      className="mr-2 text-brand-600 focus:ring-brand-500 w-4 h-4"
+                    />
+                    Tidak Ada
+                  </label>
+                </div>
+
+                {hasReferral === 'yes' && (
+                  <div className="mt-3">
+                    <label className="block text-sm font-bold text-academic-900 mb-1">
+                      Pilih Mitra Rujukan *
+                    </label>
+                    <select
+                      required
+                      value={formData.referred_by}
+                      onChange={(e) => setFormData({...formData, referred_by: e.target.value})}
+                      className="w-full px-4 py-2 border border-academic-300 rounded-lg focus:ring-2 focus:ring-brand-500 bg-white cursor-pointer"
+                    >
+                      <option value="">-- Pilih Lembaga atau Personal --</option>
+                      {partners.map(p => (
+                        <option key={p.id} value={p.id}>
+                          {p.full_name} ({p.partner_type === 'lembaga' ? 'Lembaga' : 'Personal'})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
               </div>
 
               <div className="pt-4">
