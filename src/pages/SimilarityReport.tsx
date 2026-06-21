@@ -683,6 +683,14 @@ export default function SimilarityReport() {
                     >
                       ✓ Zenodo Community Verified
                     </a>
+                    <a 
+                      href="https://explore.openaire.eu/search/person?pid=0009-0006-8416-6156"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-600 text-xs font-bold border border-blue-200 hover:bg-blue-100 rounded-lg transition-colors cursor-pointer"
+                    >
+                      ✓ OpenAIRE Verified
+                    </a>
                   </div>
                 </div>
               </div>

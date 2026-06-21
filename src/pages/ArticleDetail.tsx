@@ -1346,6 +1346,9 @@ export default function ArticleDetail() {
                             <a href="https://zenodo.org/communities/rjrakp/records?q=&l=list&p=1&s=10&sort=newest" target="_blank" rel="noopener noreferrer" className="px-2.5 py-1 bg-indigo-50 text-indigo-700 font-bold border border-indigo-200 rounded hover:bg-indigo-100 transition-colors">
                               ✓ Zenodo Community Verified
                             </a>
+                            <a href="https://explore.openaire.eu/search/person?pid=0009-0006-8416-6156" target="_blank" rel="noopener noreferrer" className="px-2.5 py-1 bg-blue-50 text-blue-600 font-bold border border-blue-200 rounded hover:bg-blue-100 transition-colors">
+                              ✓ OpenAIRE Verified
+                            </a>
                           </div>
                         </div>
                       </div>
