@@ -7,6 +7,242 @@ import {
   FileText, Calendar, Check, AlertCircle, RefreshCw, X, FileCode
 } from 'lucide-react';
 
+function getJournalStyle(slug: string) {
+  switch (slug) {
+    case 'audit-kebijakan-publik':
+      return {
+        bg: 'from-slate-55 to-indigo-50/50',
+        text: 'text-indigo-950',
+        accentColor: 'border-indigo-600',
+        badgeBg: 'bg-indigo-600',
+        badgeText: 'text-white',
+        border: 'border-indigo-100',
+        pattern: (
+          <svg xmlns="http://www.w3.org/2000/svg" className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.06] stroke-indigo-600 fill-none" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <circle cx="50" cy="50" r="15" strokeWidth="0.25" />
+            <circle cx="50" cy="50" r="30" strokeWidth="0.25" />
+            <circle cx="50" cy="50" r="45" strokeWidth="0.25" />
+            <circle cx="50" cy="50" r="60" strokeWidth="0.25" />
+            <line x1="50" y1="0" x2="50" y2="100" strokeWidth="0.25" strokeDasharray="1,1" />
+            <line x1="0" y1="50" x2="100" y2="50" strokeWidth="0.25" strokeDasharray="1,1" />
+            <line x1="15" y1="15" x2="85" y2="85" strokeWidth="0.25" strokeDasharray="1,1" />
+            <line x1="15" y1="85" x2="85" y2="15" strokeWidth="0.25" strokeDasharray="1,1" />
+          </svg>
+        )
+      };
+    case 'hukum-dan-keadilan':
+      return {
+        bg: 'from-stone-55 to-rose-50/60',
+        text: 'text-rose-950',
+        accentColor: 'border-rose-600',
+        badgeBg: 'bg-rose-600',
+        badgeText: 'text-white',
+        border: 'border-rose-100',
+        pattern: (
+          <svg xmlns="http://www.w3.org/2000/svg" className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.05] stroke-rose-700 fill-none" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path d="M20,90 L80,90 M25,90 L25,10 M35,90 L35,10 M45,90 L45,10 M55,90 L55,10 M65,90 L65,10 M75,90 L75,10" strokeWidth="0.5" />
+            <rect x="22" y="7" width="56" height="3" rx="0.5" strokeWidth="0.5" />
+            <rect x="18" y="90" width="64" height="4" rx="0.5" strokeWidth="0.5" />
+            <line x1="0" y1="25" x2="100" y2="45" strokeWidth="0.25" strokeDasharray="2,2" />
+            <line x1="0" y1="45" x2="100" y2="65" strokeWidth="0.25" strokeDasharray="2,2" />
+          </svg>
+        )
+      };
+    case 'pendidikan-dan-pembelajaran':
+      return {
+        bg: 'from-emerald-55/50 to-teal-50/50',
+        text: 'text-emerald-950',
+        accentColor: 'border-emerald-600',
+        badgeBg: 'bg-emerald-600',
+        badgeText: 'text-white',
+        border: 'border-emerald-100',
+        pattern: (
+          <svg xmlns="http://www.w3.org/2000/svg" className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.06] stroke-emerald-600 fill-none" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path d="M 0,20 Q 25,10 50,20 T 100,20" strokeWidth="0.25" />
+            <path d="M 0,30 Q 25,20 50,30 T 100,30" strokeWidth="0.25" />
+            <path d="M 0,40 Q 25,30 50,40 T 100,40" strokeWidth="0.25" />
+            <path d="M 0,50 Q 25,40 50,50 T 100,50" strokeWidth="0.25" />
+            <path d="M 0,60 Q 25,50 50,60 T 100,60" strokeWidth="0.25" />
+            <path d="M 0,70 Q 25,60 50,70 T 100,70" strokeWidth="0.25" />
+            <path d="M 0,80 Q 25,70 50,80 T 100,80" strokeWidth="0.25" />
+            <circle cx="50" cy="50" r="35" strokeWidth="0.25" strokeDasharray="2,2" />
+          </svg>
+        )
+      };
+    case 'teknik-dan-teknologi':
+      return {
+        bg: 'from-amber-55/30 to-slate-100/50',
+        text: 'text-slate-900',
+        accentColor: 'border-amber-600',
+        badgeBg: 'bg-amber-600',
+        badgeText: 'text-white',
+        border: 'border-amber-100',
+        pattern: (
+          <svg xmlns="http://www.w3.org/2000/svg" className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.06] stroke-amber-600 fill-none" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <polygon points="50,15 75,30 75,60 50,75 25,60 25,30" strokeWidth="0.25" />
+            <polygon points="50,25 68,35 68,55 50,65 32,55 32,35" strokeWidth="0.25" />
+            <polygon points="50,5 90,28 90,72 50,95 10,72 10,28" strokeWidth="0.15" strokeDasharray="2,2" />
+            <line x1="50" y1="5" x2="50" y2="95" strokeWidth="0.15" strokeDasharray="2,2" />
+            <line x1="10" y1="28" x2="90" y2="72" strokeWidth="0.15" strokeDasharray="2,2" />
+            <line x1="10" y1="72" x2="90" y2="28" strokeWidth="0.15" strokeDasharray="2,2" />
+            <circle cx="50" cy="15" r="1" className="fill-amber-600" />
+            <circle cx="75" cy="30" r="1" className="fill-amber-600" />
+            <circle cx="75" cy="60" r="1" className="fill-amber-600" />
+            <circle cx="50" cy="75" r="1" className="fill-amber-600" />
+            <circle cx="25" cy="60" r="1" className="fill-amber-600" />
+            <circle cx="25" cy="30" r="1" className="fill-amber-600" />
+          </svg>
+        )
+      };
+    case 'agama-dan-peradaban-islam':
+      return {
+        bg: 'from-teal-55 to-emerald-50/50',
+        text: 'text-teal-950',
+        accentColor: 'border-teal-600',
+        badgeBg: 'bg-teal-600',
+        badgeText: 'text-white',
+        border: 'border-teal-100',
+        pattern: (
+          <svg xmlns="http://www.w3.org/2000/svg" className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.06] stroke-teal-600 fill-none" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <rect x="30" y="30" width="40" height="40" transform="rotate(0 50 50)" strokeWidth="0.25" />
+            <rect x="30" y="30" width="40" height="40" transform="rotate(45 50 50)" strokeWidth="0.25" />
+            <circle cx="50" cy="50" r="28" strokeWidth="0.25" />
+            <circle cx="50" cy="50" r="35" strokeWidth="0.15" strokeDasharray="1,1" />
+            <polygon points="50,5 52,12 59,12 53,16 55,23 50,19 45,23 47,16 41,12 48,12" strokeWidth="0.15" />
+            <polygon points="50,95 52,88 59,88 53,84 55,77 50,81 45,77 47,84 41,88 48,88" strokeWidth="0.15" />
+            <polygon points="5,50 12,52 12,59 16,53 23,55 19,50 23,45 16,47 12,41 12,48" strokeWidth="0.15" />
+            <polygon points="95,50 88,52 88,59 84,53 77,55 81,50 77,45 84,47 88,41 88,48" strokeWidth="0.15" />
+          </svg>
+        )
+      };
+    default:
+      return {
+        bg: 'from-slate-55 to-indigo-50/50',
+        text: 'text-slate-900',
+        accentColor: 'border-brand-600',
+        badgeBg: 'bg-brand-600',
+        badgeText: 'text-white',
+        border: 'border-slate-100',
+        pattern: (
+          <svg xmlns="http://www.w3.org/2000/svg" className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.06] stroke-slate-500 fill-none" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <circle cx="50" cy="50" r="30" strokeWidth="0.25" />
+            <line x1="0" y1="0" x2="100" y2="100" strokeWidth="0.25" strokeDasharray="2,2" />
+            <line x1="100" y1="0" x2="0" y2="100" strokeWidth="0.25" strokeDasharray="2,2" />
+          </svg>
+        )
+      };
+  }
+}
+
+function getJournalStyleForPrint(slug: string) {
+  switch (slug) {
+    case 'audit-kebijakan-publik':
+      return {
+        gradient: 'linear-gradient(135deg, #f8fafc, #e0e7ff)',
+        accentColor: '#4f46e5',
+        textColor: '#312e81',
+        patternSvg: `
+          <svg xmlns="http://www.w3.org/2000/svg" style="position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0.06; stroke: #4f46e5; fill: none;" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <circle cx="50" cy="50" r="15" stroke-width="0.25" />
+            <circle cx="50" cy="50" r="30" stroke-width="0.25" />
+            <circle cx="50" cy="50" r="45" stroke-width="0.25" />
+            <circle cx="50" cy="50" r="60" stroke-width="0.25" />
+            <line x1="50" y1="0" x2="50" y2="100" stroke-width="0.25" stroke-dasharray="1,1" />
+            <line x1="0" y1="50" x2="100" y2="50" stroke-width="0.25" stroke-dasharray="1,1" />
+            <line x1="15" y1="15" x2="85" y2="85" stroke-width="0.25" stroke-dasharray="1,1" />
+            <line x1="15" y1="85" x2="85" y2="15" stroke-width="0.25" stroke-dasharray="1,1" />
+          </svg>
+        `
+      };
+    case 'hukum-dan-keadilan':
+      return {
+        gradient: 'linear-gradient(135deg, #fafaf9, #ffe4e6)',
+        accentColor: '#e11d48',
+        textColor: '#4c0519',
+        patternSvg: `
+          <svg xmlns="http://www.w3.org/2000/svg" style="position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0.05; stroke: #e11d48; fill: none;" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path d="M20,90 L80,90 M25,90 L25,10 M35,90 L35,10 M45,90 L45,10 M55,90 L55,10 M65,90 L65,10 M75,90 L75,10" stroke-width="0.5" />
+            <rect x="22" y="7" width="56" height="3" rx="0.5" stroke-width="0.5" />
+            <rect x="18" y="90" width="64" height="4" rx="0.5" stroke-width="0.5" />
+            <line x1="0" y1="25" x2="100" y2="45" stroke-width="0.25" stroke-dasharray="2,2" />
+            <line x1="0" y1="45" x2="100" y2="65" stroke-width="0.25" stroke-dasharray="2,2" />
+          </svg>
+        `
+      };
+    case 'pendidikan-dan-pembelajaran':
+      return {
+        gradient: 'linear-gradient(135deg, #f0fdf4, #f0fdfa)',
+        accentColor: '#059669',
+        textColor: '#022c22',
+        patternSvg: `
+          <svg xmlns="http://www.w3.org/2000/svg" style="position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0.06; stroke: #059669; fill: none;" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path d="M 0,20 Q 25,10 50,20 T 100,20" stroke-width="0.25" />
+            <path d="M 0,30 Q 25,20 50,30 T 100,30" stroke-width="0.25" />
+            <path d="M 0,40 Q 25,30 50,40 T 100,40" stroke-width="0.25" />
+            <path d="M 0,50 Q 25,40 50,50 T 100,50" stroke-width="0.25" />
+            <path d="M 0,60 Q 25,50 50,60 T 100,60" stroke-width="0.25" />
+            <path d="M 0,70 Q 25,60 50,70 T 100,70" stroke-width="0.25" />
+            <path d="M 0,80 Q 25,70 50,80 T 100,80" stroke-width="0.25" />
+            <circle cx="50" cy="50" r="35" stroke-width="0.25" stroke-dasharray="2,2" />
+          </svg>
+        `
+      };
+    case 'teknik-dan-teknologi':
+      return {
+        gradient: 'linear-gradient(135deg, #fef8e7, #f1f5f9)',
+        accentColor: '#d97706',
+        textColor: '#451a03',
+        patternSvg: `
+          <svg xmlns="http://www.w3.org/2000/svg" style="position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0.06; stroke: #d97706; fill: none;" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <polygon points="50,15 75,30 75,60 50,75 25,60 25,30" stroke-width="0.25" />
+            <polygon points="50,25 68,35 68,55 50,65 32,55 32,35" stroke-width="0.25" />
+            <polygon points="50,5 90,28 90,72 50,95 10,72 10,28" stroke-width="0.15" stroke-dasharray="2,2" />
+            <line x1="50" y1="5" x2="50" y2="95" stroke-width="0.15" stroke-dasharray="2,2" />
+            <line x1="10" y1="28" x2="90" y2="72" stroke-width="0.15" stroke-dasharray="2,2" />
+            <line x1="10" y1="72" x2="90" y2="28" stroke-width="0.15" stroke-dasharray="2,2" />
+            <circle cx="50" cy="15" r="1" fill="#d97706" />
+            <circle cx="75" cy="30" r="1" fill="#d97706" />
+            <circle cx="75" cy="60" r="1" fill="#d97706" />
+            <circle cx="50" cy="75" r="1" fill="#d97706" />
+            <circle cx="25" cy="60" r="1" fill="#d97706" />
+            <circle cx="25" cy="30" r="1" fill="#d97706" />
+          </svg>
+        `
+      };
+    case 'agama-dan-peradaban-islam':
+      return {
+        gradient: 'linear-gradient(135deg, #f0fdfa, #ecfdf5)',
+        accentColor: '#0d9488',
+        textColor: '#042f2e',
+        patternSvg: `
+          <svg xmlns="http://www.w3.org/2000/svg" style="position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0.06; stroke: #0d9488; fill: none;" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <rect x="30" y="30" width="40" height="40" transform="rotate(0 50 50)" stroke-width="0.25" />
+            <rect x="30" y="30" width="40" height="40" transform="rotate(45 50 50)" stroke-width="0.25" />
+            <circle cx="50" cy="50" r="28" stroke-width="0.25" />
+            <circle cx="50" cy="50" r="35" stroke-width="0.15" stroke-dasharray="1,1" />
+            <polygon points="50,5 52,12 59,12 53,16 55,23 50,19 45,23 47,16 41,12 48,12" stroke-width="0.15" />
+            <polygon points="50,95 52,88 59,88 53,84 55,77 50,81 45,77 47,84 41,88 48,88" stroke-width="0.15" />
+            <polygon points="5,50 12,52 12,59 16,53 23,55 19,50 23,45 16,47 12,41 12,48" stroke-width="0.15" />
+            <polygon points="95,50 88,52 88,59 84,53 77,55 81,50 77,45 84,47 88,41 88,48" stroke-width="0.15" />
+          </svg>
+        `
+      };
+    default:
+      return {
+        gradient: 'linear-gradient(135deg, #f8fafc, #f1f5f9)',
+        accentColor: '#4f46e5',
+        textColor: '#1e1b4b',
+        patternSvg: `
+          <svg xmlns="http://www.w3.org/2000/svg" style="position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0.06; stroke: #4f46e5; fill: none;" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <circle cx="50" cy="50" r="30" stroke-width="0.25" />
+            <line x1="0" y1="0" x2="100" y2="100" stroke-width="0.25" stroke-dasharray="2,2" />
+            <line x1="100" y1="0" x2="0" y2="100" stroke-width="0.25" stroke-dasharray="2,2" />
+          </svg>
+        `
+      };
+  }
+}
+
 export default function EditorPublications() {
   const { user } = useAuth();
   
@@ -364,203 +600,173 @@ export default function EditorPublications() {
 
   // Printable cover window trigger
   const handlePrintCover = () => {
-    if (!selectedJournal || !selectedVolume || !selectedIssue) return;
-    
-    // Calculate cover color matching Publikasi.tsx
-    let gradient = 'linear-gradient(135deg, #334155, #0f172a)';
-    let accentColor = '#6366f1';
-    const slug = selectedJournal.slug;
-    if (slug === 'audit-kebijakan-publik') {
-      gradient = 'linear-gradient(135deg, #1e293b, #0f172a)';
-      accentColor = '#818cf8';
-    } else if (slug === 'hukum-dan-keadilan') {
-      gradient = 'linear-gradient(135deg, #450a0a, #0c0a09)';
-      accentColor = '#ef4444';
-    } else if (slug === 'pendidikan-dan-pembelajaran') {
-      gradient = 'linear-gradient(135deg, #064e3b, #022c22)';
-      accentColor = '#34d399';
-    } else if (slug === 'teknik-dan-teknologi') {
-      gradient = 'linear-gradient(135deg, #78350f, #09090b)';
-      accentColor = '#fbbf24';
-    } else if (slug === 'agama-dan-peradaban-islam') {
-      gradient = 'linear-gradient(135deg, #115e59, #0f172a)';
-      accentColor = '#2dd4bf';
-    }
+    if (selectedJournal && selectedVolume && selectedIssue) {
+      const printStyle = getJournalStyleForPrint(selectedJournal.slug);
 
-    const articlesTOC = compiledArticles.map((art, idx) => `
-      <div style="font-size: 14px; border-left: 2px solid rgba(255,255,255,0.2); padding-left: 10px; margin-bottom: 12px; font-family: sans-serif; text-align: left;">
-        <span style="font-weight: bold; opacity: 0.6;">${idx + 1}.</span>
-        ${art.articles?.title}
-        <div style="font-size: 11px; opacity: 0.7; margin-top: 2px; font-style: italic;">
-          Oleh: ${art.articles?.article_authors?.map((a: any) => a.full_name).join(', ') || 'Penulis'}
+      const articlesTOC = compiledArticles.map((art, idx) => `
+        <div style="font-size: 14px; border-left: 2px solid ${printStyle.accentColor}; padding-left: 10px; margin-bottom: 12px; font-family: sans-serif; text-align: left; color: #334155;">
+          <span style="font-weight: bold; color: #64748b;">${idx + 1}.</span>
+          <span style="font-weight: bold; color: #1e293b;">${art.articles?.title}</span>
+          <div style="font-size: 11px; color: #64748b; margin-top: 2px; font-style: italic;">
+            Oleh: ${art.articles?.article_authors?.map((a: any) => a.full_name).join(', ') || 'Penulis'}
+          </div>
         </div>
-      </div>
-    `).join('');
+      `).join('');
 
-    const printWindow = window.open('', '_blank');
-    if (printWindow) {
-      printWindow.document.write(`
-        <html>
-          <head>
-            <title>Cover Jurnal - ${selectedJournal.name}</title>
-            <style>
-              @page {
-                size: A4;
-                margin: 0;
-              }
-              * {
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-                box-sizing: border-box;
-              }
-              body {
-                margin: 0;
-                padding: 0;
-                font-family: 'Times New Roman', Times, serif;
-                background: ${gradient} !important;
-                color: white !important;
-                width: 210mm;
-                height: 297mm;
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-                padding: 30mm 20mm;
-              }
-              .header {
-                border-bottom: 2px solid rgba(255,255,255,0.2);
-                padding-bottom: 15px;
-                text-align: center;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 10px;
-              }
-              .header img {
-                height: 80px;
-                object-fit: contain;
-                filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
-              }
-              .header {
-                border-bottom: 2px solid rgba(255,255,255,0.2);
-                padding-bottom: 15px;
-                text-align: center;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 10px;
-              }
-              .title-container {
-                flex-grow: 1;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                margin-top: 10mm;
-              }
-              .title {
-                font-size: 28px;
-                font-weight: bold;
-                line-height: 1.2;
-                margin-bottom: 10px;
-                text-transform: uppercase;
-                letter-spacing: 1px;
-                text-align: left;
-              }
-              .accent-bar {
-                width: 50mm;
-                height: 4px;
-                background-color: ${accentColor};
-                margin-bottom: 20px;
-              }
-              .issue-badge {
-                font-size: 14px;
-                font-family: Arial, sans-serif;
-                font-weight: bold;
-                background-color: rgba(255,255,255,0.15);
-                padding: 5px 12px;
-                border-radius: 4px;
-                width: max-content;
-                margin-bottom: 30px;
-              }
-              .toc-heading {
-                font-size: 12px;
-                font-family: Arial, sans-serif;
-                text-transform: uppercase;
-                letter-spacing: 1.5px;
-                color: rgba(255,255,255,0.6);
-                margin-bottom: 15px;
-                font-weight: bold;
-                text-align: left;
-              }
-              .footer {
-                border-top: 1px solid rgba(255,255,255,0.15);
-                padding-top: 15px;
-                display: flex;
-                justify-content: space-between;
-                font-size: 12px;
-                font-family: Arial, sans-serif;
-                opacity: 0.7;
-                letter-spacing: 1px;
-              }
-            </style>
-          </head>
-          <body>
-            <div class="header">
-              <img src="https://rjrakp.com/logo-rjrakp.png" alt="Logo RJRAKP" />
-            </div>
-            
-            <div class="title-container">
-              <div class="title">${selectedJournal.name}</div>
-              <div class="accent-bar"></div>
-              
-              <div class="issue-badge">
-                ${selectedVolume.volume_number}, ${selectedIssue.issue_number}, Tahun ${selectedVolume.year}
+      const printWindow = window.open('', '_blank');
+      if (printWindow) {
+        printWindow.document.write(`
+          <html>
+            <head>
+              <title>Cover Jurnal - ${selectedJournal.name}</title>
+              <style>
+                @page {
+                  size: A4;
+                  margin: 0;
+                }
+                * {
+                  -webkit-print-color-adjust: exact !important;
+                  print-color-adjust: exact !important;
+                  box-sizing: border-box;
+                }
+                body {
+                  margin: 0;
+                  padding: 0;
+                  font-family: 'Times New Roman', Times, serif;
+                  background: ${printStyle.gradient} !important;
+                  color: #334155 !important;
+                  width: 210mm;
+                  height: 297mm;
+                  display: flex;
+                  flex-direction: column;
+                  justify-content: space-between;
+                  padding: 30mm 20mm;
+                  position: relative;
+                }
+                .header {
+                  text-align: center;
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  margin-bottom: 15px;
+                  z-index: 10;
+                }
+                .header-logo-container {
+                  background-color: white !important;
+                  border: 1px solid rgba(0,0,0,0.08);
+                  border-radius: 16px;
+                  padding: 12px 30px;
+                  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  height: 70px;
+                }
+                .header-logo-container img {
+                  height: 46px;
+                  object-fit: contain;
+                }
+                .title-container {
+                  flex-grow: 1;
+                  display: flex;
+                  flex-direction: column;
+                  justify-content: center;
+                  margin-top: 10mm;
+                  z-index: 10;
+                }
+                .title {
+                  font-size: 28px;
+                  font-weight: bold;
+                  line-height: 1.2;
+                  margin-bottom: 10px;
+                  text-transform: uppercase;
+                  letter-spacing: 1px;
+                  text-align: left;
+                  color: ${printStyle.textColor} !important;
+                }
+                .accent-bar {
+                  width: 50mm;
+                  height: 4px;
+                  background-color: ${printStyle.accentColor};
+                  margin-bottom: 20px;
+                }
+                .issue-badge {
+                  font-size: 14px;
+                  font-family: Arial, sans-serif;
+                  font-weight: bold;
+                  background-color: ${printStyle.accentColor};
+                  color: white !important;
+                  padding: 6px 16px;
+                  border-radius: 20px;
+                  width: max-content;
+                  margin-bottom: 30px;
+                  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+                }
+                .toc-heading {
+                  font-size: 12px;
+                  font-family: Arial, sans-serif;
+                  text-transform: uppercase;
+                  letter-spacing: 1.5px;
+                  color: #64748b;
+                  margin-bottom: 15px;
+                  font-weight: bold;
+                  text-align: left;
+                }
+                .footer {
+                  border-top: 1px solid rgba(0,0,0,0.08);
+                  padding-top: 15px;
+                  display: flex;
+                  justify-content: space-between;
+                  font-size: 12px;
+                  font-family: Arial, sans-serif;
+                  color: #64748b;
+                  font-weight: bold;
+                  letter-spacing: 1px;
+                  z-index: 10;
+                }
+              </style>
+            </head>
+            <body>
+              <!-- Watermark pattern -->
+              ${printStyle.patternSvg}
+
+              <div class="header">
+                <div class="header-logo-container">
+                  <img src="${window.location.origin}/logo.png" alt="Logo RJRAKP" />
+                </div>
               </div>
               
-              <div class="toc-heading">Daftar Artikel (Table of Contents)</div>
-              <div style="max-height: 140mm; overflow: hidden; padding-top: 5px;">
-                ${articlesTOC || '<div style="font-style: italic; opacity: 0.5;">Belum ada artikel terbit di issue ini.</div>'}
+              <div class="title-container">
+                <div class="title">${selectedJournal.name}</div>
+                <div class="accent-bar"></div>
+                
+                <div class="issue-badge">
+                  ${selectedVolume.volume_number}, ${selectedIssue.issue_number}, Tahun ${selectedVolume.year}
+                </div>
+                
+                <div class="toc-heading">Daftar Artikel (Table of Contents)</div>
+                <div style="max-height: 140mm; overflow: hidden; padding-top: 5px;">
+                  ${articlesTOC || '<div style="font-style: italic; opacity: 0.5;">Belum ada artikel terbit di issue ini.</div>'}
+                </div>
               </div>
-            </div>
-            
-            <div class="footer">
-              <span>P-ISSN: ${selectedJournal.p_issn || '-'}</span>
-              <span>E-ISSN: ${selectedJournal.e_issn || '-'}</span>
-            </div>
-            
-            <script>
-              window.onload = function() {
-                window.print();
-              };
-            </script>
-          </body>
-        </html>
-      `);
-      printWindow.document.close();
+              
+              <div class="footer">
+                <span>P-ISSN: ${selectedJournal.p_issn || '-'}</span>
+                <span>E-ISSN: ${selectedJournal.e_issn || '-'}</span>
+              </div>
+              
+              <script>
+                window.onload = function() {
+                  window.print();
+                };
+              </script>
+            </body>
+          </html>
+        `);
+        printWindow.document.close();
+      }
     }
   };
-
-  // Determine gradient color based on slug for Cover Live Preview
-  let coverGradient = 'from-slate-700 to-indigo-950';
-  let accentBorder = 'border-brand-500';
-  if (selectedJournal) {
-    const slug = selectedJournal.slug;
-    if (slug === 'audit-kebijakan-publik') {
-      coverGradient = 'from-slate-800 to-indigo-950';
-      accentBorder = 'border-indigo-400';
-    } else if (slug === 'hukum-dan-keadilan') {
-      coverGradient = 'from-rose-950 via-red-950 to-stone-950';
-      accentBorder = 'border-red-500';
-    } else if (slug === 'pendidikan-dan-pembelajaran') {
-      coverGradient = 'from-emerald-900 via-teal-950 to-emerald-950';
-      accentBorder = 'border-emerald-400';
-    } else if (slug === 'teknik-dan-teknologi') {
-      coverGradient = 'from-amber-900 via-stone-900 to-zinc-950';
-      accentBorder = 'border-amber-400';
-    } else if (slug === 'agama-dan-peradaban-islam') {
-      coverGradient = 'from-teal-900 via-emerald-900 to-slate-950';
-      accentBorder = 'border-teal-400';
-    }
-  }
 
   return (
     <DashboardLayout>
@@ -646,47 +852,60 @@ export default function EditorPublications() {
               {selectedJournal && selectedVolume && selectedIssue ? (
                 <>
                   {/* Journal Cover */}
-                  <div className={`w-64 h-90 rounded-2xl shadow-2xl relative overflow-hidden flex flex-col text-white bg-gradient-to-br ${coverGradient} border border-white/10 p-5 select-none shrink-0`}>
-                    <div className="absolute -right-16 -top-16 w-36 h-36 rounded-full bg-white/5 blur-xl" />
-                    <div className="relative z-10 w-full">
-                      <div className="border-b-2 border-white/20 pb-4 mb-4 flex flex-col items-center justify-center text-center w-full">
-                        <img src="/logo-rjrakp.png" alt="Logo RJRAKP" className="h-16 w-auto mx-auto object-contain filter brightness-0 invert opacity-100 drop-shadow-md" />
+                  {(() => {
+                    const style = getJournalStyle(selectedJournal.slug);
+                    return (
+                      <div className={`w-64 h-90 rounded-2xl shadow-xl relative overflow-hidden flex flex-col bg-gradient-to-br ${style.bg} border ${style.border} p-5 select-none shrink-0 text-slate-800`}>
+                        {/* SVG Watermark Pattern */}
+                        {style.pattern}
+
+                        {/* Decorative background glow */}
+                        <div className="absolute -right-16 -top-16 w-36 h-36 rounded-full bg-white/40 blur-xl pointer-events-none" />
+                        
+                        {/* Logo / Header */}
+                        <div className="bg-white rounded-xl py-2.5 px-4 shadow-sm border border-slate-200/50 z-10 flex items-center justify-center text-center w-full mb-4 shrink-0">
+                          <img src="/logo.png" alt="Logo RJRAKP" className="h-10 w-auto object-contain" />
+                        </div>
+
+                        {/* Journal Title */}
+                        <div className="flex-1 z-10 flex flex-col justify-start">
+                          <h2 className={`text-[13px] font-serif font-black leading-snug mb-1.5 uppercase tracking-wide line-clamp-3 ${style.text}`}>
+                            {selectedJournal.name}
+                          </h2>
+                          <div className={`w-8 h-0.5 border-t-2 ${style.accentColor} mb-3`} />
+                          
+                          {/* Issue & Date */}
+                          <p className={`text-[9px] font-bold ${style.badgeText} ${style.badgeBg} px-2.5 py-0.5 rounded-full w-max shadow-sm mb-4`}>
+                            {selectedVolume.volume_number}, {selectedIssue.issue_number}, {selectedVolume.year}
+                          </p>
+
+                          {/* Small List of articles on cover */}
+                          <div className="space-y-1.5 mt-1">
+                            <p className="text-[9px] uppercase font-black tracking-wider text-slate-400">Daftar Isi / TOC:</p>
+                            {compiledArticles.length === 0 ? (
+                              <p className="text-[8.5px] italic text-slate-400">Belum ada artikel terbit.</p>
+                            ) : (
+                              compiledArticles.slice(0, 4).map((pub, idx) => (
+                                <div key={pub.id} className="text-[8.5px] leading-snug text-slate-600 line-clamp-2 border-l border-slate-200 pl-2">
+                                  <span className="font-bold text-slate-400 mr-1">{idx + 1}.</span>
+                                  {pub.articles?.title}
+                                </div>
+                              ))
+                            )}
+                            {compiledArticles.length > 4 && (
+                              <p className="text-[7.5px] italic text-slate-400 pl-2">dan {compiledArticles.length - 4} artikel lainnya...</p>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Footer with ISSN */}
+                        <div className="border-t border-slate-200/60 pt-2.5 mt-auto flex justify-between text-[8px] text-slate-400 z-10 tracking-widest uppercase font-bold">
+                          <span>P-ISSN: {selectedJournal.p_issn || '-'}</span>
+                          <span>E-ISSN: {selectedJournal.e_issn || '-'}</span>
+                        </div>
                       </div>
-                    </div>
-
-                    <div className="flex-1 z-10 flex flex-col justify-start">
-                      <h2 className="text-base font-serif font-black leading-tight mb-2 uppercase tracking-wide line-clamp-3">
-                        {selectedJournal.name}
-                      </h2>
-                      <div className={`w-8 h-1 border-t-2 ${accentBorder} mb-3`} />
-                      
-                      <p className="text-[10px] font-bold text-white/90 mb-4 bg-white/10 px-2 py-0.5 rounded w-max">
-                        {selectedVolume.volume_number}, {selectedIssue.issue_number}, {selectedVolume.year}
-                      </p>
-
-                      <div className="space-y-2 mt-2">
-                        <p className="text-[9.5px] uppercase font-black tracking-wider text-white/60">Daftar Isi / TOC:</p>
-                        {compiledArticles.length === 0 ? (
-                          <p className="text-[9px] italic text-white/50">Belum ada artikel terbit.</p>
-                        ) : (
-                          compiledArticles.slice(0, 4).map((pub, idx) => (
-                            <div key={pub.id} className="text-[9px] leading-snug text-white/90 line-clamp-2 border-l border-white/20 pl-2">
-                              <span className="font-bold text-white/60 mr-1">{idx + 1}.</span>
-                              {pub.articles?.title}
-                            </div>
-                          ))
-                        )}
-                        {compiledArticles.length > 4 && (
-                          <p className="text-[8px] italic text-white/50 pl-2">dan {compiledArticles.length - 4} artikel lainnya...</p>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="border-t border-white/10 pt-3 mt-auto flex justify-between text-[8px] text-white/60 z-10 tracking-widest uppercase font-bold">
-                      <span>P-ISSN: {selectedJournal.p_issn || '-'}</span>
-                      <span>E-ISSN: {selectedJournal.e_issn || '-'}</span>
-                    </div>
-                  </div>
+                    );
+                  })()}
 
                   <button
                     onClick={handlePrintCover}

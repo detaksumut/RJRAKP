@@ -16,72 +16,186 @@ interface JournalCoverProps {
   articles: any[];
 }
 
-function JournalCover({ name, slug, volume, issue, year, eIssn, pIssn, articles }: JournalCoverProps) {
-  // Determine gradient color based on slug
-  let gradient = 'from-slate-700 to-indigo-950';
-  let accentColor = 'border-brand-500';
-  if (slug === 'audit-kebijakan-publik') {
-    gradient = 'from-slate-800 to-indigo-950';
-    accentColor = 'border-indigo-400';
-  } else if (slug === 'hukum-dan-keadilan') {
-    gradient = 'from-rose-950 via-red-950 to-stone-950';
-    accentColor = 'border-red-500';
-  } else if (slug === 'pendidikan-dan-pembelajaran') {
-    gradient = 'from-emerald-900 via-teal-950 to-emerald-950';
-    accentColor = 'border-emerald-400';
-  } else if (slug === 'teknik-dan-teknologi') {
-    gradient = 'from-amber-900 via-stone-900 to-zinc-950';
-    accentColor = 'border-amber-400';
-  } else if (slug === 'agama-dan-peradaban-islam') {
-    gradient = 'from-teal-900 via-emerald-900 to-slate-950';
-    accentColor = 'border-teal-400';
+function getJournalStyle(slug: string) {
+  switch (slug) {
+    case 'audit-kebijakan-publik':
+      return {
+        bg: 'from-slate-55 to-indigo-50/50',
+        text: 'text-indigo-950',
+        accentColor: 'border-indigo-600',
+        badgeBg: 'bg-indigo-600',
+        badgeText: 'text-white',
+        border: 'border-indigo-100',
+        pattern: (
+          <svg xmlns="http://www.w3.org/2000/svg" className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.06] stroke-indigo-600 fill-none" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <circle cx="50" cy="50" r="15" strokeWidth="0.25" />
+            <circle cx="50" cy="50" r="30" strokeWidth="0.25" />
+            <circle cx="50" cy="50" r="45" strokeWidth="0.25" />
+            <circle cx="50" cy="50" r="60" strokeWidth="0.25" />
+            <line x1="50" y1="0" x2="50" y2="100" strokeWidth="0.25" strokeDasharray="1,1" />
+            <line x1="0" y1="50" x2="100" y2="50" strokeWidth="0.25" strokeDasharray="1,1" />
+            <line x1="15" y1="15" x2="85" y2="85" strokeWidth="0.25" strokeDasharray="1,1" />
+            <line x1="15" y1="85" x2="85" y2="15" strokeWidth="0.25" strokeDasharray="1,1" />
+          </svg>
+        )
+      };
+    case 'hukum-dan-keadilan':
+      return {
+        bg: 'from-stone-55 to-rose-50/60',
+        text: 'text-rose-950',
+        accentColor: 'border-rose-600',
+        badgeBg: 'bg-rose-600',
+        badgeText: 'text-white',
+        border: 'border-rose-100',
+        pattern: (
+          <svg xmlns="http://www.w3.org/2000/svg" className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.05] stroke-rose-700 fill-none" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path d="M20,90 L80,90 M25,90 L25,10 M35,90 L35,10 M45,90 L45,10 M55,90 L55,10 M65,90 L65,10 M75,90 L75,10" strokeWidth="0.5" />
+            <rect x="22" y="7" width="56" height="3" rx="0.5" strokeWidth="0.5" />
+            <rect x="18" y="90" width="64" height="4" rx="0.5" strokeWidth="0.5" />
+            <line x1="0" y1="25" x2="100" y2="45" strokeWidth="0.25" strokeDasharray="2,2" />
+            <line x1="0" y1="45" x2="100" y2="65" strokeWidth="0.25" strokeDasharray="2,2" />
+          </svg>
+        )
+      };
+    case 'pendidikan-dan-pembelajaran':
+      return {
+        bg: 'from-emerald-55/50 to-teal-50/50',
+        text: 'text-emerald-950',
+        accentColor: 'border-emerald-600',
+        badgeBg: 'bg-emerald-600',
+        badgeText: 'text-white',
+        border: 'border-emerald-100',
+        pattern: (
+          <svg xmlns="http://www.w3.org/2000/svg" className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.06] stroke-emerald-600 fill-none" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path d="M 0,20 Q 25,10 50,20 T 100,20" strokeWidth="0.25" />
+            <path d="M 0,30 Q 25,20 50,30 T 100,30" strokeWidth="0.25" />
+            <path d="M 0,40 Q 25,30 50,40 T 100,40" strokeWidth="0.25" />
+            <path d="M 0,50 Q 25,40 50,50 T 100,50" strokeWidth="0.25" />
+            <path d="M 0,60 Q 25,50 50,60 T 100,60" strokeWidth="0.25" />
+            <path d="M 0,70 Q 25,60 50,70 T 100,70" strokeWidth="0.25" />
+            <path d="M 0,80 Q 25,70 50,80 T 100,80" strokeWidth="0.25" />
+            <circle cx="50" cy="50" r="35" strokeWidth="0.25" strokeDasharray="2,2" />
+          </svg>
+        )
+      };
+    case 'teknik-dan-teknologi':
+      return {
+        bg: 'from-amber-55/30 to-slate-100/50',
+        text: 'text-slate-900',
+        accentColor: 'border-amber-600',
+        badgeBg: 'bg-amber-600',
+        badgeText: 'text-white',
+        border: 'border-amber-100',
+        pattern: (
+          <svg xmlns="http://www.w3.org/2000/svg" className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.06] stroke-amber-600 fill-none" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <polygon points="50,15 75,30 75,60 50,75 25,60 25,30" strokeWidth="0.25" />
+            <polygon points="50,25 68,35 68,55 50,65 32,55 32,35" strokeWidth="0.25" />
+            <polygon points="50,5 90,28 90,72 50,95 10,72 10,28" strokeWidth="0.15" strokeDasharray="2,2" />
+            <line x1="50" y1="5" x2="50" y2="95" strokeWidth="0.15" strokeDasharray="2,2" />
+            <line x1="10" y1="28" x2="90" y2="72" strokeWidth="0.15" strokeDasharray="2,2" />
+            <line x1="10" y1="72" x2="90" y2="28" strokeWidth="0.15" strokeDasharray="2,2" />
+            <circle cx="50" cy="15" r="1" className="fill-amber-600" />
+            <circle cx="75" cy="30" r="1" className="fill-amber-600" />
+            <circle cx="75" cy="60" r="1" className="fill-amber-600" />
+            <circle cx="50" cy="75" r="1" className="fill-amber-600" />
+            <circle cx="25" cy="60" r="1" className="fill-amber-600" />
+            <circle cx="25" cy="30" r="1" className="fill-amber-600" />
+          </svg>
+        )
+      };
+    case 'agama-dan-peradaban-islam':
+      return {
+        bg: 'from-teal-55 to-emerald-50/50',
+        text: 'text-teal-950',
+        accentColor: 'border-teal-600',
+        badgeBg: 'bg-teal-600',
+        badgeText: 'text-white',
+        border: 'border-teal-100',
+        pattern: (
+          <svg xmlns="http://www.w3.org/2000/svg" className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.06] stroke-teal-600 fill-none" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <rect x="30" y="30" width="40" height="40" transform="rotate(0 50 50)" strokeWidth="0.25" />
+            <rect x="30" y="30" width="40" height="40" transform="rotate(45 50 50)" strokeWidth="0.25" />
+            <circle cx="50" cy="50" r="28" strokeWidth="0.25" />
+            <circle cx="50" cy="50" r="35" strokeWidth="0.15" strokeDasharray="1,1" />
+            <polygon points="50,5 52,12 59,12 53,16 55,23 50,19 45,23 47,16 41,12 48,12" strokeWidth="0.15" />
+            <polygon points="50,95 52,88 59,88 53,84 55,77 50,81 45,77 47,84 41,88 48,88" strokeWidth="0.15" />
+            <polygon points="5,50 12,52 12,59 16,53 23,55 19,50 23,45 16,47 12,41 12,48" strokeWidth="0.15" />
+            <polygon points="95,50 88,52 88,59 84,53 77,55 81,50 77,45 84,47 88,41 88,48" strokeWidth="0.15" />
+          </svg>
+        )
+      };
+    default:
+      return {
+        bg: 'from-slate-55 to-indigo-50/50',
+        text: 'text-slate-900',
+        accentColor: 'border-brand-600',
+        badgeBg: 'bg-brand-600',
+        badgeText: 'text-white',
+        border: 'border-slate-100',
+        pattern: (
+          <svg xmlns="http://www.w3.org/2000/svg" className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.06] stroke-slate-500 fill-none" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <circle cx="50" cy="50" r="30" strokeWidth="0.25" />
+            <line x1="0" y1="0" x2="100" y2="100" strokeWidth="0.25" strokeDasharray="2,2" />
+            <line x1="100" y1="0" x2="0" y2="100" strokeWidth="0.25" strokeDasharray="2,2" />
+          </svg>
+        )
+      };
   }
+}
 
-  // Take first 4 articles to list on the cover page
+function JournalCover({ name, slug, volume, issue, year, eIssn, pIssn, articles }: JournalCoverProps) {
+  const style = getJournalStyle(slug);
   const coverArticles = articles.slice(0, 4);
 
   return (
-    <div className={`w-64 h-90 rounded-xl shadow-xl relative overflow-hidden flex flex-col text-white bg-gradient-to-br ${gradient} border border-white/10 p-5 select-none shrink-0 group hover:-translate-y-1 hover:shadow-2xl transition-all duration-300`}>
+    <div className={`w-64 h-90 rounded-2xl shadow-xl relative overflow-hidden flex flex-col bg-gradient-to-br ${style.bg} border ${style.border} p-5 select-none shrink-0 group hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 text-slate-800`}>
+      {/* SVG Watermark Pattern */}
+      {style.pattern}
+
       {/* Decorative background glow */}
-      <div className="absolute -right-16 -top-16 w-36 h-36 rounded-full bg-white/5 blur-xl group-hover:scale-110 transition-transform duration-500" />
+      <div className="absolute -right-16 -top-16 w-36 h-36 rounded-full bg-white/40 blur-xl group-hover:scale-110 transition-transform duration-500 pointer-events-none" />
       
       {/* Logo / Header */}
-      <div className="border-b border-white/20 pb-4 mb-4 z-10 flex flex-col items-center justify-center text-center w-full">
-        <img src="/logo-rjrakp.png" alt="Logo RJRAKP" className="h-16 w-auto mx-auto object-contain filter brightness-0 invert opacity-100 drop-shadow-md" />
+      <div className="bg-white rounded-xl py-2.5 px-4 shadow-sm border border-slate-200/50 z-10 flex items-center justify-center text-center w-full mb-4 shrink-0">
+        <img src="/logo.png" alt="Logo RJRAKP" className="h-10 w-auto object-contain" />
       </div>
 
       {/* Journal Title */}
       <div className="flex-1 z-10 flex flex-col justify-start">
-        <h2 className="text-base font-serif font-black leading-tight mb-2 uppercase tracking-wide line-clamp-3">
+        <h2 className={`text-[13px] font-serif font-black leading-snug mb-1.5 uppercase tracking-wide line-clamp-3 ${style.text}`}>
           {name}
         </h2>
-        <div className={`w-8 h-1 border-t-2 ${accentColor} mb-3`} />
+        <div className={`w-8 h-0.5 border-t-2 ${style.accentColor} mb-3`} />
         
         {/* Issue & Date */}
-        <p className="text-[10px] font-bold text-white/90 mb-4 bg-white/10 px-2 py-0.5 rounded w-max">
+        <p className={`text-[9px] font-bold ${style.badgeText} ${style.badgeBg} px-2.5 py-0.5 rounded-full w-max shadow-sm mb-4`}>
           {volume}, {issue}, {year}
         </p>
 
         {/* Small List of articles on cover */}
-        <div className="space-y-2 mt-2">
-          <p className="text-[9.5px] uppercase font-black tracking-wider text-white/60">Daftar Isi / TOC:</p>
+        <div className="space-y-1.5 mt-1">
+          <p className="text-[9px] uppercase font-black tracking-wider text-slate-400">Daftar Isi / TOC:</p>
           {coverArticles.length === 0 ? (
-            <p className="text-[9px] italic text-white/50">Belum ada artikel terbit.</p>
+            <p className="text-[8.5px] italic text-slate-400">Belum ada artikel terbit.</p>
           ) : (
             coverArticles.map((pub, idx) => (
-              <div key={pub.id} className="text-[9px] leading-snug text-white/90 line-clamp-2 border-l border-white/20 pl-2 hover:text-white transition-colors">
-                <span className="font-bold text-white/60 mr-1">{idx + 1}.</span>
+              <div key={pub.id} className="text-[8.5px] leading-snug text-slate-600 line-clamp-2 border-l border-slate-200 pl-2 hover:text-slate-900 transition-colors">
+                <span className="font-bold text-slate-400 mr-1">{idx + 1}.</span>
                 {pub.articles?.title}
               </div>
             ))
           )}
           {articles.length > 4 && (
-            <p className="text-[8px] italic text-white/50 pl-2">dan {articles.length - 4} artikel lainnya...</p>
+            <p className="text-[7.5px] italic text-slate-400 pl-2">dan {articles.length - 4} artikel lainnya...</p>
           )}
         </div>
       </div>
 
-
+      {/* Footer with ISSN */}
+      <div className="border-t border-slate-200/60 pt-2.5 mt-auto flex justify-between text-[8px] text-slate-400 z-10 tracking-widest uppercase font-bold">
+        <span>P-ISSN: {pIssn || '-'}</span>
+        <span>E-ISSN: {eIssn || '-'}</span>
+      </div>
     </div>
   );
 }
@@ -283,19 +397,17 @@ export default function Publikasi() {
             <h2 className="text-xs font-bold text-academic-500 uppercase tracking-widest mb-6">Berkala Publikasi RJRAKP</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {journals.map(j => {
-                let gradient = 'from-slate-700 to-indigo-950';
-                if (j.slug === 'audit-kebijakan-publik') gradient = 'from-slate-800 to-indigo-950';
-                else if (j.slug === 'hukum-dan-keadilan') gradient = 'from-rose-950 via-red-950 to-stone-950';
-                else if (j.slug === 'pendidikan-dan-pembelajaran') gradient = 'from-emerald-900 via-teal-950 to-emerald-950';
-                else if (j.slug === 'teknik-dan-teknologi') gradient = 'from-amber-900 via-stone-900 to-zinc-950';
-                else if (j.slug === 'agama-dan-peradaban-islam') gradient = 'from-teal-900 via-emerald-900 to-slate-950';
+                const style = getJournalStyle(j.slug);
 
                 return (
                   <div key={j.id} className="bg-white border border-academic-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all flex p-4 gap-4 items-center">
-                    <div className={`w-20 h-28 rounded shadow bg-gradient-to-br ${gradient} flex flex-col justify-between p-2 text-white shrink-0 font-serif select-none`}>
-                      <span className="text-[6px] tracking-wider uppercase font-sans text-white/60">RJRAKP</span>
-                      <span className="text-[8px] font-black leading-tight uppercase line-clamp-3">{j.name}</span>
-                      <span className="text-[5px] text-white/50 text-right uppercase">Vol. 1 No. 1</span>
+                    <div className={`w-20 h-28 rounded-lg shadow-sm border ${style.border} bg-gradient-to-br ${style.bg} flex flex-col p-2 text-slate-800 shrink-0 font-serif select-none relative overflow-hidden`}>
+                      {style.pattern}
+                      <div className="bg-white rounded py-0.5 px-1 shadow-sm border border-slate-200/30 z-10 flex items-center justify-center shrink-0 mb-1.5">
+                        <img src="/logo.png" alt="Logo" className="h-3.5 w-auto object-contain" />
+                      </div>
+                      <span className={`text-[7px] font-black leading-tight uppercase line-clamp-3 ${style.text} mb-auto z-10`}>{j.name}</span>
+                      <span className="text-[5px] text-slate-400 text-right uppercase font-bold tracking-widest z-10">Vol. 1 No. 1</span>
                     </div>
                     <div className="flex-1 flex flex-col min-w-0">
                       <h3 className="text-sm font-bold text-academic-900 line-clamp-1 mb-1 font-serif">{j.name}</h3>
