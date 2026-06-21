@@ -1273,42 +1273,9 @@ export default function ArticleDetail() {
                         </div>
                       </div>
 
-                      {/* SECTION 5: Academic Profile Verification */}
-                      <div className="bg-slate-50 p-4 rounded-xl border border-academic-100 space-y-2">
-                        <h4 className="text-xs font-bold text-academic-500 uppercase tracking-wider">5. Academic Profile Verification</h4>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-[10px]">
-                          {(reportData.academic_profile_verification || []).map((prof: any, index: number) => {
-                            const fallbackUrl = () => {
-                              const author = article.article_authors?.[0];
-                              if (!author) return '';
-                              switch (prof.platform) {
-                                case 'SINTA':
-                                  return author.sinta_id ? `https://sinta.kemdiktisaintek.go.id/authors/profile/${author.sinta_id}` : '';
-                                case 'Scopus Author':
-                                  return author.scopus_id ? `https://www.scopus.com/authid/detail.uri?authorId=${author.scopus_id}` : '';
-                                case 'Web of Science':
-                                  return author.wos_id ? `https://www.webofscience.com/wos/author/record/${author.wos_id}` : '';
-                                default:
-                                  return '';
-                              }
-                            };
-                            const url = prof.url || fallbackUrl();
-                            const isVerified = prof.status === 'Verified' || !!url;
-                            return (
-                              <div key={index} className="bg-white p-2 rounded border border-academic-100 flex flex-col justify-between">
-                                <span className="text-academic-400 block font-bold">{prof.platform}</span>
-                                <span className={`font-black ${isVerified ? 'text-emerald-600' : 'text-academic-400'}`}>
-                                  {isVerified ? 'Verified' : 'Not Linked'}
-                                </span>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-
-                      {/* SECTION 6: Academic Governance Verification & Editorial Validation */}
+                      {/* SECTION 5: Academic Governance Verification & Editorial Validation */}
                       <div className="bg-slate-50 p-4 rounded-xl border border-academic-100 space-y-4">
-                        <h4 className="text-xs font-bold text-academic-500 uppercase tracking-wider">6. Academic Governance & Editorial Validation</h4>
+                        <h4 className="text-xs font-bold text-academic-500 uppercase tracking-wider">5. Academic Governance & Editorial Validation</h4>
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
                           <div className="bg-white p-2 rounded border border-academic-100">
                             <span className="text-academic-400 block font-semibold">Editor in Chief</span>
@@ -1353,9 +1320,9 @@ export default function ArticleDetail() {
                         </div>
                       </div>
 
-                      {/* SECTION 7: Audit Information */}
+                      {/* SECTION 6: Audit Information */}
                       <div className="bg-slate-50 p-4 rounded-xl border border-academic-100 space-y-2">
-                        <h4 className="text-xs font-bold text-academic-500 uppercase tracking-wider">7. Audit Information</h4>
+                        <h4 className="text-xs font-bold text-academic-500 uppercase tracking-wider">6. Audit Information</h4>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                           <div className="bg-white p-2 rounded border border-academic-100">
                             <span className="text-academic-400 block">Verification ID</span>

@@ -533,78 +533,7 @@ export default function SimilarityReport() {
                 </div>
               </div>
 
-              {/* SECTION 5: Academic Profile Verification */}
-              <div className="bg-white rounded-2xl border border-academic-200 p-6 shadow-sm">
-                <h3 className="font-serif font-bold text-academic-900 text-base mb-4 pb-2 border-b border-academic-100 flex items-center gap-2">
-                  <BookOpen className="w-5 h-5 text-brand-600" />
-                  Academic Profile Verification
-                </h3>
-
-                <div className="overflow-x-auto border border-academic-200 rounded-xl">
-                  <table className="min-w-full text-xs text-left border-collapse">
-                    <thead>
-                      <tr className="bg-slate-50 border-b border-academic-200 text-academic-500 font-bold uppercase tracking-wider">
-                        <th className="py-2.5 px-4 font-bold">Platform</th>
-                        <th className="py-2.5 px-4 font-bold w-36">Status</th>
-                        <th className="py-2.5 px-4 font-bold text-right">Profile Link</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {(reportData.academic_profile_verification || []).map((prof: any, idx: number) => {
-                        const fallbackUrl = () => {
-                          const author = article.article_authors?.[0];
-                          if (!author) return '';
-                          switch (prof.platform) {
-                            case 'SINTA':
-                              return author.sinta_id ? `https://sinta.kemdiktisaintek.go.id/authors/profile/${author.sinta_id}` : '';
-                            case 'Scopus Author':
-                              return author.scopus_id ? `https://www.scopus.com/authid/detail.uri?authorId=${author.scopus_id}` : '';
-                            case 'Web of Science':
-                              return author.wos_id ? `https://www.webofscience.com/wos/author/record/${author.wos_id}` : '';
-                            default:
-                              return '';
-                          }
-                        };
-                        const url = prof.url || fallbackUrl();
-                        const isVerified = prof.status === 'Verified' || !!url;
-
-                        return (
-                          <tr key={idx} className="border-b border-academic-100 hover:bg-slate-50">
-                            <td className="py-3 px-4 font-bold text-academic-800">
-                              {prof.platform}
-                            </td>
-                            <td className="py-3 px-4">
-                              <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase border ${
-                                isVerified 
-                                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
-                                  : 'bg-slate-50 text-slate-500 border-slate-200'
-                              }`}>
-                                {isVerified ? '✓ Verified' : '✕ Not Linked'}
-                              </span>
-                            </td>
-                            <td className="py-3 px-4 text-right">
-                              {url ? (
-                                <a 
-                                  href={url} 
-                                  target="_blank" 
-                                  rel="noopener noreferrer" 
-                                  className="inline-flex items-center gap-1 text-brand-700 font-bold hover:underline"
-                                >
-                                  Open Profile <ExternalLink className="w-3 h-3" />
-                                </a>
-                              ) : (
-                                <span className="text-academic-400 font-medium italic">Tidak Tersedia</span>
-                              )}
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              {/* SECTION 6: Academic Governance Verification & Editorial Validation */}
+              {/* SECTION 5: Academic Governance Verification & Editorial Validation */}
               <div className="bg-white rounded-2xl border border-academic-200 p-6 shadow-sm space-y-6">
                 <h3 className="font-serif font-bold text-academic-900 text-base pb-2 border-b border-academic-100 flex items-center gap-2">
                   <Award className="w-5 h-5 text-brand-600" />

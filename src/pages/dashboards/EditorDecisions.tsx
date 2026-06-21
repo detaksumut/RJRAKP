@@ -972,7 +972,7 @@ export default function EditorDecisions() {
                               </div>
                             </div>
 
-                            {/* Section 4 & 5: ORCID & Academic Profile Verification */}
+                            {/* Section 4 & 5: ORCID & Academic Identity Verification */}
                             <div className="bg-slate-50 p-4 rounded-xl border border-academic-100 space-y-3">
                               <h4 className="text-xs font-black text-academic-800 uppercase tracking-wider">Academic Identity Verification (Weighted 20%)</h4>
                               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
