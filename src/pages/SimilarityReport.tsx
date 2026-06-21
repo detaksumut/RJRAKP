@@ -110,7 +110,7 @@ export default function SimilarityReport() {
     // Build fallback report data if not present in DB JSON
     if (!reportData) {
       const doiExists = !!article.publications?.[0]?.doi;
-      const orcidExists = article.article_authors?.some((a: any) => a.orcid_id) || false;
+      const orcidExists = article.article_authors?.some((a: any) => a.orcid_id || a.orcid) || false;
       const activeAuthors = article.article_authors || [];
       const correspondingAuthor = activeAuthors.find((a: any) => a.is_corresponding) || activeAuthors[0] || null;
 
@@ -146,9 +146,9 @@ export default function SimilarityReport() {
           timestamp: article.similarity_checked_at || article.created_at
         },
         orcid_verification: {
-          orcid_id: correspondingAuthor?.orcid_id || '',
+          orcid_id: correspondingAuthor?.orcid_id || correspondingAuthor?.orcid || '',
           status: orcidExists ? 'Verified' : 'Not Verified',
-          profile_link: correspondingAuthor?.orcid_id ? (correspondingAuthor.orcid_id.includes('orcid.org') ? correspondingAuthor.orcid_id : `https://orcid.org/${correspondingAuthor.orcid_id}`) : ''
+          profile_link: correspondingAuthor?.orcid_id || correspondingAuthor?.orcid ? ((correspondingAuthor.orcid_id || correspondingAuthor.orcid).includes('orcid.org') ? (correspondingAuthor.orcid_id || correspondingAuthor.orcid) : `https://orcid.org/${correspondingAuthor.orcid_id || correspondingAuthor.orcid}`) : ''
         },
         academic_profile_verification: [
           { platform: 'SINTA', status: correspondingAuthor?.sinta_id ? 'Verified' : 'Not Available', url: correspondingAuthor?.sinta_id ? (correspondingAuthor.sinta_id.includes('sinta') ? correspondingAuthor.sinta_id : `https://sinta.kemdiktisaintek.go.id/authors/profile/${correspondingAuthor.sinta_id}`) : '' },
@@ -500,7 +500,7 @@ export default function SimilarityReport() {
                     <div>
                       <div className="text-[10px] uppercase font-bold text-academic-500 mb-0.5">Corresponding Author ORCID ID</div>
                       <div className="text-sm font-semibold font-mono text-academic-800">
-                        {reportData.orcid_verification?.orcid_id || 'ORCID belum ditautkan'}
+                        {(reportData.orcid_verification?.orcid_id || '').replace(/^https?:\/\/(?:www\.)?orcid\.org\//i, '') || 'ORCID belum ditautkan'}
                       </div>
                     </div>
                   </div>

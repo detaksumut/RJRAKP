@@ -157,12 +157,17 @@ export default function EditorDecisions() {
             setDuplicateRefs('0');
             setDoiStatus(selectedArticle.publications?.[0]?.doi ? 'Verified' : 'Not Verified');
             setDoiProvider('Crossref');
-            setOrcidStatus('Verified');
-            setSintaStatus('Verified');
+
+            const authors = selectedArticle.article_authors || [];
+            const corresponding = authors.find((a: any) => a.is_corresponding) || authors[0] || null;
+            const orcidExistsVal = authors.some((a: any) => a.orcid_id || a.orcid) || false;
+
+            setOrcidStatus(orcidExistsVal ? 'Verified' : 'Not Verified');
+            setSintaStatus(corresponding?.sinta_id ? 'Verified' : 'Not Available');
             setScholarStatus('Verified');
-            setScopusStatus('Verified');
+            setScopusStatus(corresponding?.scopus_id ? 'Verified' : 'Not Available');
             setRgStatus('Verified');
-            setWosStatus('Verified');
+            setWosStatus(corresponding?.wos_id ? 'Verified' : 'Not Available');
             setOpenaireStatus('Not Verified');
           }
         } catch (e) {
@@ -186,12 +191,17 @@ export default function EditorDecisions() {
         setDuplicateRefs('0');
         setDoiStatus(selectedArticle.publications?.[0]?.doi ? 'Verified' : 'Not Verified');
         setDoiProvider('Crossref');
-        setOrcidStatus('Verified');
-        setSintaStatus('Verified');
+
+        const authors = selectedArticle.article_authors || [];
+        const corresponding = authors.find((a: any) => a.is_corresponding) || authors[0] || null;
+        const orcidExistsVal = authors.some((a: any) => a.orcid_id || a.orcid) || false;
+
+        setOrcidStatus(orcidExistsVal ? 'Verified' : 'Not Verified');
+        setSintaStatus(corresponding?.sinta_id ? 'Verified' : 'Not Available');
         setScholarStatus('Verified');
-        setScopusStatus('Verified');
+        setScopusStatus(corresponding?.scopus_id ? 'Verified' : 'Not Available');
         setRgStatus('Verified');
-        setWosStatus('Verified');
+        setWosStatus(corresponding?.wos_id ? 'Verified' : 'Not Available');
         setOpenaireStatus('Not Verified');
       }
 
@@ -322,9 +332,9 @@ export default function EditorDecisions() {
             timestamp: new Date().toISOString()
           },
           orcid_verification: {
-            orcid_id: selectedArticle.article_authors?.[0]?.orcid_id || '',
+            orcid_id: selectedArticle.article_authors?.[0]?.orcid_id || selectedArticle.article_authors?.[0]?.orcid || '',
             status: orcidStatus,
-            profile_link: selectedArticle.article_authors?.[0]?.orcid_id ? `https://orcid.org/${selectedArticle.article_authors[0].orcid_id}` : ''
+            profile_link: selectedArticle.article_authors?.[0]?.orcid_id || selectedArticle.article_authors?.[0]?.orcid ? ((selectedArticle.article_authors[0].orcid_id || selectedArticle.article_authors[0].orcid).includes('orcid.org') ? (selectedArticle.article_authors[0].orcid_id || selectedArticle.article_authors[0].orcid) : `https://orcid.org/${selectedArticle.article_authors[0].orcid_id || selectedArticle.article_authors[0].orcid}`) : ''
           },
           academic_profile_verification: [
             { platform: 'SINTA', status: sintaStatus, url: selectedArticle.article_authors?.[0]?.sinta_id ? `https://sinta.kemdiktisaintek.go.id/authors/profile/${selectedArticle.article_authors[0].sinta_id}` : '' },

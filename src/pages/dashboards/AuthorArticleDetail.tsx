@@ -1528,7 +1528,7 @@ export default function AuthorArticleDetail() {
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                           <div className="bg-white p-2 rounded border border-academic-100">
                             <span className="text-academic-400 block">ORCID ID</span>
-                            <span className="font-bold text-academic-800 font-mono">{reportData.orcid_verification?.orcid_id || '-'}</span>
+                            <span className="font-bold text-academic-800 font-mono">{(reportData.orcid_verification?.orcid_id || '').replace(/^https?:\/\/(?:www\.)?orcid\.org\//i, '') || '-'}</span>
                           </div>
                           <div className="bg-white p-2 rounded border border-academic-100">
                             <span className="text-academic-400 block">ORCID Status</span>
