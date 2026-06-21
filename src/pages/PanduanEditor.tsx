@@ -74,7 +74,7 @@ export default function PanduanEditor() {
           
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {[
-              { title: '1. Pra-Pemeriksaan Naskah', icon: FileText, desc: 'Editor menerima naskah baru, menyaring kelayakan scope jurnal, kelengkapan berkas, dan tingkat plagiasi (Turnitin).' },
+              { title: '1. Pra-Pemeriksaan Naskah', icon: FileText, desc: 'Editor menerima naskah baru, menyaring kelayakan scope jurnal, kelengkapan berkas, dan melakukan verifikasi Laporan Integritas Akademik.' },
               { title: '2. Pencocokan Keahlian', icon: FileSearch, desc: 'Editor mencari Reviewer yang memiliki rekam jejak kepakaran yang cocok dengan subjek naskah secara double-blind.' },
               { title: '3. Penugasan Reviewer', icon: UserPlus, desc: 'Menetapkan setidaknya 2 Reviewer melalui dashboard editor, menyertakan manuskrip, dan menetapkan batas waktu review.' },
               { title: '4. Monitoring & Remind', icon: ClipboardList, desc: 'Memantau jalannya evaluasi sejawat, melakukan re-routing jika reviewer mengundurkan diri, dan mengirim reminder batas waktu.' },
@@ -123,10 +123,10 @@ export default function PanduanEditor() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
                 {
-                  title: 'Similarity Checker',
-                  tool: 'Turnitin & Plagiarism',
+                  title: 'Academic Integrity',
+                  tool: 'Integrity Verification',
                   icon: Fingerprint,
-                  desc: 'Pengecekan kesamaan teks otomatis di awal penerimaan naskah dengan toleransi kemiripan maksimal 20%.',
+                  desc: 'Evaluasi kepatuhan sitasi independen, validitas metadata DOI, keaslian profil dewan penulis, dan audit tata kelola redaksi.',
                   color: 'bg-rose-500/10 text-rose-400 border-rose-500/20'
                 },
                 {

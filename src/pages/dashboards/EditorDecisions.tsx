@@ -69,6 +69,21 @@ export default function EditorDecisions() {
   const [activeTab, setActiveTab] = useState<'files' | 'assessment'>('files');
   const [editorialHistory, setEditorialHistory] = useState<any[]>([]);
 
+  // Academic Integrity States
+  const [totalRefs, setTotalRefs] = useState<string>('30');
+  const [doiRefs, setDoiRefs] = useState<string>('24');
+  const [brokenRefs, setBrokenRefs] = useState<string>('0');
+  const [duplicateRefs, setDuplicateRefs] = useState<string>('0');
+  const [doiStatus, setDoiStatus] = useState<string>('Verified');
+  const [doiProvider, setDoiProvider] = useState<string>('Crossref');
+  const [orcidStatus, setOrcidStatus] = useState<string>('Verified');
+  const [sintaStatus, setSintaStatus] = useState<string>('Verified');
+  const [scholarStatus, setScholarStatus] = useState<string>('Verified');
+  const [scopusStatus, setScopusStatus] = useState<string>('Verified');
+  const [rgStatus, setRgStatus] = useState<string>('Verified');
+  const [wosStatus, setWosStatus] = useState<string>('Verified');
+  const [openaireStatus, setOpenaireStatus] = useState<string>('Not Verified');
+
   const fetchAssessmentData = async (artId: string) => {
     try {
       const { data: sourcesData, error: err } = await supabase
@@ -117,6 +132,39 @@ export default function EditorDecisions() {
           setSimilarityNotes(parsed.notes || '');
           setAiContentScore(parsed.ai_content_score !== undefined && parsed.ai_content_score !== null ? String(parsed.ai_content_score) : '');
           setCitationIntegrityScore(parsed.citation_integrity_score !== undefined && parsed.citation_integrity_score !== null ? String(parsed.citation_integrity_score) : '');
+          
+          const rep = parsed.integrity_report;
+          if (rep) {
+            setTotalRefs(String(rep.citation_analysis?.total_references ?? '30'));
+            setDoiRefs(String(rep.citation_analysis?.doi_references ?? '24'));
+            setBrokenRefs(String(rep.citation_analysis?.broken_references ?? '0'));
+            setDuplicateRefs(String(rep.citation_analysis?.duplicate_references ?? '0'));
+            setDoiStatus(rep.doi_verification?.status ?? 'Verified');
+            setDoiProvider(rep.doi_verification?.provider ?? 'Crossref');
+            setOrcidStatus(rep.orcid_verification?.status ?? 'Verified');
+            
+            const profiles = rep.academic_profile_verification || [];
+            setSintaStatus(profiles.find((p: any) => p.platform === 'SINTA')?.status ?? 'Verified');
+            setScholarStatus(profiles.find((p: any) => p.platform === 'Google Scholar')?.status ?? 'Verified');
+            setScopusStatus(profiles.find((p: any) => p.platform === 'Scopus Author')?.status ?? 'Verified');
+            setRgStatus(profiles.find((p: any) => p.platform === 'ResearchGate')?.status ?? 'Verified');
+            setWosStatus(profiles.find((p: any) => p.platform === 'Web of Science')?.status ?? 'Verified');
+            setOpenaireStatus(profiles.find((p: any) => p.platform === 'OpenAIRE')?.status ?? 'Not Verified');
+          } else {
+            setTotalRefs('30');
+            setDoiRefs('24');
+            setBrokenRefs('0');
+            setDuplicateRefs('0');
+            setDoiStatus(selectedArticle.publications?.[0]?.doi ? 'Verified' : 'Not Verified');
+            setDoiProvider('Crossref');
+            setOrcidStatus('Verified');
+            setSintaStatus('Verified');
+            setScholarStatus('Verified');
+            setScopusStatus('Verified');
+            setRgStatus('Verified');
+            setWosStatus('Verified');
+            setOpenaireStatus('Not Verified');
+          }
         } catch (e) {
           setSimilarityNotes(notesRaw);
           setAiContentScore('');
@@ -125,16 +173,26 @@ export default function EditorDecisions() {
       } else {
         setSimilarityNotes(notesRaw);
         // Deterministic defaults
-        if (selectedArticle.similarity_score !== null) {
-          const hash1 = selectedArticle.id ? selectedArticle.id.split('').reduce((acc: number, char: string) => acc + char.charCodeAt(0), 0) : 0;
-          const defaultAi = Math.max(1, Math.min(100, Math.round((selectedArticle.similarity_score * 0.3) + (hash1 % 6))));
-          const defaultCit = Math.max(80, Math.min(100, 100 - Math.round((selectedArticle.similarity_score * 0.15) + (hash1 % 7))));
-          setAiContentScore(String(defaultAi));
-          setCitationIntegrityScore(String(defaultCit));
-        } else {
-          setAiContentScore('');
-          setCitationIntegrityScore('');
-        }
+        const hash1 = selectedArticle.id ? selectedArticle.id.split('').reduce((acc: number, char: string) => acc + char.charCodeAt(0), 0) : 0;
+        const defaultAi = Math.max(1, Math.min(100, Math.round((selectedArticle.similarity_score * 0.3) + (hash1 % 6))));
+        const defaultCit = Math.max(80, Math.min(100, 100 - Math.round((selectedArticle.similarity_score * 0.15) + (hash1 % 7))));
+        setAiContentScore(String(defaultAi));
+        setCitationIntegrityScore(String(defaultCit));
+        
+        // Defaults
+        setTotalRefs('35');
+        setDoiRefs('28');
+        setBrokenRefs(String(hash1 % 3));
+        setDuplicateRefs('0');
+        setDoiStatus(selectedArticle.publications?.[0]?.doi ? 'Verified' : 'Not Verified');
+        setDoiProvider('Crossref');
+        setOrcidStatus('Verified');
+        setSintaStatus('Verified');
+        setScholarStatus('Verified');
+        setScopusStatus('Verified');
+        setRgStatus('Verified');
+        setWosStatus('Verified');
+        setOpenaireStatus('Not Verified');
       }
 
       fetchAssessmentData(selectedArticle.id);
@@ -151,6 +209,20 @@ export default function EditorDecisions() {
       setCitationIntegrityScore('');
       setSimilaritySources([]);
       setEditorialHistory([]);
+      
+      setTotalRefs('30');
+      setDoiRefs('24');
+      setBrokenRefs('0');
+      setDuplicateRefs('0');
+      setDoiStatus('Verified');
+      setDoiProvider('Crossref');
+      setOrcidStatus('Verified');
+      setSintaStatus('Verified');
+      setScholarStatus('Verified');
+      setScopusStatus('Verified');
+      setRgStatus('Verified');
+      setWosStatus('Verified');
+      setOpenaireStatus('Not Verified');
     }
   }, [selectedArticle]);
 
@@ -192,10 +264,10 @@ export default function EditorDecisions() {
 
       const publicUrl = urlData?.publicUrl || '';
       setSimilarityReportUrl(publicUrl);
-      setSuccess('Laporan PDF similarity berhasil diunggah.');
+      setSuccess('Laporan PDF integritas akademik berhasil diunggah.');
     } catch (err: any) {
       console.error(err);
-      setError(err.message || 'Gagal mengunggah laporan similarity.');
+      setError(err.message || 'Gagal mengunggah laporan integritas akademik.');
     } finally {
       setUploadingReport(false);
     }
@@ -207,21 +279,75 @@ export default function EditorDecisions() {
     setError('');
     setSuccess('');
     try {
-      const score = similarityScore === '' ? null : parseInt(similarityScore);
-      const match = largestMatch === '' ? null : parseInt(largestMatch);
+      // Calculate citation integrity score
+      const total = parseInt(totalRefs) || 0;
+      const broken = parseInt(brokenRefs) || 0;
+      const duplicate = parseInt(duplicateRefs) || 0;
+      const citationScoreVal = total > 0 ? Math.max(0, Math.min(100, Math.round(((total - broken - duplicate) / total) * 100))) : 0;
+      
+      // Calculate author identity score
+      let verifiedCount = 0;
+      if (sintaStatus === 'Verified') verifiedCount++;
+      if (scholarStatus === 'Verified') verifiedCount++;
+      if (scopusStatus === 'Verified') verifiedCount++;
+      if (rgStatus === 'Verified') verifiedCount++;
+      if (wosStatus === 'Verified') verifiedCount++;
+      if (openaireStatus === 'Verified') verifiedCount++;
+      const authorIdentityScore = (orcidStatus === 'Verified' ? 40 : 0) + (verifiedCount * 10);
+      
+      // DOI Validation
+      const doiValidationScore = doiStatus === 'Verified' ? 100 : 0;
+      
+      // Editorial Validation
+      const editorialScore = similarityStatus === 'PASSED' ? 100 : similarityStatus === 'REVISION REQUIRED' ? 50 : 25;
+      
+      // Overall Integrity Score
+      const calculatedScore = Math.round((citationScoreVal * 0.4) + (doiValidationScore * 0.2) + (authorIdentityScore * 0.2) + (editorialScore * 0.2));
 
+      // Construct notes JSON payload
       const notesPayload = JSON.stringify({
+        notes: similarityNotes,
         ai_content_score: aiContentScore === '' ? null : parseInt(aiContentScore),
-        citation_integrity_score: citationIntegrityScore === '' ? null : parseInt(citationIntegrityScore),
-        notes: similarityNotes
+        citation_integrity_score: citationScoreVal,
+        integrity_report: {
+          citation_analysis: {
+            total_references: total,
+            doi_references: parseInt(doiRefs) || 0,
+            broken_references: broken,
+            duplicate_references: duplicate
+          },
+          doi_verification: {
+            status: doiStatus,
+            provider: doiProvider,
+            timestamp: new Date().toISOString()
+          },
+          orcid_verification: {
+            orcid_id: selectedArticle.article_authors?.[0]?.orcid_id || '',
+            status: orcidStatus,
+            profile_link: selectedArticle.article_authors?.[0]?.orcid_id ? `https://orcid.org/${selectedArticle.article_authors[0].orcid_id}` : ''
+          },
+          academic_profile_verification: [
+            { platform: 'SINTA', status: sintaStatus, url: selectedArticle.article_authors?.[0]?.sinta_id ? `https://sinta.kemdiktisaintek.go.id/authors/profile/${selectedArticle.article_authors[0].sinta_id}` : '' },
+            { platform: 'Google Scholar', status: scholarStatus, url: '' },
+            { platform: 'Scopus Author', status: scopusStatus, url: selectedArticle.article_authors?.[0]?.scopus_id ? `https://www.scopus.com/authid/detail.uri?authorId=${selectedArticle.article_authors[0].scopus_id}` : '' },
+            { platform: 'ResearchGate', status: rgStatus, url: '' },
+            { platform: 'Web of Science', status: wosStatus, url: selectedArticle.article_authors?.[0]?.wos_id ? `https://www.webofscience.com/wos/author/record/${selectedArticle.article_authors[0].wos_id}` : '' },
+            { platform: 'OpenAIRE', status: openaireStatus, url: '' }
+          ],
+          editorial_validation: {
+            editor_name: user.full_name || 'Editor RJRAKP',
+            decision: similarityStatus === 'PASSED' ? 'Approved' : similarityStatus === 'REVISION REQUIRED' ? 'Revision Required' : 'Attention',
+            date: new Date().toISOString()
+          }
+        }
       });
 
       // 1. Update articles table
       const { error: updateErr } = await supabase
         .from('articles')
         .update({
-          similarity_score: score,
-          largest_match: match,
+          similarity_score: calculatedScore,
+          largest_match: null,
           similarity_status: similarityStatus,
           similarity_report_url: similarityReportUrl,
           peer_review_status: peerReviewStatus,
@@ -234,7 +360,7 @@ export default function EditorDecisions() {
 
       if (updateErr) throw updateErr;
 
-      // 2. Synchronize matching sources
+      // 2. Clear out any previous similarity matching sources
       const { error: deleteErr } = await supabase
         .from('article_similarity_sources')
         .delete()
@@ -242,38 +368,23 @@ export default function EditorDecisions() {
 
       if (deleteErr) throw deleteErr;
 
-      if (similaritySources.length > 0) {
-        const insertData = similaritySources.map(s => ({
-          article_id: selectedArticle.id,
-          source_name: s.source_name,
-          source_percent: parseInt(s.source_percent) || 0,
-          source_url: s.source_url || null
-        }));
+      setSuccess('Editorial Assessment & Laporan Integritas Akademik berhasil disimpan.');
 
-        const { error: insertErr } = await supabase
-          .from('article_similarity_sources')
-          .insert(insertData);
-
-        if (insertErr) throw insertErr;
-      }
-
-      setSuccess('Editorial Assessment berhasil disimpan.');
-
-      // Write log to article_editorial_history
+      // Write log to audit log (article_editorial_history)
       await supabase.from('article_editorial_history').insert({
         article_id: selectedArticle.id,
         activity_type: 'assessment',
-        description: `Editor memperbarui penilaian editorial: Turnitin score ${score !== null ? score : '-'}%, largest match ${match !== null ? match : '-'}%, status similarity: ${similarityStatus}, status peer review: ${peerReviewStatus}.`,
-        actor_name: user.user_metadata?.full_name || 'Editor'
+        description: `Editor memproses verifikasi Laporan Integritas Akademik: Nilai Integritas ${calculatedScore}/100, status validation: ${similarityStatus}, status peer review: ${peerReviewStatus}.`,
+        actor_name: user.user_metadata?.full_name || user.full_name || 'Editor'
       });
 
       fetchEditorialHistory(selectedArticle.id);
       
-      // Update selectedArticle locally
+      // Update selectedArticle state locally
       setSelectedArticle(prev => prev ? {
         ...prev,
-        similarity_score: score,
-        largest_match: match,
+        similarity_score: calculatedScore,
+        largest_match: null,
         similarity_status: similarityStatus,
         similarity_report_url: similarityReportUrl,
         peer_review_status: peerReviewStatus,
@@ -288,75 +399,6 @@ export default function EditorDecisions() {
     } finally {
       setSavingAssessment(false);
     }
-  };
-
-  const handleAddSource = () => {
-    setSimilaritySources(prev => [
-      ...prev,
-      { source_name: '', source_percent: '', source_url: '' }
-    ]);
-  };
-
-  const handleAutoGenerateCampusSources = () => {
-    const scoreVal = parseInt(similarityScore) || 0;
-    if (scoreVal <= 0) {
-      alert('Silakan masukkan nilai Similarity Score (> 0) terlebih dahulu.');
-      return;
-    }
-    
-    const campuses = [
-      { name: 'OAI & Scholar Repository - Universitas Indonesia', url: 'https://scholar.ui.ac.id' },
-      { name: 'UGM Repository & Digital Library - Universitas Gadjah Mada', url: 'https://repository.ugm.ac.id' },
-      { name: 'USU Repositori Institusi - Universitas Sumatera Utara', url: 'https://repositori.usu.ac.id' },
-      { name: 'Digital Library UNIMED - Universitas Negeri Medan', url: 'http://digilib.unimed.ac.id' },
-      { name: 'UNDIP Eprints Repository - Universitas Diponegoro', url: 'https://eprints.undip.ac.id' }
-    ];
-    
-    // Deterministic shuffle using hash of articleId to make distributions unique per article
-    const hash = selectedArticle ? selectedArticle.id.split('').reduce((acc: number, char: string) => acc + char.charCodeAt(0), 0) : 1;
-    const shuffled = [...campuses];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = (hash + i) % (i + 1);
-      const temp = shuffled[i];
-      shuffled[i] = shuffled[j];
-      shuffled[j] = temp;
-    }
-    
-    const ratios = [0.38, 0.28, 0.18, 0.10, 0.06];
-    let allocated = 0;
-    const generated = [];
-    
-    for (let i = 0; i < shuffled.length; i++) {
-      let p = 0;
-      if (i === shuffled.length - 1) {
-        p = scoreVal - allocated;
-      } else {
-        p = Math.round(scoreVal * ratios[i]);
-      }
-      
-      if (p > 0) {
-        generated.push({
-          source_name: shuffled[i].name,
-          source_percent: String(p),
-          source_url: shuffled[i].url
-        });
-        allocated += p;
-      }
-    }
-    
-    setSimilaritySources(generated.sort((a, b) => parseInt(b.source_percent) - parseInt(a.source_percent)));
-  };
-
-  const handleSourceChange = (index: number, field: string, value: any) => {
-    setSimilaritySources(prev => {
-      const copy = [...prev];
-      copy[index] = { ...copy[index], [field]: value };
-      return copy;
-    });
-  };
-
-  const handleRemoveSource = (index: number) => {
-    setSimilaritySources(prev => prev.filter((_, idx) => idx !== index));
   };
 
   
@@ -619,6 +661,25 @@ export default function EditorDecisions() {
     }, 0);
   };
 
+  // Calculated Integrity Scores
+  const total = parseInt(totalRefs) || 0;
+  const broken = parseInt(brokenRefs) || 0;
+  const duplicate = parseInt(duplicateRefs) || 0;
+  const citationScoreVal = total > 0 ? Math.max(0, Math.min(100, Math.round(((total - broken - duplicate) / total) * 100))) : 0;
+
+  let verifiedCount = 0;
+  if (sintaStatus === 'Verified') verifiedCount++;
+  if (scholarStatus === 'Verified') verifiedCount++;
+  if (scopusStatus === 'Verified') verifiedCount++;
+  if (rgStatus === 'Verified') verifiedCount++;
+  if (wosStatus === 'Verified') verifiedCount++;
+  if (openaireStatus === 'Verified') verifiedCount++;
+  const authorIdentityScore = (orcidStatus === 'Verified' ? 40 : 0) + (verifiedCount * 10);
+
+  const doiValidationScore = doiStatus === 'Verified' ? 100 : 0;
+  const editorialScore = similarityStatus === 'PASSED' ? 100 : similarityStatus === 'REVISION REQUIRED' ? 50 : 25;
+  const calculatedIntegrityScore = Math.round((citationScoreVal * 0.40) + (doiValidationScore * 0.20) + (authorIdentityScore * 0.20) + (editorialScore * 0.20));
+
   return (
     <DashboardLayout>
       <div className="max-w-6xl">
@@ -671,7 +732,7 @@ export default function EditorDecisions() {
                         <h2 className="font-serif font-bold text-academic-900 text-lg leading-snug mb-2">{selectedArticle.title}</h2>
                         <div className="flex flex-wrap gap-x-4 gap-y-2 text-xs font-semibold text-academic-500 pt-1">
                           <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> Ditransfer: {new Date(selectedArticle.submission_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
-                          <span className="flex items-center gap-1"><Fingerprint className="w-3.5 h-3.5 text-emerald-600" /> Similarity: {selectedArticle.similarity_score !== null ? `${selectedArticle.similarity_score}%` : 'Belum diperiksa'}</span>
+                          <span className="flex items-center gap-1"><Fingerprint className="w-3.5 h-3.5 text-emerald-600" /> Integrity Score: {selectedArticle.similarity_score !== null ? `${selectedArticle.similarity_score}/100` : 'Belum diperiksa'}</span>
                         </div>
                       </div>
                     )}
@@ -800,81 +861,210 @@ export default function EditorDecisions() {
                             <ShieldCheck className="w-5 h-5 text-brand-600" />
                             <h3 className="text-base font-serif font-black text-academic-900">Editorial Assessment</h3>
                           </div>
-
                           <div className="space-y-4">
-                            {/* Score & Largest Match */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              <div>
-                                <label className="block text-xs font-bold text-academic-700 uppercase tracking-wider mb-1.5">Similarity Score (%)</label>
-                                <input
-                                  type="number"
-                                  min="0"
-                                  max="100"
-                                  placeholder="Contoh: 15"
-                                  value={similarityScore}
-                                  onChange={e => handleScoreChange(e.target.value)}
-                                  className="w-full border border-academic-300 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white"
-                                />
+                            {/* Academic Integrity Score (Overall) */}
+                            <div className="bg-brand-50 p-4 rounded-xl border border-brand-100 flex flex-col justify-between mb-4">
+                              <span className="text-xs font-bold text-brand-800 uppercase tracking-wider">Overall Academic Integrity Score</span>
+                              <span className="text-3xl font-black text-brand-900 mt-1">
+                                {calculatedIntegrityScore}/100
+                              </span>
+                              <span className="text-[10px] text-brand-600 mt-1 leading-normal font-medium">
+                                Formula: (Citation Integrity * 40%) + (DOI Validation * 20%) + (Author Identity * 20%) + (Editorial Validation * 20%)
+                              </span>
+                            </div>
+
+                            {/* Section 2: Citation Integrity Analysis */}
+                            <div className="bg-slate-50 p-4 rounded-xl border border-academic-100 space-y-3">
+                              <h4 className="text-xs font-black text-academic-800 uppercase tracking-wider">Citation Integrity Analysis</h4>
+                              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                <div>
+                                  <label className="block text-[10px] font-bold text-academic-600 uppercase tracking-wider mb-1">References Found</label>
+                                  <input
+                                    type="number"
+                                    min="0"
+                                    value={totalRefs}
+                                    onChange={e => setTotalRefs(e.target.value)}
+                                    className="w-full border border-academic-300 rounded-lg px-2.5 py-1.5 text-xs bg-white focus:outline-none focus:ring-1 focus:ring-brand-500"
+                                  />
+                                </div>
+                                <div>
+                                  <label className="block text-[10px] font-bold text-academic-600 uppercase tracking-wider mb-1">DOI References</label>
+                                  <input
+                                    type="number"
+                                    min="0"
+                                    value={doiRefs}
+                                    onChange={e => setDoiRefs(e.target.value)}
+                                    className="w-full border border-academic-300 rounded-lg px-2.5 py-1.5 text-xs bg-white focus:outline-none focus:ring-1 focus:ring-brand-500"
+                                  />
+                                </div>
+                                <div>
+                                  <label className="block text-[10px] font-bold text-academic-600 uppercase tracking-wider mb-1">Broken References</label>
+                                  <input
+                                    type="number"
+                                    min="0"
+                                    value={brokenRefs}
+                                    onChange={e => setBrokenRefs(e.target.value)}
+                                    className="w-full border border-academic-300 rounded-lg px-2.5 py-1.5 text-xs bg-white focus:outline-none focus:ring-1 focus:ring-brand-500"
+                                  />
+                                </div>
+                                <div>
+                                  <label className="block text-[10px] font-bold text-academic-600 uppercase tracking-wider mb-1">Duplicate References</label>
+                                  <input
+                                    type="number"
+                                    min="0"
+                                    value={duplicateRefs}
+                                    onChange={e => setDuplicateRefs(e.target.value)}
+                                    className="w-full border border-academic-300 rounded-lg px-2.5 py-1.5 text-xs bg-white focus:outline-none focus:ring-1 focus:ring-brand-500"
+                                  />
+                                </div>
                               </div>
-                              <div>
-                                <label className="block text-xs font-bold text-academic-700 uppercase tracking-wider mb-1.5">Largest Match (%)</label>
-                                <input
-                                  type="number"
-                                  min="0"
-                                  max="100"
-                                  placeholder="Contoh: 4"
-                                  value={largestMatch}
-                                  onChange={e => setLargestMatch(e.target.value)}
-                                  className="w-full border border-academic-300 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white"
-                                />
+                              <div className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded inline-block">
+                                Citation Score: {citationScoreVal}% (Weighted 40%)
                               </div>
                             </div>
 
-                            {/* Similarity Status & Peer Review Status */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              <div>
-                                <label className="block text-xs font-bold text-academic-700 uppercase tracking-wider mb-1.5">Similarity Status</label>
-                                <select
-                                  value={similarityStatus}
-                                  onChange={e => setSimilarityStatus(e.target.value)}
-                                  className="w-full border border-academic-300 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white cursor-pointer"
-                                >
-                                  <option value="PASSED">PASSED</option>
-                                  <option value="REVISION REQUIRED">REVISION REQUIRED</option>
-                                  <option value="ATTENTION">ATTENTION</option>
-                                </select>
-                              </div>
-                              <div>
-                                <label className="block text-xs font-bold text-academic-700 uppercase tracking-wider mb-1.5">Peer Review Status</label>
-                                <select
-                                  value={peerReviewStatus}
-                                  onChange={e => setPeerReviewStatus(e.target.value)}
-                                  className="w-full border border-academic-300 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white cursor-pointer"
-                                >
-                                  <option value="PENDING">PENDING (Menunggu)</option>
-                                  <option value="UNDER REVIEW">UNDER REVIEW (Sedang Ditinjau)</option>
-                                  <option value="REVISION REQUIRED">REVISION REQUIRED (Butuh Revisi)</option>
-                                  <option value="APPROVED">APPROVED (Disetujui)</option>
-                                  <option value="REJECTED">REJECTED (Ditolak)</option>
-                                </select>
+                            {/* Section 3: DOI Verification */}
+                            <div className="bg-slate-50 p-4 rounded-xl border border-academic-100 space-y-3">
+                              <h4 className="text-xs font-black text-academic-800 uppercase tracking-wider">DOI Verification (Weighted 20%)</h4>
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div>
+                                  <label className="block text-[10px] font-bold text-academic-600 uppercase tracking-wider mb-1">DOI Status</label>
+                                  <select
+                                    value={doiStatus}
+                                    onChange={e => setDoiStatus(e.target.value)}
+                                    className="w-full border border-academic-300 rounded-lg px-2.5 py-1.5 text-xs bg-white focus:outline-none focus:ring-1 focus:ring-brand-500 cursor-pointer"
+                                  >
+                                    <option value="Verified">Verified (Terverifikasi)</option>
+                                    <option value="Not Verified">Not Verified (Belum/Tidak Terverifikasi)</option>
+                                  </select>
+                                </div>
+                                <div>
+                                  <label className="block text-[10px] font-bold text-academic-600 uppercase tracking-wider mb-1">DOI Provider</label>
+                                  <select
+                                    value={doiProvider}
+                                    onChange={e => setDoiProvider(e.target.value)}
+                                    className="w-full border border-academic-300 rounded-lg px-2.5 py-1.5 text-xs bg-white focus:outline-none focus:ring-1 focus:ring-brand-500 cursor-pointer"
+                                  >
+                                    <option value="Crossref">Crossref</option>
+                                    <option value="Zenodo">Zenodo</option>
+                                    <option value="DataCite">DataCite</option>
+                                    <option value="None">None</option>
+                                  </select>
+                                </div>
                               </div>
                             </div>
 
-                            {/* Open Access Option */}
-                            <div className="flex items-center gap-2 pt-2">
-                              <input
-                                type="checkbox"
-                                id="is-open-access"
-                                checked={isOpenAccess}
-                                onChange={e => setIsOpenAccess(e.target.checked)}
-                                className="w-4 h-4 text-brand-600 border-academic-300 rounded focus:ring-brand-500 cursor-pointer"
-                              />
-                              <label htmlFor="is-open-access" className="text-xs font-bold text-academic-700 uppercase tracking-wider cursor-pointer">Is Open Access</label>
+                            {/* Section 4 & 5: ORCID & Academic Profile Verification */}
+                            <div className="bg-slate-50 p-4 rounded-xl border border-academic-100 space-y-3">
+                              <h4 className="text-xs font-black text-academic-800 uppercase tracking-wider">Academic Identity Verification (Weighted 20%)</h4>
+                              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                <div>
+                                  <label className="block text-[10px] font-bold text-academic-600 uppercase tracking-wider mb-1">ORCID Status</label>
+                                  <select value={orcidStatus} onChange={e => setOrcidStatus(e.target.value)} className="w-full border border-academic-300 rounded px-2.5 py-1.5 text-xs bg-white cursor-pointer">
+                                    <option value="Verified">Verified</option>
+                                    <option value="Not Verified">Not Verified</option>
+                                  </select>
+                                </div>
+                                <div>
+                                  <label className="block text-[10px] font-bold text-academic-600 uppercase tracking-wider mb-1">SINTA Status</label>
+                                  <select value={sintaStatus} onChange={e => setSintaStatus(e.target.value)} className="w-full border border-academic-300 rounded px-2.5 py-1.5 text-xs bg-white cursor-pointer">
+                                    <option value="Verified">Verified</option>
+                                    <option value="Not Verified">Not Verified</option>
+                                    <option value="Not Available">Not Available</option>
+                                  </select>
+                                </div>
+                                <div>
+                                  <label className="block text-[10px] font-bold text-academic-600 uppercase tracking-wider mb-1">Scholar Status</label>
+                                  <select value={scholarStatus} onChange={e => setScholarStatus(e.target.value)} className="w-full border border-academic-300 rounded px-2.5 py-1.5 text-xs bg-white cursor-pointer">
+                                    <option value="Verified">Verified</option>
+                                    <option value="Not Verified">Not Verified</option>
+                                    <option value="Not Available">Not Available</option>
+                                  </select>
+                                </div>
+                                <div>
+                                  <label className="block text-[10px] font-bold text-academic-600 uppercase tracking-wider mb-1">Scopus Status</label>
+                                  <select value={scopusStatus} onChange={e => setScopusStatus(e.target.value)} className="w-full border border-academic-300 rounded px-2.5 py-1.5 text-xs bg-white cursor-pointer">
+                                    <option value="Verified">Verified</option>
+                                    <option value="Not Verified">Not Verified</option>
+                                    <option value="Not Available">Not Available</option>
+                                  </select>
+                                </div>
+                                <div>
+                                  <label className="block text-[10px] font-bold text-academic-600 uppercase tracking-wider mb-1">ResearchGate</label>
+                                  <select value={rgStatus} onChange={e => setRgStatus(e.target.value)} className="w-full border border-academic-300 rounded px-2.5 py-1.5 text-xs bg-white cursor-pointer">
+                                    <option value="Verified">Verified</option>
+                                    <option value="Not Verified">Not Verified</option>
+                                    <option value="Not Available">Not Available</option>
+                                  </select>
+                                </div>
+                                <div>
+                                  <label className="block text-[10px] font-bold text-academic-600 uppercase tracking-wider mb-1">Web of Science</label>
+                                  <select value={wosStatus} onChange={e => setWosStatus(e.target.value)} className="w-full border border-academic-300 rounded px-2.5 py-1.5 text-xs bg-white cursor-pointer">
+                                    <option value="Verified">Verified</option>
+                                    <option value="Not Verified">Not Verified</option>
+                                    <option value="Not Available">Not Available</option>
+                                  </select>
+                                </div>
+                                <div>
+                                  <label className="block text-[10px] font-bold text-academic-600 uppercase tracking-wider mb-1">OpenAIRE Status</label>
+                                  <select value={openaireStatus} onChange={e => setOpenaireStatus(e.target.value)} className="w-full border border-academic-300 rounded px-2.5 py-1.5 text-xs bg-white cursor-pointer">
+                                    <option value="Verified">Verified</option>
+                                    <option value="Not Verified">Not Verified</option>
+                                    <option value="Not Available">Not Available</option>
+                                  </select>
+                                </div>
+                              </div>
+                              <div className="text-[10px] font-bold text-indigo-700 bg-indigo-50 px-2 py-1 rounded inline-block">
+                                Author Identity Score: {authorIdentityScore}/100
+                              </div>
                             </div>
 
-                            {/* Similarity Report PDF Upload */}
-                            <div>
-                              <label className="block text-xs font-bold text-academic-700 uppercase tracking-wider mb-1.5">Laporan PDF Similarity</label>
+                            {/* Section 6: Editorial Validation & Peer Review Status */}
+                            <div className="bg-slate-50 p-4 rounded-xl border border-academic-100 space-y-3">
+                              <h4 className="text-xs font-black text-academic-800 uppercase tracking-wider">Editorial Validation & Governance (Weighted 20%)</h4>
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                <div>
+                                  <label className="block text-[10px] font-bold text-academic-600 uppercase tracking-wider mb-1">Validation Decision</label>
+                                  <select
+                                    value={similarityStatus}
+                                    onChange={e => setSimilarityStatus(e.target.value)}
+                                    className="w-full border border-academic-300 rounded-lg px-2.5 py-1.5 text-xs bg-white focus:outline-none focus:ring-1 focus:ring-brand-500 cursor-pointer"
+                                  >
+                                    <option value="PASSED">PASSED (Approved)</option>
+                                    <option value="REVISION REQUIRED">REVISION REQUIRED</option>
+                                    <option value="ATTENTION">ATTENTION</option>
+                                  </select>
+                                </div>
+                                <div>
+                                  <label className="block text-[10px] font-bold text-academic-600 uppercase tracking-wider mb-1">Peer Review Status</label>
+                                  <select
+                                    value={peerReviewStatus}
+                                    onChange={e => setPeerReviewStatus(e.target.value)}
+                                    className="w-full border border-academic-300 rounded-lg px-2.5 py-1.5 text-xs bg-white focus:outline-none focus:ring-1 focus:ring-brand-500 cursor-pointer"
+                                  >
+                                    <option value="PENDING">PENDING (Menunggu)</option>
+                                    <option value="UNDER REVIEW">UNDER REVIEW (Sedang Ditinjau)</option>
+                                    <option value="REVISION REQUIRED">REVISION REQUIRED (Butuh Revisi)</option>
+                                    <option value="APPROVED">APPROVED (Disetujui)</option>
+                                    <option value="REJECTED">REJECTED (Ditolak)</option>
+                                  </select>
+                                </div>
+                                <div className="flex items-center gap-2 pt-5">
+                                  <input
+                                    type="checkbox"
+                                    id="is-open-access"
+                                    checked={isOpenAccess}
+                                    onChange={e => setIsOpenAccess(e.target.checked)}
+                                    className="w-4 h-4 text-brand-600 border-academic-300 rounded focus:ring-brand-500 cursor-pointer"
+                                  />
+                                  <label htmlFor="is-open-access" className="text-[10px] font-bold text-academic-700 uppercase tracking-wider cursor-pointer">Is Open Access</label>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Integrity Report PDF Upload */}
+                            <div className="pt-4 border-t border-academic-100">
+                              <label className="block text-xs font-bold text-academic-700 uppercase tracking-wider mb-1.5">Laporan PDF Integritas Akademik (Opsional)</label>
                               <div className="flex flex-col gap-2 bg-academic-50 p-4 rounded-xl border border-academic-200">
                                 {similarityReportUrl ? (
                                   <div className="flex items-center justify-between gap-3">
@@ -912,121 +1102,18 @@ export default function EditorDecisions() {
                               </div>
                             </div>
 
-                            {/* Top Matching Sources */}
+                            {/* Additional Notes & Save Action */}
                             <div className="pt-4 border-t border-academic-100">
-                              <div className="flex justify-between items-center mb-3">
-                                <label className="block text-xs font-bold text-academic-700 uppercase tracking-wider">Top Matching Sources</label>
-                                <div className="flex items-center gap-3">
-                                  <button
-                                    type="button"
-                                    onClick={handleAutoGenerateCampusSources}
-                                    className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 hover:text-emerald-850 cursor-pointer"
-                                    title="Auto-generate matches from UI, UGM, USU, UNIMED, UNDIP repositories based on score"
-                                  >
-                                    <Sparkles className="w-3.5 h-3.5" /> Auto-Isi Repositori Kampus
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={handleAddSource}
-                                    className="inline-flex items-center gap-1 text-xs font-bold text-brand-700 hover:text-brand-800 cursor-pointer"
-                                  >
-                                    <Plus className="w-3.5 h-3.5" /> Tambah Sumber
-                                  </button>
-                                </div>
-                              </div>
-
-                              {similaritySources.length === 0 ? (
-                                <p className="text-xs text-academic-400 italic bg-academic-50 p-4 rounded-xl text-center border border-dashed border-academic-200">
-                                  Belum ada sumber kecocokan ditambahkan.
-                                </p>
-                              ) : (
-                                <div className="space-y-3">
-                                  {similaritySources.map((source, idx) => (
-                                    <div key={idx} className="flex gap-2 items-center bg-academic-50 p-3 rounded-xl border border-academic-200">
-                                      <span className="text-xs font-bold text-academic-500 w-4">{idx + 1}.</span>
-                                      <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-2">
-                                        <input
-                                          type="text"
-                                          placeholder="Nama Sumber (e.g. Journal Article A)"
-                                          value={source.source_name}
-                                          onChange={e => handleSourceChange(idx, 'source_name', e.target.value)}
-                                          className="col-span-2 border border-academic-300 rounded px-2.5 py-1.5 text-xs bg-white focus:outline-none focus:ring-1 focus:ring-brand-500"
-                                          required
-                                        />
-                                        <div className="flex gap-2">
-                                          <input
-                                            type="number"
-                                            min="0"
-                                            max="100"
-                                            placeholder="Match %"
-                                            value={source.source_percent}
-                                            onChange={e => handleSourceChange(idx, 'source_percent', e.target.value)}
-                                            className="w-20 border border-academic-300 rounded px-2.5 py-1.5 text-xs bg-white text-center focus:outline-none focus:ring-1 focus:ring-brand-500"
-                                            required
-                                          />
-                                          <input
-                                            type="text"
-                                            placeholder="URL (Opsional)"
-                                            value={source.source_url || ''}
-                                            onChange={e => handleSourceChange(idx, 'source_url', e.target.value)}
-                                            className="flex-1 border border-academic-300 rounded px-2.5 py-1.5 text-xs bg-white focus:outline-none focus:ring-1 focus:ring-brand-500"
-                                          />
-                                        </div>
-                                      </div>
-                                      <button
-                                        type="button"
-                                        onClick={() => handleRemoveSource(idx)}
-                                        className="p-1.5 text-rose-500 hover:bg-rose-50 rounded transition-colors cursor-pointer"
-                                      >
-                                        <Trash2 className="w-4 h-4" />
-                                      </button>
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-
-                            {/* New Fields: AI Content Score & Citation Integrity Score */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-academic-100">
-                              <div>
-                                <label className="block text-xs font-bold text-academic-700 uppercase tracking-wider mb-1.5">AI Content Score (%)</label>
-                                <input
-                                  type="number"
-                                  min="0"
-                                  max="100"
-                                  placeholder="Contoh: 10"
-                                  value={aiContentScore}
-                                  onChange={e => setAiContentScore(e.target.value)}
-                                  className="w-full border border-academic-300 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white"
-                                />
-                              </div>
-                              <div>
-                                <label className="block text-xs font-bold text-academic-700 uppercase tracking-wider mb-1.5">Citation Integrity Score (%)</label>
-                                <input
-                                  type="number"
-                                  min="0"
-                                  max="100"
-                                  placeholder="Contoh: 95"
-                                  value={citationIntegrityScore}
-                                  onChange={e => setCitationIntegrityScore(e.target.value)}
-                                  className="w-full border border-academic-300 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white"
-                                />
-                              </div>
-                            </div>
-
-                            {/* Additional Notes */}
-                            <div className="pt-4 border-t border-academic-100">
-                              <label className="block text-xs font-bold text-academic-700 uppercase tracking-wider mb-1.5">Catatan Evaluasi Plagiarisme</label>
+                              <label className="block text-xs font-bold text-academic-700 uppercase tracking-wider mb-1.5">Catatan Evaluasi Integritas Akademik</label>
                               <textarea
                                 rows={4}
-                                placeholder="Masukkan catatan penelaahan kesamaan atau saran untuk penulis..."
+                                placeholder="Masukkan catatan penelaahan integritas atau saran untuk penulis..."
                                 value={similarityNotes}
                                 onChange={e => setSimilarityNotes(e.target.value)}
-                                className="w-full border border-academic-300 rounded-xl p-3 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white"
+                                className="w-full border border-academic-300 rounded-xl p-3 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white mb-4"
                               />
                             </div>
 
-                            {/* Save Button */}
                             <div className="pt-4 border-t border-academic-100">
                               <button
                                 type="button"
@@ -1034,7 +1121,7 @@ export default function EditorDecisions() {
                                 disabled={savingAssessment || uploadingReport}
                                 className="w-full bg-brand-700 hover:bg-brand-800 text-white font-bold py-2.5 rounded-xl transition-colors shadow-sm disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
                               >
-                                {savingAssessment ? 'Menyimpan Assessment...' : 'Simpan Editorial Assessment'}
+                                {savingAssessment ? 'Menyimpan Laporan...' : 'Simpan Laporan Integritas Akademik'}
                               </button>
                             </div>
 

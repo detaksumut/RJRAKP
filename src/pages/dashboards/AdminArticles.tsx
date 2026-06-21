@@ -505,7 +505,7 @@ export default function AdminArticles() {
                   <span className="flex items-center gap-1"><User className="w-3.5 h-3.5" /> Submitter: {selectedArticle.users?.full_name}</span>
                   <span className="flex items-center gap-1"><Eye className="w-3.5 h-3.5 text-brand-500" /> {selectedArticle.view_count || 0} Dilihat</span>
                   <span className="flex items-center gap-1"><Download className="w-3.5 h-3.5 text-brand-500" /> {selectedArticle.download_count || 0} Diunduh</span>
-                  <span className="flex items-center gap-1"><Fingerprint className="w-3.5 h-3.5 text-emerald-600" /> Similarity: {selectedArticle.similarity_score !== null ? `${selectedArticle.similarity_score}%` : 'Belum diperiksa'}</span>
+                  <span className="flex items-center gap-1"><Fingerprint className="w-3.5 h-3.5 text-emerald-600" /> Integrity Score: {selectedArticle.similarity_score !== null ? `${selectedArticle.similarity_score}/100` : 'Belum diperiksa'}</span>
                 </div>
 
                 <div className="border-t border-academic-100 pt-4">
@@ -788,14 +788,14 @@ export default function AdminArticles() {
                   </span>
                 </div>
 
-                {/* Similarity Index Input */}
+                {/* Academic Integrity Score Input */}
                 <div className="space-y-2 pt-2 border-t border-academic-100">
-                  <label className="block text-xs font-black text-academic-500 uppercase tracking-widest">Similarity Index (%)</label>
+                  <label className="block text-xs font-black text-academic-500 uppercase tracking-widest">Academic Integrity Score (/100)</label>
                   <input
                     type="number"
                     min="0"
                     max="100"
-                    placeholder="Contoh: 15 (Belum diperiksa)"
+                    placeholder="Contoh: 92 (Belum diperiksa)"
                     value={similarityScore}
                     onChange={e => setSimilarityScore(e.target.value)}
                     className="w-full border border-academic-300 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white"
