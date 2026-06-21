@@ -269,11 +269,11 @@ export default function SimilarityReport() {
             {/* Left Column: Overall Integrity Score Card */}
             <div className="lg:col-span-1 space-y-6">
               
-              {/* SECTION 1: Academic Integrity Score */}
+              {/* SECTION 1: Academic Integrity Status */}
               <div className="bg-white rounded-2xl border border-academic-200 p-6 shadow-sm flex flex-col items-center">
                 <h3 className="w-full font-serif font-bold text-academic-900 text-lg mb-6 pb-2 border-b border-academic-100 flex items-center gap-2">
                   <ShieldCheck className="w-5 h-5 text-brand-600 animate-pulse" />
-                  Academic Integrity Score
+                  Academic Integrity Status
                 </h3>
 
                 <div className="relative flex items-center justify-center mb-6">
@@ -288,7 +288,7 @@ export default function SimilarityReport() {
                     />
                     <circle 
                       cx="72" cy="72" r="64" 
-                      className={overallScore >= 80 ? 'text-emerald-500' : overallScore >= 60 ? 'text-amber-500' : 'text-rose-500'} 
+                      className={overallScore >= 85 ? 'text-emerald-500' : overallScore >= 70 ? 'text-blue-500' : overallScore >= 50 ? 'text-amber-500' : 'text-rose-500'} 
                       strokeWidth="10" 
                       strokeDasharray={402}
                       strokeDashoffset={402 - (402 * overallScore) / 100}
@@ -297,9 +297,13 @@ export default function SimilarityReport() {
                       fill="transparent" 
                     />
                   </svg>
-                  <div className="absolute text-center">
-                    <span className="text-4xl font-black text-academic-900 font-mono">{overallScore}</span>
-                    <span className="text-sm font-bold text-academic-400 block">/100</span>
+                  <div className="absolute text-center px-4">
+                    <span className={`text-sm sm:text-base font-black uppercase tracking-wider block leading-tight ${
+                      overallScore >= 85 ? 'text-emerald-600' : overallScore >= 70 ? 'text-blue-600' : overallScore >= 50 ? 'text-amber-600' : 'text-rose-600'
+                    }`}>
+                      {overallScore >= 85 ? 'Fully Compliant' : overallScore >= 70 ? 'Compliant' : overallScore >= 50 ? 'Partially Compliant' : 'Needs Review'}
+                    </span>
+                    <span className="text-[9px] text-academic-400 font-bold block mt-1 uppercase tracking-widest">Integrity Status</span>
                   </div>
                 </div>
 
@@ -600,18 +604,18 @@ export default function SimilarityReport() {
                 </div>
               </div>
 
-              {/* SECTION 6: Editorial Validation */}
-              <div className="bg-white rounded-2xl border border-academic-200 p-6 shadow-sm">
-                <h3 className="font-serif font-bold text-academic-900 text-base mb-4 pb-2 border-b border-academic-100 flex items-center gap-2">
+              {/* SECTION 6: Academic Governance Verification & Editorial Validation */}
+              <div className="bg-white rounded-2xl border border-academic-200 p-6 shadow-sm space-y-6">
+                <h3 className="font-serif font-bold text-academic-900 text-base pb-2 border-b border-academic-100 flex items-center gap-2">
                   <Award className="w-5 h-5 text-brand-600" />
-                  Editorial Validation & Governance
+                  Academic Governance & Editorial Validation
                 </h3>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div className="p-4 bg-slate-50 rounded-xl border border-slate-100 text-center">
-                    <span className="text-[10px] font-bold text-academic-500 uppercase tracking-wider block mb-1">Validated By</span>
+                    <span className="text-[10px] font-bold text-academic-500 uppercase tracking-wider block mb-1">Editor in Chief</span>
                     <span className="text-sm font-bold text-academic-800">
-                      {reportData.editorial_validation?.editor_name || 'Dr. Bakhrul Khair Amal, M.Si.'}
+                      Dr. Bakhrul Khair Amal, M.Si.
                     </span>
                   </div>
                   <div className="p-4 bg-slate-50 rounded-xl border border-slate-100 text-center">
@@ -625,6 +629,52 @@ export default function SimilarityReport() {
                     <span className="text-sm font-bold text-academic-800">
                       {formattedDate(reportData.editorial_validation?.date)}
                     </span>
+                  </div>
+                </div>
+
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-200/60">
+                  <div className="text-[10px] uppercase font-bold text-academic-500 mb-3 tracking-wider text-center">Verified Editorial Profile (Governance Verification)</div>
+                  <div className="flex flex-wrap justify-center gap-3">
+                    <a 
+                      href="https://sinta.kemdiktisaintek.go.id/authors/profile/6019786"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-700 text-xs font-bold border border-blue-200 hover:bg-blue-100 rounded-lg transition-colors cursor-pointer"
+                    >
+                      ✓ SINTA Verified
+                    </a>
+                    <a 
+                      href="https://orcid.org/0009-0006-8416-6156"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#A6CE39]/10 text-[#7ca221] text-xs font-bold border border-[#A6CE39]/30 hover:bg-[#A6CE39]/20 rounded-lg transition-colors cursor-pointer"
+                    >
+                      ✓ ORCID Verified
+                    </a>
+                    <a 
+                      href="https://scholar.google.com/citations?user=e89cADYAAAAJ&hl=id"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-sky-50 text-sky-700 text-xs font-bold border border-sky-200 hover:bg-sky-100 rounded-lg transition-colors cursor-pointer"
+                    >
+                      ✓ Scholar Verified
+                    </a>
+                    <a 
+                      href="https://www.scopus.com/authid/detail.uri?authorId=57216618216"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 text-orange-700 text-xs font-bold border border-orange-200 hover:bg-orange-100 rounded-lg transition-colors cursor-pointer"
+                    >
+                      ✓ Scopus Verified
+                    </a>
+                    <a 
+                      href="https://www.researchgate.net/profile/Bakhrul-Amal"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-cyan-50 text-cyan-700 text-xs font-bold border border-cyan-200 hover:bg-cyan-100 rounded-lg transition-colors cursor-pointer"
+                    >
+                      ✓ ResearchGate Verified
+                    </a>
                   </div>
                 </div>
               </div>

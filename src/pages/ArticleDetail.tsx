@@ -976,15 +976,20 @@ export default function ArticleDetail() {
                   <h3 className="text-xl font-bold text-academic-900 m-0">Abstrak</h3>
                   {article.similarity_score !== null ? (() => {
                     const { overallScore } = parseIntegrityReport(article);
-                    const btnClass = overallScore >= 80 ? 'text-emerald-700 bg-emerald-50 border-emerald-200' :
-                                     overallScore >= 60 ? 'text-amber-700 bg-amber-50 border-amber-200' :
+                    const statusText = overallScore >= 85 ? 'Fully Compliant' :
+                                       overallScore >= 70 ? 'Compliant' :
+                                       overallScore >= 50 ? 'Partially Compliant' :
+                                       'Needs Review';
+                    const btnClass = overallScore >= 85 ? 'text-emerald-700 bg-emerald-50 border-emerald-200' :
+                                     overallScore >= 70 ? 'text-blue-700 bg-blue-50 border-blue-200' :
+                                     overallScore >= 50 ? 'text-amber-700 bg-amber-50 border-amber-200' :
                                      'text-rose-700 bg-rose-50 border-rose-200';
                     return (
                       <button 
                         onClick={() => setShowIntegrityModal(true)}
                         className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border cursor-pointer hover:opacity-90 transition-opacity ${btnClass}`}
                       >
-                        <ShieldCheck className="w-3.5 h-3.5 animate-pulse" /> Integrity Report ({overallScore}/100)
+                        <ShieldCheck className="w-3.5 h-3.5 animate-pulse" /> Integrity: {statusText}
                       </button>
                     );
                   })() : (
@@ -1178,13 +1183,17 @@ export default function ArticleDetail() {
 
                   {article.similarity_score !== null ? (
                     <>
-                      {/* SECTION 1: Academic Integrity Score */}
+                      {/* SECTION 1: Academic Integrity Status */}
                       <div className="bg-slate-50 p-4 rounded-xl border border-academic-100">
-                        <h4 className="text-xs font-bold text-academic-500 uppercase tracking-wider mb-3">1. Academic Integrity Score</h4>
+                        <h4 className="text-xs font-bold text-academic-500 uppercase tracking-wider mb-3">1. Academic Integrity Status</h4>
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                          <div className="bg-white p-3 rounded-lg border border-academic-200/60 text-center">
-                            <span className="block text-[9px] font-bold text-academic-400 uppercase">Integrity Score</span>
-                            <span className="text-xl font-black text-brand-700 font-mono">{overallScore}/100</span>
+                          <div className="bg-white p-3 rounded-lg border border-academic-200/60 text-center flex flex-col justify-center">
+                            <span className="block text-[9px] font-bold text-academic-400 uppercase mb-0.5">Integrity Status</span>
+                            <span className={`text-xs font-black uppercase ${
+                              overallScore >= 85 ? 'text-emerald-600' : overallScore >= 70 ? 'text-blue-600' : overallScore >= 50 ? 'text-amber-600' : 'text-rose-600'
+                            }`}>
+                              {overallScore >= 85 ? 'Fully Compliant' : overallScore >= 70 ? 'Compliant' : overallScore >= 50 ? 'Partially Compliant' : 'Needs Review'}
+                            </span>
                           </div>
                           <div className="bg-white p-3 rounded-lg border border-academic-200/60 text-center">
                             <span className="block text-[9px] font-bold text-academic-400 uppercase">Citation Integrity</span>
@@ -1297,23 +1306,43 @@ export default function ArticleDetail() {
                         </div>
                       </div>
 
-                      {/* SECTION 6: Editorial Validation */}
-                      <div className="bg-slate-50 p-4 rounded-xl border border-academic-100 space-y-2">
-                        <h4 className="text-xs font-bold text-academic-500 uppercase tracking-wider">6. Editorial Validation</h4>
+                      {/* SECTION 6: Academic Governance Verification & Editorial Validation */}
+                      <div className="bg-slate-50 p-4 rounded-xl border border-academic-100 space-y-4">
+                        <h4 className="text-xs font-bold text-academic-500 uppercase tracking-wider">6. Academic Governance & Editorial Validation</h4>
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
                           <div className="bg-white p-2 rounded border border-academic-100">
-                            <span className="text-academic-400 block">Validated By</span>
-                            <span className="font-bold text-academic-800">{reportData.editorial_validation?.editor_name || 'Dr. Bakhrul Khair Amal, M.Si.'}</span>
+                            <span className="text-academic-400 block font-semibold">Editor in Chief</span>
+                            <span className="font-bold text-academic-800">Dr. Bakhrul Khair Amal, M.Si.</span>
                           </div>
                           <div className="bg-white p-2 rounded border border-academic-100">
-                            <span className="text-academic-400 block">Decision</span>
+                            <span className="text-academic-400 block font-semibold">Decision</span>
                             <span className="font-bold text-brand-700">{reportData.editorial_validation?.decision}</span>
                           </div>
                           <div className="bg-white p-2 rounded border border-academic-100">
-                            <span className="text-academic-400 block">Validation Date</span>
+                            <span className="text-academic-400 block font-semibold">Validation Date</span>
                             <span className="font-bold text-academic-800">
                               {reportData.editorial_validation?.date ? new Date(reportData.editorial_validation.date).toLocaleDateString('id-ID') : '-'}
                             </span>
+                          </div>
+                        </div>
+                        <div className="bg-white p-3 rounded border border-academic-100">
+                          <div className="text-[9px] uppercase font-bold text-academic-400 mb-2 tracking-wider text-center">Verified Editorial Profile (Governance Verification)</div>
+                          <div className="flex flex-wrap justify-center gap-2 text-[10px]">
+                            <a href="https://sinta.kemdiktisaintek.go.id/authors/profile/6019786" target="_blank" rel="noopener noreferrer" className="px-2.5 py-1 bg-blue-50 text-blue-700 font-bold border border-blue-200 rounded hover:bg-blue-100 transition-colors">
+                              ✓ SINTA Verified
+                            </a>
+                            <a href="https://orcid.org/0009-0006-8416-6156" target="_blank" rel="noopener noreferrer" className="px-2.5 py-1 bg-[#A6CE39]/10 text-[#7ca221] font-bold border border-[#A6CE39]/30 rounded hover:bg-[#A6CE39]/20 transition-colors">
+                              ✓ ORCID Verified
+                            </a>
+                            <a href="https://scholar.google.com/citations?user=e89cADYAAAAJ&hl=id" target="_blank" rel="noopener noreferrer" className="px-2.5 py-1 bg-sky-50 text-sky-700 font-bold border border-sky-200 rounded hover:bg-sky-100 transition-colors">
+                              ✓ Scholar Verified
+                            </a>
+                            <a href="https://www.scopus.com/authid/detail.uri?authorId=57216618216" target="_blank" rel="noopener noreferrer" className="px-2.5 py-1 bg-orange-50 text-orange-700 font-bold border border-orange-200 rounded hover:bg-orange-100 transition-colors">
+                              ✓ Scopus Verified
+                            </a>
+                            <a href="https://www.researchgate.net/profile/Bakhrul-Amal" target="_blank" rel="noopener noreferrer" className="px-2.5 py-1 bg-cyan-50 text-cyan-700 font-bold border border-cyan-200 rounded hover:bg-cyan-100 transition-colors">
+                              ✓ ResearchGate Verified
+                            </a>
                           </div>
                         </div>
                       </div>

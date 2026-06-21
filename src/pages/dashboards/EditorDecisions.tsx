@@ -732,7 +732,13 @@ export default function EditorDecisions() {
                         <h2 className="font-serif font-bold text-academic-900 text-lg leading-snug mb-2">{selectedArticle.title}</h2>
                         <div className="flex flex-wrap gap-x-4 gap-y-2 text-xs font-semibold text-academic-500 pt-1">
                           <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> Ditransfer: {new Date(selectedArticle.submission_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
-                          <span className="flex items-center gap-1"><Fingerprint className="w-3.5 h-3.5 text-emerald-600" /> Integrity Score: {selectedArticle.similarity_score !== null ? `${selectedArticle.similarity_score}/100` : 'Belum diperiksa'}</span>
+                          <span className="flex items-center gap-1"><Fingerprint className="w-3.5 h-3.5 text-emerald-600" /> Integrity Status: {selectedArticle.similarity_score !== null ? (() => {
+                            const score = selectedArticle.similarity_score;
+                            if (score >= 85) return 'Fully Compliant';
+                            if (score >= 70) return 'Compliant';
+                            if (score >= 50) return 'Partially Compliant';
+                            return 'Needs Review';
+                          })() : 'Belum diperiksa'}</span>
                         </div>
                       </div>
                     )}
@@ -862,11 +868,13 @@ export default function EditorDecisions() {
                             <h3 className="text-base font-serif font-black text-academic-900">Editorial Assessment</h3>
                           </div>
                           <div className="space-y-4">
-                            {/* Academic Integrity Score (Overall) */}
+                            {/* Academic Integrity Status (Overall) */}
                             <div className="bg-brand-50 p-4 rounded-xl border border-brand-100 flex flex-col justify-between mb-4">
-                              <span className="text-xs font-bold text-brand-800 uppercase tracking-wider">Overall Academic Integrity Score</span>
-                              <span className="text-3xl font-black text-brand-900 mt-1">
-                                {calculatedIntegrityScore}/100
+                              <span className="text-xs font-bold text-brand-800 uppercase tracking-wider">Overall Academic Integrity Status</span>
+                              <span className={`text-2xl font-black mt-1 uppercase ${
+                                calculatedIntegrityScore >= 85 ? 'text-emerald-700' : calculatedIntegrityScore >= 70 ? 'text-blue-700' : calculatedIntegrityScore >= 50 ? 'text-amber-700' : 'text-rose-700'
+                              }`}>
+                                {calculatedIntegrityScore >= 85 ? 'Fully Compliant' : calculatedIntegrityScore >= 70 ? 'Compliant' : calculatedIntegrityScore >= 50 ? 'Partially Compliant' : 'Needs Review'}
                               </span>
                               <span className="text-[10px] text-brand-600 mt-1 leading-normal font-medium">
                                 Formula: (Citation Integrity * 40%) + (DOI Validation * 20%) + (Author Identity * 20%) + (Editorial Validation * 20%)

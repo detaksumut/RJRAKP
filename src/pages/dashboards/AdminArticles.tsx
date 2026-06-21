@@ -505,7 +505,13 @@ export default function AdminArticles() {
                   <span className="flex items-center gap-1"><User className="w-3.5 h-3.5" /> Submitter: {selectedArticle.users?.full_name}</span>
                   <span className="flex items-center gap-1"><Eye className="w-3.5 h-3.5 text-brand-500" /> {selectedArticle.view_count || 0} Dilihat</span>
                   <span className="flex items-center gap-1"><Download className="w-3.5 h-3.5 text-brand-500" /> {selectedArticle.download_count || 0} Diunduh</span>
-                  <span className="flex items-center gap-1"><Fingerprint className="w-3.5 h-3.5 text-emerald-600" /> Integrity Score: {selectedArticle.similarity_score !== null ? `${selectedArticle.similarity_score}/100` : 'Belum diperiksa'}</span>
+                  <span className="flex items-center gap-1"><Fingerprint className="w-3.5 h-3.5 text-emerald-600" /> Integrity Status: {selectedArticle.similarity_score !== null ? (() => {
+                    const score = selectedArticle.similarity_score;
+                    if (score >= 85) return 'Fully Compliant';
+                    if (score >= 70) return 'Compliant';
+                    if (score >= 50) return 'Partially Compliant';
+                    return 'Needs Review';
+                  })() : 'Belum diperiksa'}</span>
                 </div>
 
                 <div className="border-t border-academic-100 pt-4">

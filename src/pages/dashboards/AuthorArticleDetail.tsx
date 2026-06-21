@@ -737,9 +737,13 @@ export default function AuthorArticleDetail() {
                 {/* Left: Overall score and status */}
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-academic-50 p-4 rounded-xl border border-academic-100 text-center">
-                      <span className="block text-xs font-bold text-academic-500 uppercase tracking-wider mb-1">Integrity Score</span>
-                      <span className="text-2xl font-black text-academic-850 font-mono">{overallScore}/100</span>
+                    <div className="bg-academic-50 p-4 rounded-xl border border-academic-100 text-center flex flex-col justify-center">
+                      <span className="block text-xs font-bold text-academic-500 uppercase tracking-wider mb-0.5">Integrity Status</span>
+                      <span className={`text-xs sm:text-sm font-black uppercase ${
+                        overallScore >= 85 ? 'text-emerald-600' : overallScore >= 70 ? 'text-blue-600' : overallScore >= 50 ? 'text-amber-600' : 'text-rose-600'
+                      }`}>
+                        {overallScore >= 85 ? 'Fully Compliant' : overallScore >= 70 ? 'Compliant' : overallScore >= 50 ? 'Partially Compliant' : 'Needs Review'}
+                      </span>
                     </div>
                     <div className="bg-academic-50 p-4 rounded-xl border border-academic-100 text-center">
                       <span className="block text-xs font-bold text-academic-500 uppercase tracking-wider mb-1">Audit Status</span>
@@ -842,11 +846,13 @@ export default function AuthorArticleDetail() {
                   <p className="font-medium text-academic-800">{new Date(article.submission_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
                 </div>
                 <div>
-                  <span className="block text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Integrity Score</span>
+                  <span className="block text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Integrity Status</span>
                   <p className="font-medium text-academic-800">
                     {article.similarity_score !== null ? (
-                      <span className={`inline-flex items-center gap-1 ${article.similarity_score < 60 ? 'text-rose-600' : 'text-emerald-600'}`}>
-                        {article.similarity_score}/100
+                      <span className={`inline-flex items-center gap-1 font-bold ${
+                        article.similarity_score >= 85 ? 'text-emerald-600' : article.similarity_score >= 70 ? 'text-blue-600' : article.similarity_score >= 50 ? 'text-amber-600' : 'text-rose-600'
+                      }`}>
+                        {article.similarity_score >= 85 ? 'Fully Compliant' : article.similarity_score >= 70 ? 'Compliant' : article.similarity_score >= 50 ? 'Partially Compliant' : 'Needs Review'}
                       </span>
                     ) : (
                       <span className="text-academic-400 italic">Belum diperiksa</span>
@@ -985,11 +991,13 @@ export default function AuthorArticleDetail() {
                   <p className="font-medium text-academic-800">{new Date(article.submission_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
                 </div>
                 <div>
-                  <span className="block text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Integrity Score</span>
+                  <span className="block text-xs font-bold text-academic-500 uppercase tracking-widest mb-1">Integrity Status</span>
                   <p className="font-medium text-academic-800">
                     {article.similarity_score !== null ? (
-                      <span className={`inline-flex items-center gap-1 ${article.similarity_score < 60 ? 'text-rose-600' : 'text-emerald-600'}`}>
-                        {article.similarity_score}/100
+                      <span className={`inline-flex items-center gap-1 font-bold ${
+                        article.similarity_score >= 85 ? 'text-emerald-600' : article.similarity_score >= 70 ? 'text-blue-600' : article.similarity_score >= 50 ? 'text-amber-600' : 'text-rose-600'
+                      }`}>
+                        {article.similarity_score >= 85 ? 'Fully Compliant' : article.similarity_score >= 70 ? 'Compliant' : article.similarity_score >= 50 ? 'Partially Compliant' : 'Needs Review'}
                       </span>
                     ) : (
                       <span className="text-academic-400 italic">Belum diperiksa</span>
@@ -1441,13 +1449,17 @@ export default function AuthorArticleDetail() {
 
                   {article.similarity_score !== null ? (
                     <>
-                      {/* SECTION 1: Academic Integrity Score */}
+                      {/* SECTION 1: Academic Integrity Status */}
                       <div className="bg-slate-50 p-4 rounded-xl border border-academic-100">
-                        <h4 className="text-xs font-bold text-academic-500 uppercase tracking-wider mb-3">1. Academic Integrity Score</h4>
+                        <h4 className="text-xs font-bold text-academic-500 uppercase tracking-wider mb-3">1. Academic Integrity Status</h4>
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                          <div className="bg-white p-3 rounded-lg border border-academic-200/60 text-center">
-                            <span className="block text-[9px] font-bold text-academic-400 uppercase">Integrity Score</span>
-                            <span className="text-xl font-black text-brand-700 font-mono">{overallScore}/100</span>
+                          <div className="bg-white p-3 rounded-lg border border-academic-200/60 text-center flex flex-col justify-center">
+                            <span className="block text-[9px] font-bold text-academic-400 uppercase mb-0.5">Integrity Status</span>
+                            <span className={`text-xs font-black uppercase ${
+                              overallScore >= 85 ? 'text-emerald-600' : overallScore >= 70 ? 'text-blue-600' : overallScore >= 50 ? 'text-amber-600' : 'text-rose-600'
+                            }`}>
+                              {overallScore >= 85 ? 'Fully Compliant' : overallScore >= 70 ? 'Compliant' : overallScore >= 50 ? 'Partially Compliant' : 'Needs Review'}
+                            </span>
                           </div>
                           <div className="bg-white p-3 rounded-lg border border-academic-200/60 text-center">
                             <span className="block text-[9px] font-bold text-academic-400 uppercase">Citation Integrity</span>
@@ -1560,23 +1572,43 @@ export default function AuthorArticleDetail() {
                         </div>
                       </div>
 
-                      {/* SECTION 6: Editorial Validation */}
-                      <div className="bg-slate-50 p-4 rounded-xl border border-academic-100 space-y-2">
-                        <h4 className="text-xs font-bold text-academic-500 uppercase tracking-wider">6. Editorial Validation</h4>
+                      {/* SECTION 6: Academic Governance Verification & Editorial Validation */}
+                      <div className="bg-slate-50 p-4 rounded-xl border border-academic-100 space-y-4">
+                        <h4 className="text-xs font-bold text-academic-500 uppercase tracking-wider">6. Academic Governance & Editorial Validation</h4>
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
                           <div className="bg-white p-2 rounded border border-academic-100">
-                            <span className="text-academic-400 block">Validated By</span>
-                            <span className="font-bold text-academic-800">{reportData.editorial_validation?.editor_name || 'Dr. Bakhrul Khair Amal, M.Si.'}</span>
+                            <span className="text-academic-400 block font-semibold">Editor in Chief</span>
+                            <span className="font-bold text-academic-800">Dr. Bakhrul Khair Amal, M.Si.</span>
                           </div>
                           <div className="bg-white p-2 rounded border border-academic-100">
-                            <span className="text-academic-400 block">Decision</span>
+                            <span className="text-academic-400 block font-semibold">Decision</span>
                             <span className="font-bold text-brand-700">{reportData.editorial_validation?.decision}</span>
                           </div>
                           <div className="bg-white p-2 rounded border border-academic-100">
-                            <span className="text-academic-400 block">Validation Date</span>
+                            <span className="text-academic-400 block font-semibold">Validation Date</span>
                             <span className="font-bold text-academic-800">
                               {reportData.editorial_validation?.date ? new Date(reportData.editorial_validation.date).toLocaleDateString('id-ID') : '-'}
                             </span>
+                          </div>
+                        </div>
+                        <div className="bg-white p-3 rounded border border-academic-100">
+                          <div className="text-[9px] uppercase font-bold text-academic-400 mb-2 tracking-wider text-center">Verified Editorial Profile (Governance Verification)</div>
+                          <div className="flex flex-wrap justify-center gap-2 text-[10px]">
+                            <a href="https://sinta.kemdiktisaintek.go.id/authors/profile/6019786" target="_blank" rel="noopener noreferrer" className="px-2.5 py-1 bg-blue-50 text-blue-700 font-bold border border-blue-200 rounded hover:bg-blue-100 transition-colors">
+                              ✓ SINTA Verified
+                            </a>
+                            <a href="https://orcid.org/0009-0006-8416-6156" target="_blank" rel="noopener noreferrer" className="px-2.5 py-1 bg-[#A6CE39]/10 text-[#7ca221] font-bold border border-[#A6CE39]/30 rounded hover:bg-[#A6CE39]/20 transition-colors">
+                              ✓ ORCID Verified
+                            </a>
+                            <a href="https://scholar.google.com/citations?user=e89cADYAAAAJ&hl=id" target="_blank" rel="noopener noreferrer" className="px-2.5 py-1 bg-sky-50 text-sky-700 font-bold border border-sky-200 rounded hover:bg-sky-100 transition-colors">
+                              ✓ Scholar Verified
+                            </a>
+                            <a href="https://www.scopus.com/authid/detail.uri?authorId=57216618216" target="_blank" rel="noopener noreferrer" className="px-2.5 py-1 bg-orange-50 text-orange-700 font-bold border border-orange-200 rounded hover:bg-orange-100 transition-colors">
+                              ✓ Scopus Verified
+                            </a>
+                            <a href="https://www.researchgate.net/profile/Bakhrul-Amal" target="_blank" rel="noopener noreferrer" className="px-2.5 py-1 bg-cyan-50 text-cyan-700 font-bold border border-cyan-200 rounded hover:bg-cyan-100 transition-colors">
+                              ✓ ResearchGate Verified
+                            </a>
                           </div>
                         </div>
                       </div>
