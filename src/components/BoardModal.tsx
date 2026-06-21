@@ -21,6 +21,7 @@ interface BoardMember {
   ssrn_author_id?: string;
   ssrn_abstract_id?: string;
   researchgate_id?: string;
+  perpusnas_id?: string;
 }
 
 const getProfileUrl = (type: string, id: string) => {
@@ -44,6 +45,8 @@ const getProfileUrl = (type: string, id: string) => {
       return `https://ssrn.com/abstract=${trimmed}`;
     case 'researchgate':
       return `https://www.researchgate.net/profile/${trimmed}`;
+    case 'perpusnas':
+      return `https://opac.perpusnas.go.id/ResultListOpac.aspx?pDataItem=${encodeURIComponent(trimmed)}&pType=Author&pLembarkerja=-1&pPilihan=Author`;
     default:
       return trimmed;
   }
@@ -163,7 +166,7 @@ export default function BoardModal({ isOpen, onClose }: BoardModalProps) {
                   </div>
 
                   {/* Academic Profile Badges */}
-                  {(member.sinta_id || member.google_scholar_id || member.orcid_id || member.scopus_id || member.wos_id || member.ssrn_author_id || member.ssrn_abstract_id || member.researchgate_id) && (
+                  {(member.sinta_id || member.google_scholar_id || member.orcid_id || member.scopus_id || member.wos_id || member.ssrn_author_id || member.ssrn_abstract_id || member.researchgate_id || member.perpusnas_id) && (
                     <div className="flex flex-wrap justify-center gap-1.5 mb-4 mt-1">
                       {member.sinta_id && (
                         <a
@@ -251,6 +254,17 @@ export default function BoardModal({ isOpen, onClose }: BoardModalProps) {
                           title="ResearchGate Profile"
                         >
                           ResearchGate
+                        </a>
+                      )}
+                      {member.perpusnas_id && (
+                        <a
+                          href={getProfileUrl('perpusnas', member.perpusnas_id)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-2 py-0.5 text-[10px] font-bold rounded bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 transition-all hover:scale-105"
+                          title="Perpusnas Profile"
+                        >
+                          Perpusnas
                         </a>
                       )}
                     </div>

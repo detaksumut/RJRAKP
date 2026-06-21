@@ -17,6 +17,7 @@ interface BoardMember {
   ssrn_author_id?: string;
   ssrn_abstract_id?: string;
   researchgate_id?: string;
+  perpusnas_id?: string;
 }
 
 export default function AdminBoardMembers() {
@@ -41,6 +42,7 @@ export default function AdminBoardMembers() {
     ssrn_author_id: string;
     ssrn_abstract_id: string;
     researchgate_id: string;
+    perpusnas_id: string;
   }>({
     name: '',
     role: '',
@@ -55,6 +57,7 @@ export default function AdminBoardMembers() {
     ssrn_author_id: '',
     ssrn_abstract_id: '',
     researchgate_id: '',
+    perpusnas_id: '',
   });
 
   useEffect(() => {
@@ -99,6 +102,7 @@ export default function AdminBoardMembers() {
         ssrn_author_id: member.ssrn_author_id || '',
         ssrn_abstract_id: member.ssrn_abstract_id || '',
         researchgate_id: member.researchgate_id || '',
+        perpusnas_id: member.perpusnas_id || '',
       });
     } else {
       setFormData({
@@ -115,6 +119,7 @@ export default function AdminBoardMembers() {
         ssrn_author_id: '',
         ssrn_abstract_id: '',
         researchgate_id: '',
+        perpusnas_id: '',
       });
     }
     setSelectedFile(null);
@@ -164,6 +169,7 @@ export default function AdminBoardMembers() {
         ssrn_author_id: formData.ssrn_author_id || null,
         ssrn_abstract_id: formData.ssrn_abstract_id || null,
         researchgate_id: formData.researchgate_id || null,
+        perpusnas_id: formData.perpusnas_id || null,
       };
 
       if (formData.id) {
@@ -492,6 +498,16 @@ export default function AdminBoardMembers() {
                         onChange={(e) => setFormData({...formData, researchgate_id: e.target.value})}
                         className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-500 text-sm transition-colors"
                         placeholder="Contoh: Bakhrul-Amal atau link profil penuh"
+                      />
+                    </div>
+                    <div className="col-span-2">
+                      <label className="block text-xs font-bold text-gray-600 mb-1">Perpusnas ID / Query (Nama Penulis Buku)</label>
+                      <input
+                        type="text"
+                        value={formData.perpusnas_id}
+                        onChange={(e) => setFormData({...formData, perpusnas_id: e.target.value})}
+                        className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-500 text-sm transition-colors"
+                        placeholder="Contoh: Dr. Bakhrul Khair Amal, M.Si. (penulis) atau link profil penuh"
                       />
                     </div>
                   </div>
