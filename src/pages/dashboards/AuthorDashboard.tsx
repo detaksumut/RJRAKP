@@ -150,7 +150,7 @@ export default function AuthorDashboard() {
                         </a>
                       )}
                       {profile.sinta_id && (
-                        <a href={`https://sinta.kemdikbud.go.id/authors/profile/${profile.sinta_id}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-blue-100 text-blue-700 px-3 py-1.5 rounded-full text-sm font-bold hover:bg-blue-200 transition-colors">
+                        <a href={`https://sinta.kemdiktisaintek.go.id/authors/profile/${profile.sinta_id}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-blue-100 text-blue-700 px-3 py-1.5 rounded-full text-sm font-bold hover:bg-blue-200 transition-colors">
                           <span className="font-sans font-black tracking-tight">SINTA</span>
                           {profile.sinta_id}
                         </a>

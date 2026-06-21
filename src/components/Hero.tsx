@@ -57,7 +57,7 @@ export default function Hero() {
               <span className="text-white font-bold text-lg md:text-2xl font-sans tracking-tight">Google Scholar</span>
             </a>
 
-            <a href="https://sinta.kemdikbud.go.id/authors/detail?id=6976317&view=overview" target="_blank" rel="noopener noreferrer" className="flex items-center transition-all duration-300 transform hover:scale-110 cursor-pointer">
+            <a href="https://sinta.kemdiktisaintek.go.id/authors/profile/6976317" target="_blank" rel="noopener noreferrer" className="flex items-center transition-all duration-300 transform hover:scale-110 cursor-pointer">
               <img src="/logosinta.png" alt="SINTA Logo" className="h-9 md:h-12 object-contain" />
             </a>
 

@@ -28,7 +28,7 @@ const getProfileUrl = (type: string, id: string) => {
   if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) return trimmed;
   switch (type) {
     case 'sinta':
-      return `https://sinta.kemdikbud.go.id/authors/detail?id=${trimmed}`;
+      return `https://sinta.kemdiktisaintek.go.id/authors/profile/${trimmed}`;
     case 'scholar':
       return `https://scholar.google.com/citations?user=${trimmed}`;
     case 'orcid':
