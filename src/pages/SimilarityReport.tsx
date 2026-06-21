@@ -660,7 +660,7 @@ export default function SimilarityReport() {
                       ✓ Scholar Verified
                     </a>
                     <a 
-                      href="https://www.scopus.com/authid/detail.uri?authorId=57216618216"
+                      href="https://www.scopus.com/authid/detail.uri?authorId=59675598500"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 text-orange-700 text-xs font-bold border border-orange-200 hover:bg-orange-100 rounded-lg transition-colors cursor-pointer"

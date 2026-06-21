@@ -1337,7 +1337,7 @@ export default function ArticleDetail() {
                             <a href="https://scholar.google.com/citations?user=e89cADYAAAAJ&hl=id" target="_blank" rel="noopener noreferrer" className="px-2.5 py-1 bg-sky-50 text-sky-700 font-bold border border-sky-200 rounded hover:bg-sky-100 transition-colors">
                               ✓ Scholar Verified
                             </a>
-                            <a href="https://www.scopus.com/authid/detail.uri?authorId=57216618216" target="_blank" rel="noopener noreferrer" className="px-2.5 py-1 bg-orange-50 text-orange-700 font-bold border border-orange-200 rounded hover:bg-orange-100 transition-colors">
+                            <a href="https://www.scopus.com/authid/detail.uri?authorId=59675598500" target="_blank" rel="noopener noreferrer" className="px-2.5 py-1 bg-orange-50 text-orange-700 font-bold border border-orange-200 rounded hover:bg-orange-100 transition-colors">
                               ✓ Scopus Verified
                             </a>
                             <a href="https://www.researchgate.net/profile/Bakhrul-Amal" target="_blank" rel="noopener noreferrer" className="px-2.5 py-1 bg-cyan-50 text-cyan-700 font-bold border border-cyan-200 rounded hover:bg-cyan-100 transition-colors">
