@@ -1101,9 +1101,7 @@ export default function AuthorArticleDetail() {
             <h3 className="font-serif font-bold text-lg text-academic-900 flex items-center gap-2 mb-4">
               <FileText className="w-5 h-5 text-brand-600" /> Tahap Produksi
             </h3>
-            <p className="text-xs text-academic-500 mb-4">Artikel Anda sedang dalam tahap akhir sebelum publikasi. Silakan periksa file dari Editor.</p>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <p className="text-xs text-academic-500 mb-4">Artikel Anda sedang dalam tahap akhir sebelum publikasi. Silakan periksa file dari Editor.</p>             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Copyediting File */}
               <div className={`p-4 rounded-lg border ${['copyediting', 'layouting', 'published'].includes(article.status.toLowerCase()) ? 'bg-purple-50 border-purple-100' : 'bg-academic-50 border-academic-100 opacity-50'}`}>
                 <h4 className="text-xs font-bold text-purple-800 uppercase tracking-widest mb-2">1. Hasil Copyediting</h4>
@@ -1111,7 +1109,7 @@ export default function AuthorArticleDetail() {
                 {/* Copyediting Checklist */}
                 <div className="mb-3.5 bg-white/60 rounded-lg p-3 border border-purple-100/50 space-y-1">
                   <h5 className="text-[10px] font-bold text-purple-800 uppercase tracking-wider mb-1.5">Lingkup Pemeriksaan:</h5>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-3 gap-y-1 text-[11px] text-academic-700 font-medium">
+                  <div className="grid grid-cols-1 gap-y-1 text-[11px] text-academic-700 font-medium">
                     <div className="flex items-center gap-1.5">
                       <span className="text-purple-600">✅</span> Tata bahasa
                     </div>
@@ -1130,7 +1128,7 @@ export default function AuthorArticleDetail() {
                     <div className="flex items-center gap-1.5">
                       <span className="text-purple-600">✅</span> Typo
                     </div>
-                    <div className="flex items-center gap-1.5 sm:col-span-2">
+                    <div className="flex items-center gap-1.5">
                       <span className="text-purple-600">✅</span> Kesalahan penulisan tabel/gambar
                     </div>
                   </div>
@@ -1155,7 +1153,7 @@ export default function AuthorArticleDetail() {
                 {/* Layouting Checklist */}
                 <div className="mb-3.5 bg-white/60 rounded-lg p-3 border border-indigo-100/50 space-y-1">
                   <h5 className="text-[10px] font-bold text-indigo-800 uppercase tracking-wider mb-1.5">Tugas Editor Layout:</h5>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-3 gap-y-1 text-[11px] text-academic-700 font-medium">
+                  <div className="grid grid-cols-1 gap-y-1 text-[11px] text-academic-700 font-medium">
                     <div className="flex items-center gap-1.5">
                       <span className="text-indigo-600">📄</span> PDF final jurnal
                     </div>
@@ -1193,6 +1191,37 @@ export default function AuthorArticleDetail() {
                 ) : (
                   <p className="text-xs text-academic-500 italic">Sedang dikerjakan oleh Editor Layout.</p>
                 )}
+              </div>
+
+              {/* Cover Editor Card */}
+              <div className={`p-4 rounded-lg border ${['layouting', 'published'].includes(article.status.toLowerCase()) ? 'bg-cyan-50 border-cyan-100' : 'bg-academic-50 border-academic-100 opacity-50'}`}>
+                <h4 className="text-xs font-bold text-cyan-800 uppercase tracking-widest mb-2">3. Desain Visual & Cover</h4>
+                
+                {/* Cover Editor Checklist */}
+                <div className="mb-3.5 bg-white/60 rounded-lg p-3 border border-cyan-100/50 space-y-1">
+                  <h5 className="text-[10px] font-bold text-cyan-800 uppercase tracking-wider mb-1.5">Tugas Cover Editor:</h5>
+                  <div className="grid grid-cols-1 gap-y-1 text-[11px] text-academic-700 font-medium">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-cyan-600">🎨</span> Cover edisi jurnal
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-cyan-600">🎨</span> Cover artikel individual
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-cyan-600">🎨</span> Thumbnail artikel
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-cyan-600">🎨</span> Visual DOI card
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-cyan-600">🎨</span> Infografis artikel
+                    </div>
+                  </div>
+                </div>
+
+                <p className="text-xs text-academic-500 italic">
+                  {article.status.toLowerCase() === 'published' ? 'Desain publikasi telah diselesaikan.' : 'Sedang dikerjakan oleh Cover Editor.'}
+                </p>
               </div>
             </div>
           </div>

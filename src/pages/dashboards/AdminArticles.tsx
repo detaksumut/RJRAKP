@@ -600,12 +600,12 @@ export default function AdminArticles() {
                 </div>
               </div>
 
-              {/* Production Files Card (Copyediting & Layouting) */}
+              {/* Production Files Card (Copyediting, Layouting & Visual) */}
               {['accepted', 'copyediting', 'layouting', 'published'].includes(selectedArticle.status.toLowerCase()) && (
                 <div className="bg-white p-6 rounded-xl border border-academic-200 shadow-sm space-y-4">
-                  <h3 className="font-serif font-bold text-lg text-academic-900 border-b border-academic-100 pb-2">File Produksi (Copyediting & Layouting)</h3>
+                  <h3 className="font-serif font-bold text-lg text-academic-900 border-b border-academic-100 pb-2">File Produksi (Copyediting, Layouting & Visual)</h3>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {/* Copyedited File */}
                     <div className="p-4 bg-purple-50 rounded-lg border border-purple-100">
                       <h4 className="text-xs font-bold text-purple-800 uppercase tracking-widest mb-2">File Copyediting</h4>
@@ -706,6 +706,37 @@ export default function AdminArticles() {
                           <Plus className="w-3 h-3" /> Unggah/Timpa File Layout
                           <input type="file" accept=".pdf" className="hidden" onChange={(e) => handleUploadProductionFile(e, 'layout_file')} />
                         </label>
+                      </div>
+                    </div>
+
+                    {/* Cover Design Card */}
+                    <div className="p-4 bg-cyan-50 rounded-lg border border-cyan-100">
+                      <h4 className="text-xs font-bold text-cyan-800 uppercase tracking-widest mb-2">Desain Visual & Cover</h4>
+                      
+                      {/* Cover Editor Checklist */}
+                      <div className="mb-3.5 bg-white/60 rounded-lg p-3 border border-cyan-100/50 space-y-1">
+                        <h5 className="text-[10px] font-bold text-cyan-800 uppercase tracking-wider mb-1.5">Tugas Cover Editor:</h5>
+                        <div className="grid grid-cols-1 gap-y-1 text-[11px] text-academic-700 font-medium">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-cyan-600">🎨</span> Cover edisi jurnal
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-cyan-600">🎨</span> Cover artikel individual
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-cyan-600">🎨</span> Thumbnail artikel
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-cyan-600">🎨</span> Visual DOI card
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-cyan-600">🎨</span> Infografis artikel
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="text-xs text-cyan-700 italic">
+                        Dikerjakan apabila membutuhkan desain khusus publikasi berkala.
                       </div>
                     </div>
                   </div>
