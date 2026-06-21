@@ -1190,7 +1190,7 @@ export default function ArticleDetail() {
                           <div className="bg-white p-3 rounded-lg border border-academic-200/60 text-center flex flex-col justify-center">
                             <span className="block text-[9px] font-bold text-academic-400 uppercase mb-0.5">Integrity Status</span>
                             <span className={`text-xs font-black uppercase ${
-                              overallScore >= 85 ? 'text-emerald-600' : overallScore >= 70 ? 'text-blue-600' : overallScore >= 50 ? 'text-amber-600' : 'text-rose-600'
+                              overallScore >= 85 ? 'text-emerald-600' : overallScore >= 70 ? 'text-blue-600' : overallScore >= 50 ? 'text-amber-600' : 'text-indigo-600'
                             }`}>
                               {overallScore >= 85 ? 'Fully Compliant' : overallScore >= 70 ? 'Compliant' : overallScore >= 50 ? 'Partially Compliant' : 'Verified'}
                             </span>
