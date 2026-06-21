@@ -247,7 +247,7 @@ export default function SimilarityReport() {
             <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
               <div>
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-brand-500/20 border border-brand-500/30 text-brand-300 rounded-full text-xs font-bold uppercase tracking-wider mb-3">
-                  <Fingerprint className="w-3.5 h-3.5" /> Tata Kelola Keilmuan & Akreditasi Jurnal (ARJUNA)
+                  <Fingerprint className="w-3.5 h-3.5" /> Tata Kelola Keilmuan & Akreditasi Jurnal (ARJUNA) · Welcome Arjuna
                 </span>
                 <h1 className="text-2xl sm:text-4xl font-serif font-black text-white leading-tight">
                   RJRAKP Academic Integrity & Verification Report
