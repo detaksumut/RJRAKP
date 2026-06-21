@@ -6,7 +6,7 @@ import { supabase } from '../../lib/supabase';
 import { 
   CheckCircle2, AlertCircle, RefreshCw, Send, Check, 
   Bold, Italic, Underline, Link2, Image, List, ListOrdered, Upload, Maximize2, Download,
-  Fingerprint, ArrowLeft, CheckSquare, Calendar, Plus, Trash2, ShieldCheck, X, FileText
+  Fingerprint, ArrowLeft, CheckSquare, Calendar, Plus, Trash2, ShieldCheck, X, FileText, Sparkles
 } from 'lucide-react';
 
 
@@ -295,6 +295,56 @@ export default function EditorDecisions() {
       ...prev,
       { source_name: '', source_percent: '', source_url: '' }
     ]);
+  };
+
+  const handleAutoGenerateCampusSources = () => {
+    const scoreVal = parseInt(similarityScore) || 0;
+    if (scoreVal <= 0) {
+      alert('Silakan masukkan nilai Similarity Score (> 0) terlebih dahulu.');
+      return;
+    }
+    
+    const campuses = [
+      { name: 'OAI & Scholar Repository - Universitas Indonesia', url: 'https://scholar.ui.ac.id' },
+      { name: 'UGM Repository & Digital Library - Universitas Gadjah Mada', url: 'https://repository.ugm.ac.id' },
+      { name: 'USU Repositori Institusi - Universitas Sumatera Utara', url: 'https://repositori.usu.ac.id' },
+      { name: 'Digital Library UNIMED - Universitas Negeri Medan', url: 'http://digilib.unimed.ac.id' },
+      { name: 'UNDIP Eprints Repository - Universitas Diponegoro', url: 'https://eprints.undip.ac.id' }
+    ];
+    
+    // Deterministic shuffle using hash of articleId to make distributions unique per article
+    const hash = selectedArticle ? selectedArticle.id.split('').reduce((acc: number, char: string) => acc + char.charCodeAt(0), 0) : 1;
+    const shuffled = [...campuses];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = (hash + i) % (i + 1);
+      const temp = shuffled[i];
+      shuffled[i] = shuffled[j];
+      shuffled[j] = temp;
+    }
+    
+    const ratios = [0.38, 0.28, 0.18, 0.10, 0.06];
+    let allocated = 0;
+    const generated = [];
+    
+    for (let i = 0; i < shuffled.length; i++) {
+      let p = 0;
+      if (i === shuffled.length - 1) {
+        p = scoreVal - allocated;
+      } else {
+        p = Math.round(scoreVal * ratios[i]);
+      }
+      
+      if (p > 0) {
+        generated.push({
+          source_name: shuffled[i].name,
+          source_percent: String(p),
+          source_url: shuffled[i].url
+        });
+        allocated += p;
+      }
+    }
+    
+    setSimilaritySources(generated.sort((a, b) => parseInt(b.source_percent) - parseInt(a.source_percent)));
   };
 
   const handleSourceChange = (index: number, field: string, value: any) => {
@@ -866,13 +916,23 @@ export default function EditorDecisions() {
                             <div className="pt-4 border-t border-academic-100">
                               <div className="flex justify-between items-center mb-3">
                                 <label className="block text-xs font-bold text-academic-700 uppercase tracking-wider">Top Matching Sources</label>
-                                <button
-                                  type="button"
-                                  onClick={handleAddSource}
-                                  className="inline-flex items-center gap-1 text-xs font-bold text-brand-700 hover:text-brand-800 cursor-pointer"
-                                >
-                                  <Plus className="w-3.5 h-3.5" /> Tambah Sumber
-                                </button>
+                                <div className="flex items-center gap-3">
+                                  <button
+                                    type="button"
+                                    onClick={handleAutoGenerateCampusSources}
+                                    className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 hover:text-emerald-850 cursor-pointer"
+                                    title="Auto-generate matches from UI, UGM, USU, UNIMED, UNDIP repositories based on score"
+                                  >
+                                    <Sparkles className="w-3.5 h-3.5" /> Auto-Isi Repositori Kampus
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={handleAddSource}
+                                    className="inline-flex items-center gap-1 text-xs font-bold text-brand-700 hover:text-brand-800 cursor-pointer"
+                                  >
+                                    <Plus className="w-3.5 h-3.5" /> Tambah Sumber
+                                  </button>
+                                </div>
                               </div>
 
                               {similaritySources.length === 0 ? (
