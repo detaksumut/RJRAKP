@@ -174,6 +174,15 @@ export default function AdminFinance() {
       if (usersErr) throw usersErr;
       setAllUsers(usersData || []);
 
+      // Fetch royalty rates to show calculation
+      const { data: ratesData } = await supabase
+        .from('honorarium_rates')
+        .select('*')
+        .in('role_key', ['royalty_referrer_lembaga', 'royalty_referrer_personal']);
+      if (ratesData) {
+        setRoyaltyRates(ratesData);
+      }
+
       // Compute summary stats
       const pending = data_.filter(p => p.status === 'PENDING').reduce((s, p) => s + Number(p.amount), 0);
       const paid = data_.filter(p => p.status === 'PAID').reduce((s, p) => s + Number(p.amount), 0);
@@ -412,34 +421,39 @@ export default function AdminFinance() {
                   <th className="px-4 py-2">Nama Lembaga / Person</th>
                   <th className="px-4 py-2">Tipe</th>
                   <th className="px-4 py-2 text-center">Jumlah Submitter</th>
-                  <th className="px-4 py-2 text-center">Jumlah Transaksi</th>
+                  <th className="px-4 py-2 text-center">Perhitungan Reward</th>
                   <th className="px-4 py-2 text-right">Total Pendapatan</th>
                   <th className="px-4 py-2 text-right">Total Terbayar</th>
                   <th className="px-4 py-2 text-right font-bold text-amber-700">Total Pending</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-academic-100">
-                {partnerAccumulation.map((p, i) => (
-                  <tr key={i} className="hover:bg-slate-50/50">
-                    <td className="px-4 py-2.5">
-                      <div className="font-bold text-academic-900">{p.full_name}</div>
-                      <div className="text-[10px] text-academic-500">{p.email}</div>
-                      {p.bank_account_number ? (
-                        <div className="text-[9px] text-academic-500 bg-academic-100/50 p-1 rounded mt-1 max-w-xs">
-                          {p.bank_name} - {p.bank_account_number} a.n {p.bank_account_holder} | NPWP: {p.npwp || '-'}
-                        </div>
-                      ) : (
-                        <div className="text-[9px] text-rose-500 italic mt-1">Belum melengkapi info bank & NPWP</div>
-                      )}
-                    </td>
-                    <td className="px-4 py-2.5 capitalize font-medium text-academic-700">{p.partner_type === 'lembaga' ? 'Lembaga' : 'Personal'}</td>
-                    <td className="px-4 py-2.5 text-center font-mono font-bold text-academic-800">{p.submitterCount} orang</td>
-                    <td className="px-4 py-2.5 text-center font-mono text-academic-600">{p.paymentCount} artikel</td>
-                    <td className="px-4 py-2.5 text-right font-mono text-academic-700">Rp {p.totalEarned.toLocaleString('id-ID')}</td>
-                    <td className="px-4 py-2.5 text-right font-mono text-emerald-700 font-bold">Rp {p.totalPaid.toLocaleString('id-ID')}</td>
-                    <td className="px-4 py-2.5 text-right font-mono text-amber-700 font-bold bg-amber-50/30">Rp {p.totalPending.toLocaleString('id-ID')}</td>
-                  </tr>
-                ))}
+                {partnerAccumulation.map((p, i) => {
+                  const rateAmt = Number(royaltyRates.find(r => r.role_key === (p.partner_type === 'lembaga' ? 'royalty_referrer_lembaga' : 'royalty_referrer_personal'))?.amount || (p.partner_type === 'lembaga' ? 150000 : 100000));
+                  return (
+                    <tr key={i} className="hover:bg-slate-50/50">
+                      <td className="px-4 py-2.5">
+                        <div className="font-bold text-academic-900">{p.full_name}</div>
+                        <div className="text-[10px] text-academic-500">{p.email}</div>
+                        {p.bank_account_number ? (
+                          <div className="text-[9px] text-academic-500 bg-academic-100/50 p-1 rounded mt-1 max-w-xs">
+                            {p.bank_name} - {p.bank_account_number} a.n {p.bank_account_holder} | NPWP: {p.npwp || '-'}
+                          </div>
+                        ) : (
+                          <div className="text-[9px] text-rose-500 italic mt-1">Belum melengkapi info bank & NPWP</div>
+                        )}
+                      </td>
+                      <td className="px-4 py-2.5 capitalize font-medium text-academic-700">{p.partner_type === 'lembaga' ? 'Lembaga' : 'Personal'}</td>
+                      <td className="px-4 py-2.5 text-center font-mono font-bold text-academic-800">{p.submitterCount} orang</td>
+                      <td className="px-4 py-2.5 text-center font-mono text-academic-600 whitespace-nowrap">
+                        {p.submitterCount} x Rp {rateAmt.toLocaleString('id-ID')}
+                      </td>
+                      <td className="px-4 py-2.5 text-right font-mono text-academic-700">Rp {p.totalEarned.toLocaleString('id-ID')}</td>
+                      <td className="px-4 py-2.5 text-right font-mono text-emerald-700 font-bold">Rp {p.totalPaid.toLocaleString('id-ID')}</td>
+                      <td className="px-4 py-2.5 text-right font-mono text-amber-700 font-bold bg-amber-50/30">Rp {p.totalPending.toLocaleString('id-ID')}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
