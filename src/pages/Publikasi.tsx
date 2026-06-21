@@ -193,8 +193,8 @@ function JournalCover({ name, slug, volume, issue, year, eIssn, pIssn, articles 
 
       {/* Footer with ISSN */}
       <div className="border-t border-slate-200/60 pt-2.5 mt-auto flex justify-between text-[8px] text-slate-400 z-10 tracking-widest uppercase font-bold">
-        <span>P-ISSN: -</span>
-        <span>E-ISSN: -</span>
+        <span>P-ISSN: {pIssn || '-'}</span>
+        <span>E-ISSN: {eIssn || '-'}</span>
       </div>
     </div>
   );
