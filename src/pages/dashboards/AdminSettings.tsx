@@ -302,7 +302,7 @@ export default function AdminSettings() {
               {ratesLoading ? (
                 <p className="text-academic-500">Memuat peran...</p>
               ) : (
-                rates?.filter(r => !r.role_key?.includes('reviewer') && r.role_key !== 'editor').map((rate) => {
+                rates?.filter(r => !r.role_key?.includes('reviewer') && r.role_key !== 'editor' && !r.role_key?.startsWith('royalty')).map((rate) => {
                   const assignedUser = globalStaff?.find(s => s.role_key === rate.role_key)?.user_id || '';
                   return (
                     <div key={rate.role_key} className="p-4 border border-academic-200 rounded-lg bg-academic-50 flex flex-col justify-between">
