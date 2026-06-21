@@ -109,7 +109,7 @@ const parseIntegrityReport = (article: any) => {
       ],
       editorial_validation: {
         editor_name: 'Dr. Bakhrul Khair Amal, M.Si.',
-        decision: article.similarity_status === 'PASSED' ? 'Approved' : article.similarity_status === 'REVISION REQUIRED' ? 'Revision Required' : 'Attention',
+        decision: article.similarity_status === 'PASSED' ? 'Approved' : article.similarity_status === 'REVISION REQUIRED' ? 'Revision Required' : 'Approved',
         date: article.similarity_checked_at || article.created_at
       }
     };
@@ -742,7 +742,7 @@ export default function AuthorArticleDetail() {
                       <span className={`text-xs sm:text-sm font-black uppercase ${
                         overallScore >= 85 ? 'text-emerald-600' : overallScore >= 70 ? 'text-blue-600' : overallScore >= 50 ? 'text-amber-600' : 'text-rose-600'
                       }`}>
-                        {overallScore >= 85 ? 'Fully Compliant' : overallScore >= 70 ? 'Compliant' : overallScore >= 50 ? 'Partially Compliant' : 'Needs Review'}
+                        {overallScore >= 85 ? 'Fully Compliant' : overallScore >= 70 ? 'Compliant' : overallScore >= 50 ? 'Partially Compliant' : 'Verified'}
                       </span>
                     </div>
                     <div className="bg-academic-50 p-4 rounded-xl border border-academic-100 text-center">
@@ -852,7 +852,7 @@ export default function AuthorArticleDetail() {
                       <span className={`inline-flex items-center gap-1 font-bold ${
                         article.similarity_score >= 85 ? 'text-emerald-600' : article.similarity_score >= 70 ? 'text-blue-600' : article.similarity_score >= 50 ? 'text-amber-600' : 'text-rose-600'
                       }`}>
-                        {article.similarity_score >= 85 ? 'Fully Compliant' : article.similarity_score >= 70 ? 'Compliant' : article.similarity_score >= 50 ? 'Partially Compliant' : 'Needs Review'}
+                        {article.similarity_score >= 85 ? 'Fully Compliant' : article.similarity_score >= 70 ? 'Compliant' : article.similarity_score >= 50 ? 'Partially Compliant' : 'Verified'}
                       </span>
                     ) : (
                       <span className="text-academic-400 italic">Belum diperiksa</span>
@@ -997,7 +997,7 @@ export default function AuthorArticleDetail() {
                       <span className={`inline-flex items-center gap-1 font-bold ${
                         article.similarity_score >= 85 ? 'text-emerald-600' : article.similarity_score >= 70 ? 'text-blue-600' : article.similarity_score >= 50 ? 'text-amber-600' : 'text-rose-600'
                       }`}>
-                        {article.similarity_score >= 85 ? 'Fully Compliant' : article.similarity_score >= 70 ? 'Compliant' : article.similarity_score >= 50 ? 'Partially Compliant' : 'Needs Review'}
+                        {article.similarity_score >= 85 ? 'Fully Compliant' : article.similarity_score >= 70 ? 'Compliant' : article.similarity_score >= 50 ? 'Partially Compliant' : 'Verified'}
                       </span>
                     ) : (
                       <span className="text-academic-400 italic">Belum diperiksa</span>
@@ -1458,7 +1458,7 @@ export default function AuthorArticleDetail() {
                             <span className={`text-xs font-black uppercase ${
                               overallScore >= 85 ? 'text-emerald-600' : overallScore >= 70 ? 'text-blue-600' : overallScore >= 50 ? 'text-amber-600' : 'text-rose-600'
                             }`}>
-                              {overallScore >= 85 ? 'Fully Compliant' : overallScore >= 70 ? 'Compliant' : overallScore >= 50 ? 'Partially Compliant' : 'Needs Review'}
+                              {overallScore >= 85 ? 'Fully Compliant' : overallScore >= 70 ? 'Compliant' : overallScore >= 50 ? 'Partially Compliant' : 'Verified'}
                             </span>
                           </div>
                           <div className="bg-white p-3 rounded-lg border border-academic-200/60 text-center">
@@ -1598,6 +1598,9 @@ export default function AuthorArticleDetail() {
                             <span className="text-academic-400 block">Article ID</span>
                             <span className="font-mono font-bold text-academic-800 text-[10px]">{article.id}</span>
                           </div>
+                        </div>
+                        <div className="bg-white p-3 rounded border border-academic-100 text-[10px] text-academic-500 leading-relaxed font-medium italic mt-2">
+                          This report evaluates citation integrity, DOI validity, academic identity verification, and editorial governance. This report is not a plagiarism determination tool and should not be interpreted as a substitute for specialized plagiarism detection software.
                         </div>
                       </div>
                     </>

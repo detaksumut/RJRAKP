@@ -160,7 +160,7 @@ export default function SimilarityReport() {
         ],
         editorial_validation: {
           editor_name: 'Dr. Bakhrul Khair Amal, M.Si.',
-          decision: article.similarity_status === 'PASSED' ? 'Approved' : article.similarity_status === 'REVISION REQUIRED' ? 'Revision Required' : 'Attention',
+          decision: article.similarity_status === 'PASSED' ? 'Approved' : article.similarity_status === 'REVISION REQUIRED' ? 'Revision Required' : 'Approved',
           date: article.similarity_checked_at || article.created_at
         }
       };
@@ -301,7 +301,7 @@ export default function SimilarityReport() {
                     <span className={`text-sm sm:text-base font-black uppercase tracking-wider block leading-tight ${
                       overallScore >= 85 ? 'text-emerald-600' : overallScore >= 70 ? 'text-blue-600' : overallScore >= 50 ? 'text-amber-600' : 'text-rose-600'
                     }`}>
-                      {overallScore >= 85 ? 'Fully Compliant' : overallScore >= 70 ? 'Compliant' : overallScore >= 50 ? 'Partially Compliant' : 'Needs Review'}
+                      {overallScore >= 85 ? 'Fully Compliant' : overallScore >= 70 ? 'Compliant' : overallScore >= 50 ? 'Partially Compliant' : 'Verified'}
                     </span>
                     <span className="text-[9px] text-academic-400 font-bold block mt-1 uppercase tracking-widest">Integrity Status</span>
                   </div>
@@ -395,8 +395,11 @@ export default function SimilarityReport() {
                     </span>
                   </div>
                 </div>
-                <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 text-[10px] text-academic-500 leading-relaxed">
-                  Laporan audit kepatuhan ini diterbitkan secara otomatis oleh sistem tata kelola RJRAKP dan tidak dapat dimodifikasi tanpa pencatatan log logis di PostgreSQL. Cocok untuk lampiran akreditasi ARJUNA Ristekdikti.
+                <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 text-[10px] text-academic-500 leading-relaxed space-y-2">
+                  <p>Laporan audit kepatuhan ini diterbitkan secara otomatis oleh sistem tata kelola RJRAKP dan tidak dapat dimodifikasi tanpa pencatatan log logis di PostgreSQL. Cocok untuk lampiran akreditasi ARJUNA Ristekdikti.</p>
+                  <p className="font-medium italic border-t border-slate-200 pt-2">
+                    This report evaluates citation integrity, DOI validity, academic identity verification, and editorial governance. This report is not a plagiarism determination tool and should not be interpreted as a substitute for specialized plagiarism detection software.
+                  </p>
                 </div>
               </div>
 

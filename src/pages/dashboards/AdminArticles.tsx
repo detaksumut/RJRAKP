@@ -510,7 +510,7 @@ export default function AdminArticles() {
                     if (score >= 85) return 'Fully Compliant';
                     if (score >= 70) return 'Compliant';
                     if (score >= 50) return 'Partially Compliant';
-                    return 'Needs Review';
+                    return 'Verified';
                   })() : 'Belum diperiksa'}</span>
                 </div>
 

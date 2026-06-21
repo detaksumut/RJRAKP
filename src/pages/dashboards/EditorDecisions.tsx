@@ -346,7 +346,7 @@ export default function EditorDecisions() {
           ],
           editorial_validation: {
             editor_name: user.full_name || 'Editor RJRAKP',
-            decision: similarityStatus === 'PASSED' ? 'Approved' : similarityStatus === 'REVISION REQUIRED' ? 'Revision Required' : 'Attention',
+            decision: similarityStatus === 'PASSED' ? 'Approved' : similarityStatus === 'REVISION REQUIRED' ? 'Revision Required' : 'Approved',
             date: new Date().toISOString()
           }
         }
@@ -747,7 +747,7 @@ export default function EditorDecisions() {
                             if (score >= 85) return 'Fully Compliant';
                             if (score >= 70) return 'Compliant';
                             if (score >= 50) return 'Partially Compliant';
-                            return 'Needs Review';
+                            return 'Verified';
                           })() : 'Belum diperiksa'}</span>
                         </div>
                       </div>
@@ -884,7 +884,7 @@ export default function EditorDecisions() {
                               <span className={`text-2xl font-black mt-1 uppercase ${
                                 calculatedIntegrityScore >= 85 ? 'text-emerald-700' : calculatedIntegrityScore >= 70 ? 'text-blue-700' : calculatedIntegrityScore >= 50 ? 'text-amber-700' : 'text-rose-700'
                               }`}>
-                                {calculatedIntegrityScore >= 85 ? 'Fully Compliant' : calculatedIntegrityScore >= 70 ? 'Compliant' : calculatedIntegrityScore >= 50 ? 'Partially Compliant' : 'Needs Review'}
+                                {calculatedIntegrityScore >= 85 ? 'Fully Compliant' : calculatedIntegrityScore >= 70 ? 'Compliant' : calculatedIntegrityScore >= 50 ? 'Partially Compliant' : 'Verified'}
                               </span>
                               <span className="text-[10px] text-brand-600 mt-1 leading-normal font-medium">
                                 Formula: (Citation Integrity * 40%) + (DOI Validation * 20%) + (Author Identity * 20%) + (Editorial Validation * 20%)

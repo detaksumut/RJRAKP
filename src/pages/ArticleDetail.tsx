@@ -110,7 +110,7 @@ const parseIntegrityReport = (article: any) => {
       ],
       editorial_validation: {
         editor_name: 'Dr. Bakhrul Khair Amal, M.Si.',
-        decision: article.similarity_status === 'PASSED' ? 'Approved' : article.similarity_status === 'REVISION REQUIRED' ? 'Revision Required' : 'Attention',
+        decision: article.similarity_status === 'PASSED' ? 'Approved' : article.similarity_status === 'REVISION REQUIRED' ? 'Revision Required' : 'Approved',
         date: article.similarity_checked_at || article.created_at
       }
     };
@@ -979,7 +979,7 @@ export default function ArticleDetail() {
                     const statusText = overallScore >= 85 ? 'Fully Compliant' :
                                        overallScore >= 70 ? 'Compliant' :
                                        overallScore >= 50 ? 'Partially Compliant' :
-                                       'Needs Review';
+                                       'Verified';
                     const btnClass = overallScore >= 85 ? 'text-emerald-700 bg-emerald-50 border-emerald-200' :
                                      overallScore >= 70 ? 'text-blue-700 bg-blue-50 border-blue-200' :
                                      overallScore >= 50 ? 'text-amber-700 bg-amber-50 border-amber-200' :
@@ -1192,7 +1192,7 @@ export default function ArticleDetail() {
                             <span className={`text-xs font-black uppercase ${
                               overallScore >= 85 ? 'text-emerald-600' : overallScore >= 70 ? 'text-blue-600' : overallScore >= 50 ? 'text-amber-600' : 'text-rose-600'
                             }`}>
-                              {overallScore >= 85 ? 'Fully Compliant' : overallScore >= 70 ? 'Compliant' : overallScore >= 50 ? 'Partially Compliant' : 'Needs Review'}
+                              {overallScore >= 85 ? 'Fully Compliant' : overallScore >= 70 ? 'Compliant' : overallScore >= 50 ? 'Partially Compliant' : 'Verified'}
                             </span>
                           </div>
                           <div className="bg-white p-3 rounded-lg border border-academic-200/60 text-center">
@@ -1332,6 +1332,9 @@ export default function ArticleDetail() {
                             <span className="text-academic-400 block">Article ID</span>
                             <span className="font-mono font-bold text-academic-800 text-[10px]">{article.id}</span>
                           </div>
+                        </div>
+                        <div className="bg-white p-3 rounded border border-academic-100 text-[10px] text-academic-500 leading-relaxed font-medium italic mt-2">
+                          This report evaluates citation integrity, DOI validity, academic identity verification, and editorial governance. This report is not a plagiarism determination tool and should not be interpreted as a substitute for specialized plagiarism detection software.
                         </div>
                       </div>
                     </>
