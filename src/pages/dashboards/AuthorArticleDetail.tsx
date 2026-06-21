@@ -740,7 +740,7 @@ export default function AuthorArticleDetail() {
                     <div className="bg-academic-50 p-4 rounded-xl border border-academic-100 text-center flex flex-col justify-center">
                       <span className="block text-xs font-bold text-academic-500 uppercase tracking-wider mb-0.5">Integrity Status</span>
                       <span className={`text-xs sm:text-sm font-black uppercase ${
-                        overallScore >= 85 ? 'text-emerald-600' : overallScore >= 70 ? 'text-blue-600' : overallScore >= 50 ? 'text-amber-600' : 'text-indigo-600'
+                        overallScore >= 85 ? 'text-emerald-600' : overallScore >= 70 ? 'text-blue-600' : overallScore >= 50 ? 'text-amber-600' : 'text-emerald-600'
                       }`}>
                         {overallScore >= 85 ? 'Fully Compliant' : overallScore >= 70 ? 'Compliant' : overallScore >= 50 ? 'Partially Compliant' : 'Verified'}
                       </span>
@@ -850,7 +850,7 @@ export default function AuthorArticleDetail() {
                   <p className="font-medium text-academic-800">
                     {article.similarity_score !== null ? (
                       <span className={`inline-flex items-center gap-1 font-bold ${
-                        article.similarity_score >= 85 ? 'text-emerald-600' : article.similarity_score >= 70 ? 'text-blue-600' : article.similarity_score >= 50 ? 'text-amber-600' : 'text-indigo-600'
+                        article.similarity_score >= 85 ? 'text-emerald-600' : article.similarity_score >= 70 ? 'text-blue-600' : article.similarity_score >= 50 ? 'text-amber-600' : 'text-emerald-600'
                       }`}>
                         {article.similarity_score >= 85 ? 'Fully Compliant' : article.similarity_score >= 70 ? 'Compliant' : article.similarity_score >= 50 ? 'Partially Compliant' : 'Verified'}
                       </span>
@@ -995,7 +995,7 @@ export default function AuthorArticleDetail() {
                   <p className="font-medium text-academic-800">
                     {article.similarity_score !== null ? (
                       <span className={`inline-flex items-center gap-1 font-bold ${
-                        article.similarity_score >= 85 ? 'text-emerald-600' : article.similarity_score >= 70 ? 'text-blue-600' : article.similarity_score >= 50 ? 'text-amber-600' : 'text-indigo-600'
+                        article.similarity_score >= 85 ? 'text-emerald-600' : article.similarity_score >= 70 ? 'text-blue-600' : article.similarity_score >= 50 ? 'text-amber-600' : 'text-emerald-600'
                       }`}>
                         {article.similarity_score >= 85 ? 'Fully Compliant' : article.similarity_score >= 70 ? 'Compliant' : article.similarity_score >= 50 ? 'Partially Compliant' : 'Verified'}
                       </span>
@@ -1456,7 +1456,7 @@ export default function AuthorArticleDetail() {
                           <div className="bg-white p-3 rounded-lg border border-academic-200/60 text-center flex flex-col justify-center">
                             <span className="block text-[9px] font-bold text-academic-400 uppercase mb-0.5">Integrity Status</span>
                             <span className={`text-xs font-black uppercase ${
-                              overallScore >= 85 ? 'text-emerald-600' : overallScore >= 70 ? 'text-blue-600' : overallScore >= 50 ? 'text-amber-600' : 'text-indigo-600'
+                              overallScore >= 85 ? 'text-emerald-600' : overallScore >= 70 ? 'text-blue-600' : overallScore >= 50 ? 'text-amber-600' : 'text-emerald-600'
                             }`}>
                               {overallScore >= 85 ? 'Fully Compliant' : overallScore >= 70 ? 'Compliant' : overallScore >= 50 ? 'Partially Compliant' : 'Verified'}
                             </span>

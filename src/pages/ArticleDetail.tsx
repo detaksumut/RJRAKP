@@ -983,7 +983,7 @@ export default function ArticleDetail() {
                     const btnClass = overallScore >= 85 ? 'text-emerald-700 bg-emerald-50 border-emerald-200' :
                                      overallScore >= 70 ? 'text-blue-700 bg-blue-50 border-blue-200' :
                                      overallScore >= 50 ? 'text-amber-700 bg-amber-50 border-amber-200' :
-                                     'text-indigo-700 bg-indigo-50 border-indigo-200';
+                                     'text-emerald-700 bg-emerald-50 border-emerald-200';
                     return (
                       <button 
                         onClick={() => setShowIntegrityModal(true)}
@@ -1190,7 +1190,7 @@ export default function ArticleDetail() {
                           <div className="bg-white p-3 rounded-lg border border-academic-200/60 text-center flex flex-col justify-center">
                             <span className="block text-[9px] font-bold text-academic-400 uppercase mb-0.5">Integrity Status</span>
                             <span className={`text-xs font-black uppercase ${
-                              overallScore >= 85 ? 'text-emerald-600' : overallScore >= 70 ? 'text-blue-600' : overallScore >= 50 ? 'text-amber-600' : 'text-indigo-600'
+                              overallScore >= 85 ? 'text-emerald-600' : overallScore >= 70 ? 'text-blue-600' : overallScore >= 50 ? 'text-amber-600' : 'text-emerald-600'
                             }`}>
                               {overallScore >= 85 ? 'Fully Compliant' : overallScore >= 70 ? 'Compliant' : overallScore >= 50 ? 'Partially Compliant' : 'Verified'}
                             </span>

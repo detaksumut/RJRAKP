@@ -882,7 +882,7 @@ export default function EditorDecisions() {
                             <div className="bg-brand-50 p-4 rounded-xl border border-brand-100 flex flex-col justify-between mb-4">
                               <span className="text-xs font-bold text-brand-800 uppercase tracking-wider">Overall Academic Integrity Status</span>
                               <span className={`text-2xl font-black mt-1 uppercase ${
-                                calculatedIntegrityScore >= 85 ? 'text-emerald-700' : calculatedIntegrityScore >= 70 ? 'text-blue-700' : calculatedIntegrityScore >= 50 ? 'text-amber-700' : 'text-rose-700'
+                                calculatedIntegrityScore >= 85 ? 'text-emerald-700' : calculatedIntegrityScore >= 70 ? 'text-blue-700' : calculatedIntegrityScore >= 50 ? 'text-amber-700' : 'text-emerald-700'
                               }`}>
                                 {calculatedIntegrityScore >= 85 ? 'Fully Compliant' : calculatedIntegrityScore >= 70 ? 'Compliant' : calculatedIntegrityScore >= 50 ? 'Partially Compliant' : 'Verified'}
                               </span>

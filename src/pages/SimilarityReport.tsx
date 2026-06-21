@@ -288,7 +288,7 @@ export default function SimilarityReport() {
                     />
                     <circle 
                       cx="72" cy="72" r="64" 
-                      className={overallScore >= 85 ? 'text-emerald-500' : overallScore >= 70 ? 'text-blue-500' : overallScore >= 50 ? 'text-amber-500' : 'text-indigo-500'} 
+                      className={overallScore >= 85 ? 'text-emerald-500' : overallScore >= 70 ? 'text-blue-500' : overallScore >= 50 ? 'text-amber-500' : 'text-emerald-500'} 
                       strokeWidth="10" 
                       strokeDasharray={402}
                       strokeDashoffset={402 - (402 * Math.max(overallScore, 65)) / 100}
@@ -299,7 +299,7 @@ export default function SimilarityReport() {
                   </svg>
                   <div className="absolute text-center px-4">
                     <span className={`text-sm sm:text-base font-black uppercase tracking-wider block leading-tight ${
-                      overallScore >= 85 ? 'text-emerald-600' : overallScore >= 70 ? 'text-blue-600' : overallScore >= 50 ? 'text-amber-600' : 'text-indigo-600'
+                      overallScore >= 85 ? 'text-emerald-600' : overallScore >= 70 ? 'text-blue-600' : overallScore >= 50 ? 'text-amber-600' : 'text-emerald-600'
                     }`}>
                       {overallScore >= 85 ? 'Fully Compliant' : overallScore >= 70 ? 'Compliant' : overallScore >= 50 ? 'Partially Compliant' : 'Verified'}
                     </span>
