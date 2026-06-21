@@ -148,14 +148,14 @@ export default function SimilarityReport() {
         orcid_verification: {
           orcid_id: correspondingAuthor?.orcid_id || '',
           status: orcidExists ? 'Verified' : 'Not Verified',
-          profile_link: correspondingAuthor?.orcid_id ? `https://orcid.org/${correspondingAuthor.orcid_id}` : ''
+          profile_link: correspondingAuthor?.orcid_id ? (correspondingAuthor.orcid_id.includes('orcid.org') ? correspondingAuthor.orcid_id : `https://orcid.org/${correspondingAuthor.orcid_id}`) : ''
         },
         academic_profile_verification: [
-          { platform: 'SINTA', status: correspondingAuthor?.sinta_id ? 'Verified' : 'Not Available', url: correspondingAuthor?.sinta_id ? `https://sinta.kemdiktisaintek.go.id/authors/profile/${correspondingAuthor.sinta_id}` : '' },
+          { platform: 'SINTA', status: correspondingAuthor?.sinta_id ? 'Verified' : 'Not Available', url: correspondingAuthor?.sinta_id ? (correspondingAuthor.sinta_id.includes('sinta') ? correspondingAuthor.sinta_id : `https://sinta.kemdiktisaintek.go.id/authors/profile/${correspondingAuthor.sinta_id}`) : '' },
           { platform: 'Google Scholar', status: 'Verified', url: '' },
-          { platform: 'Scopus Author', status: correspondingAuthor?.scopus_id ? 'Verified' : 'Not Available', url: correspondingAuthor?.scopus_id ? `https://www.scopus.com/authid/detail.uri?authorId=${correspondingAuthor.scopus_id}` : '' },
+          { platform: 'Scopus Author', status: correspondingAuthor?.scopus_id ? 'Verified' : 'Not Available', url: correspondingAuthor?.scopus_id ? (correspondingAuthor.scopus_id.includes('scopus') ? correspondingAuthor.scopus_id : `https://www.scopus.com/authid/detail.uri?authorId=${correspondingAuthor.scopus_id}`) : '' },
           { platform: 'ResearchGate', status: 'Verified', url: '' },
-          { platform: 'Web of Science', status: correspondingAuthor?.wos_id ? 'Verified' : 'Not Available', url: correspondingAuthor?.wos_id ? `https://www.webofscience.com/wos/author/record/${correspondingAuthor.wos_id}` : '' },
+          { platform: 'Web of Science', status: correspondingAuthor?.wos_id ? 'Verified' : 'Not Available', url: correspondingAuthor?.wos_id ? (correspondingAuthor.wos_id.includes('webofscience') || correspondingAuthor.wos_id.includes('wos') ? correspondingAuthor.wos_id : `https://www.webofscience.com/wos/author/record/${correspondingAuthor.wos_id}`) : '' },
           { platform: 'OpenAIRE', status: 'Not Verified', url: '' }
         ],
         editorial_validation: {
@@ -502,7 +502,7 @@ export default function SimilarityReport() {
                   </div>
                   {reportData.orcid_verification?.orcid_id && (
                     <a 
-                      href={`https://orcid.org/${reportData.orcid_verification.orcid_id}`}
+                      href={reportData.orcid_verification.profile_link || (reportData.orcid_verification.orcid_id.includes('orcid.org') ? reportData.orcid_verification.orcid_id : `https://orcid.org/${reportData.orcid_verification.orcid_id}`)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#A6CE39]/10 text-[#8eb82b] rounded-lg text-xs font-bold border border-[#A6CE39]/30 hover:bg-[#A6CE39]/20 transition-colors shrink-0"
