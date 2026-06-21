@@ -675,6 +675,14 @@ export default function SimilarityReport() {
                     >
                       ✓ ResearchGate Verified
                     </a>
+                    <a 
+                      href="https://zenodo.org/communities/rjrakp/records?q=&l=list&p=1&s=10&sort=newest"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 text-indigo-700 text-xs font-bold border border-indigo-200 hover:bg-indigo-100 rounded-lg transition-colors cursor-pointer"
+                    >
+                      ✓ Zenodo Community Verified
+                    </a>
                   </div>
                 </div>
               </div>

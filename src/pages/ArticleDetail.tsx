@@ -1343,6 +1343,9 @@ export default function ArticleDetail() {
                             <a href="https://www.researchgate.net/profile/Bakhrul-Amal" target="_blank" rel="noopener noreferrer" className="px-2.5 py-1 bg-cyan-50 text-cyan-700 font-bold border border-cyan-200 rounded hover:bg-cyan-100 transition-colors">
                               ✓ ResearchGate Verified
                             </a>
+                            <a href="https://zenodo.org/communities/rjrakp/records?q=&l=list&p=1&s=10&sort=newest" target="_blank" rel="noopener noreferrer" className="px-2.5 py-1 bg-indigo-50 text-indigo-700 font-bold border border-indigo-200 rounded hover:bg-indigo-100 transition-colors">
+                              ✓ Zenodo Community Verified
+                            </a>
                           </div>
                         </div>
                       </div>
