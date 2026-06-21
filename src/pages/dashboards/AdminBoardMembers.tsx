@@ -16,6 +16,7 @@ interface BoardMember {
   wos_id?: string;
   ssrn_author_id?: string;
   ssrn_abstract_id?: string;
+  researchgate_id?: string;
 }
 
 export default function AdminBoardMembers() {
@@ -39,6 +40,7 @@ export default function AdminBoardMembers() {
     wos_id: string;
     ssrn_author_id: string;
     ssrn_abstract_id: string;
+    researchgate_id: string;
   }>({
     name: '',
     role: '',
@@ -52,6 +54,7 @@ export default function AdminBoardMembers() {
     wos_id: '',
     ssrn_author_id: '',
     ssrn_abstract_id: '',
+    researchgate_id: '',
   });
 
   useEffect(() => {
@@ -95,6 +98,7 @@ export default function AdminBoardMembers() {
         wos_id: member.wos_id || '',
         ssrn_author_id: member.ssrn_author_id || '',
         ssrn_abstract_id: member.ssrn_abstract_id || '',
+        researchgate_id: member.researchgate_id || '',
       });
     } else {
       setFormData({
@@ -110,6 +114,7 @@ export default function AdminBoardMembers() {
         wos_id: '',
         ssrn_author_id: '',
         ssrn_abstract_id: '',
+        researchgate_id: '',
       });
     }
     setSelectedFile(null);
@@ -158,6 +163,7 @@ export default function AdminBoardMembers() {
         wos_id: formData.wos_id || null,
         ssrn_author_id: formData.ssrn_author_id || null,
         ssrn_abstract_id: formData.ssrn_abstract_id || null,
+        researchgate_id: formData.researchgate_id || null,
       };
 
       if (formData.id) {
@@ -476,6 +482,16 @@ export default function AdminBoardMembers() {
                         onChange={(e) => setFormData({...formData, ssrn_abstract_id: e.target.value})}
                         className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-500 text-sm transition-colors"
                         placeholder="Contoh: 6917418"
+                      />
+                    </div>
+                    <div className="col-span-2">
+                      <label className="block text-xs font-bold text-gray-600 mb-1">ResearchGate ID / Profile URL</label>
+                      <input
+                        type="text"
+                        value={formData.researchgate_id}
+                        onChange={(e) => setFormData({...formData, researchgate_id: e.target.value})}
+                        className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-500 text-sm transition-colors"
+                        placeholder="Contoh: Bakhrul-Amal atau link profil penuh"
                       />
                     </div>
                   </div>
