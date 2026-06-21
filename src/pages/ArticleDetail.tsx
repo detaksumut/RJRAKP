@@ -983,7 +983,7 @@ export default function ArticleDetail() {
                     const btnClass = overallScore >= 85 ? 'text-emerald-700 bg-emerald-50 border-emerald-200' :
                                      overallScore >= 70 ? 'text-blue-700 bg-blue-50 border-blue-200' :
                                      overallScore >= 50 ? 'text-amber-700 bg-amber-50 border-amber-200' :
-                                     'text-rose-700 bg-rose-50 border-rose-200';
+                                     'text-indigo-700 bg-indigo-50 border-indigo-200';
                     return (
                       <button 
                         onClick={() => setShowIntegrityModal(true)}
