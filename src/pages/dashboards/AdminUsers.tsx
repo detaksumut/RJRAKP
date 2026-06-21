@@ -4,7 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { UserCheck, UserX, Eye, ShieldAlert, ArrowLeft } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
-type Tab = 'penulis' | 'reviewer_pending' | 'reviewer_aktif' | 'editor_pending' | 'editor_aktif';
+type Tab = 'penulis' | 'reviewer_pending' | 'reviewer_aktif' | 'editor_pending' | 'editor_aktif' | 'mitra_royalti';
 
 export default function AdminUsers() {
   const { user } = useAuth();
@@ -97,6 +97,7 @@ export default function AdminUsers() {
         case 'reviewer_aktif': return u.role === 'reviewer' && u.status === 'APPROVED';
         case 'editor_pending': return u.role === 'editor' && u.status === 'PENDING';
         case 'editor_aktif': return u.role === 'editor' && u.status === 'APPROVED';
+        case 'mitra_royalti': return u.partner_type === 'lembaga' || u.partner_type === 'personal';
         default: return false;
       }
     });
@@ -107,7 +108,8 @@ export default function AdminUsers() {
     { id: 'editor_pending', label: 'Editor Pending' },
     { id: 'reviewer_aktif', label: 'Reviewer Aktif' },
     { id: 'editor_aktif', label: 'Editor Aktif' },
-    { id: 'penulis', label: 'Penulis' }
+    { id: 'penulis', label: 'Penulis' },
+    { id: 'mitra_royalti', label: 'Mitra Royalti' }
   ];
 
   if (selectedUser) {
@@ -281,16 +283,21 @@ export default function AdminUsers() {
               <tr className="bg-academic-50 border-b border-academic-200 text-xs uppercase tracking-wider text-academic-500 font-bold">
                 <th className="p-4">Nama Lengkap</th>
                 <th className="p-4">Institusi</th>
-                <th className="p-4">{activeTab.includes('penulis') ? 'Pendidikan' : 'Keahlian'}</th>
+                <th className="p-4">
+                  {activeTab === 'mitra_royalti' 
+                    ? 'Tipe Kemitraan' 
+                    : (activeTab.includes('penulis') ? 'Pendidikan' : 'Keahlian')}
+                </th>
+                {activeTab === 'penulis' && <th className="p-4">Mitra Royalti</th>}
                 <th className="p-4 text-center">Status</th>
                 <th className="p-4 text-center">Aksi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-academic-100">
               {loading ? (
-                <tr><td colSpan={5} className="p-8 text-center text-academic-500">Memuat data pengguna...</td></tr>
+                <tr><td colSpan={activeTab === 'penulis' ? 6 : 5} className="p-8 text-center text-academic-500">Memuat data pengguna...</td></tr>
               ) : getFilteredUsers().length === 0 ? (
-                <tr><td colSpan={5} className="p-12 text-center text-academic-500 font-medium">Tidak ada pengguna pada kategori ini.</td></tr>
+                <tr><td colSpan={activeTab === 'penulis' ? 6 : 5} className="p-12 text-center text-academic-500 font-medium">Tidak ada pengguna pada kategori ini.</td></tr>
               ) : getFilteredUsers().map(u => (
                 <tr key={u.id} className="hover:bg-academic-50 transition-colors">
                   <td className="p-4">
@@ -301,8 +308,26 @@ export default function AdminUsers() {
                      {u.affiliation}
                   </td>
                   <td className="p-4 text-sm text-academic-800">
-                     {activeTab.includes('penulis') ? u.education_level : (u.expertise_area || '-')}
+                     {activeTab === 'mitra_royalti'
+                       ? (u.partner_type === 'lembaga' ? 'Lembaga Perujuk' : 'Perujuk Perorangan')
+                       : (activeTab.includes('penulis') ? u.education_level : (u.expertise_area || '-'))}
                   </td>
+                  {activeTab === 'penulis' && (
+                    <td className="p-4 text-sm text-academic-800">
+                      {u.referred_by ? (
+                        <div>
+                          <span className="font-bold text-academic-900 block">
+                            {users.find(partner => partner.id === u.referred_by)?.full_name || 'Mitra'}
+                          </span>
+                          <span className="text-xs text-academic-500 capitalize">
+                            ({users.find(partner => partner.id === u.referred_by)?.partner_type || 'Personal'})
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-academic-400 italic">Tanpa Rujukan</span>
+                      )}
+                    </td>
+                  )}
                   <td className="p-4 text-center">
                     <span className={`px-2.5 py-1 text-xs font-bold uppercase tracking-wider rounded-md ${
                       u.status === 'APPROVED' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
