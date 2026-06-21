@@ -13,7 +13,32 @@ interface BoardMember {
   role: string;
   affiliation: string;
   image_url: string;
+  sinta_id?: string;
+  google_scholar_id?: string;
+  orcid_id?: string;
+  scopus_id?: string;
+  wos_id?: string;
 }
+
+const getProfileUrl = (type: string, id: string) => {
+  if (!id) return '';
+  const trimmed = id.trim();
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) return trimmed;
+  switch (type) {
+    case 'sinta':
+      return `https://sinta.kemdikbud.go.id/authors/detail?id=${trimmed}`;
+    case 'scholar':
+      return `https://scholar.google.com/citations?user=${trimmed}`;
+    case 'orcid':
+      return `https://orcid.org/${trimmed}`;
+    case 'scopus':
+      return `https://www.scopus.com/authid/detail.uri?authorId=${trimmed}`;
+    case 'wos':
+      return `https://www.webofscience.com/wos/author/record/${trimmed}`;
+    default:
+      return trimmed;
+  }
+};
 
 export default function BoardModal({ isOpen, onClose }: BoardModalProps) {
   const [show, setShow] = useState(false);
@@ -127,6 +152,67 @@ export default function BoardModal({ isOpen, onClose }: BoardModalProps) {
                       {member.role}
                     </span>
                   </div>
+
+                  {/* Academic Profile Badges */}
+                  {(member.sinta_id || member.google_scholar_id || member.orcid_id || member.scopus_id || member.wos_id) && (
+                    <div className="flex flex-wrap justify-center gap-1.5 mb-4 mt-1">
+                      {member.sinta_id && (
+                        <a
+                          href={getProfileUrl('sinta', member.sinta_id)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-2 py-0.5 text-[10px] font-bold rounded bg-teal-500/10 hover:bg-teal-500/20 text-teal-300 border border-teal-500/30 transition-all hover:scale-105"
+                          title="Sinta Profile"
+                        >
+                          SINTA
+                        </a>
+                      )}
+                      {member.google_scholar_id && (
+                        <a
+                          href={getProfileUrl('scholar', member.google_scholar_id)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-2 py-0.5 text-[10px] font-bold rounded bg-blue-500/10 hover:bg-blue-500/20 text-blue-300 border border-blue-500/30 transition-all hover:scale-105"
+                          title="Google Scholar Profile"
+                        >
+                          Scholar
+                        </a>
+                      )}
+                      {member.orcid_id && (
+                        <a
+                          href={getProfileUrl('orcid', member.orcid_id)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-2 py-0.5 text-[10px] font-bold rounded bg-green-500/10 hover:bg-green-500/20 text-green-300 border border-green-500/30 transition-all hover:scale-105"
+                          title="ORCID Profile"
+                        >
+                          ORCID
+                        </a>
+                      )}
+                      {member.scopus_id && (
+                        <a
+                          href={getProfileUrl('scopus', member.scopus_id)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-2 py-0.5 text-[10px] font-bold rounded bg-orange-500/10 hover:bg-orange-500/20 text-orange-300 border border-orange-500/30 transition-all hover:scale-105"
+                          title="Scopus Profile"
+                        >
+                          Scopus
+                        </a>
+                      )}
+                      {member.wos_id && (
+                        <a
+                          href={getProfileUrl('wos', member.wos_id)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-2 py-0.5 text-[10px] font-bold rounded bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 transition-all hover:scale-105"
+                          title="Web of Science Profile"
+                        >
+                          WoS
+                        </a>
+                      )}
+                    </div>
+                  )}
 
                   <div className="flex flex-col items-center gap-1 text-sm text-academic-400 mt-auto pt-4 border-t border-academic-800/50 w-full">
                     <Building2 className="w-4 h-4 opacity-50" />

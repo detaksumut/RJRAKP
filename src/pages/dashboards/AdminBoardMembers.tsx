@@ -9,6 +9,11 @@ interface BoardMember {
   affiliation: string;
   image_url: string;
   sort_order: number;
+  sinta_id?: string;
+  google_scholar_id?: string;
+  orcid_id?: string;
+  scopus_id?: string;
+  wos_id?: string;
 }
 
 export default function AdminBoardMembers() {
@@ -25,12 +30,22 @@ export default function AdminBoardMembers() {
     affiliation: string;
     image_url: string;
     sort_order: number;
+    sinta_id: string;
+    google_scholar_id: string;
+    orcid_id: string;
+    scopus_id: string;
+    wos_id: string;
   }>({
     name: '',
     role: '',
     affiliation: '',
     image_url: '',
     sort_order: 0,
+    sinta_id: '',
+    google_scholar_id: '',
+    orcid_id: '',
+    scopus_id: '',
+    wos_id: '',
   });
 
   useEffect(() => {
@@ -60,7 +75,19 @@ export default function AdminBoardMembers() {
 
   const handleOpenModal = (member?: BoardMember) => {
     if (member) {
-      setFormData(member);
+      setFormData({
+        id: member.id,
+        name: member.name,
+        role: member.role,
+        affiliation: member.affiliation,
+        image_url: member.image_url,
+        sort_order: member.sort_order,
+        sinta_id: member.sinta_id || '',
+        google_scholar_id: member.google_scholar_id || '',
+        orcid_id: member.orcid_id || '',
+        scopus_id: member.scopus_id || '',
+        wos_id: member.wos_id || '',
+      });
     } else {
       setFormData({
         name: '',
@@ -68,6 +95,11 @@ export default function AdminBoardMembers() {
         affiliation: '',
         image_url: '',
         sort_order: members.length,
+        sinta_id: '',
+        google_scholar_id: '',
+        orcid_id: '',
+        scopus_id: '',
+        wos_id: '',
       });
     }
     setSelectedFile(null);
@@ -103,30 +135,31 @@ export default function AdminBoardMembers() {
         finalImageUrl = urlData?.publicUrl || formData.image_url;
       }
 
+      const payload = {
+        name: formData.name,
+        role: formData.role,
+        affiliation: formData.affiliation,
+        image_url: finalImageUrl,
+        sort_order: formData.sort_order,
+        sinta_id: formData.sinta_id || null,
+        google_scholar_id: formData.google_scholar_id || null,
+        orcid_id: formData.orcid_id || null,
+        scopus_id: formData.scopus_id || null,
+        wos_id: formData.wos_id || null,
+      };
+
       if (formData.id) {
         // Update
         const { error } = await supabase
           .from('board_members')
-          .update({
-            name: formData.name,
-            role: formData.role,
-            affiliation: formData.affiliation,
-            image_url: finalImageUrl,
-            sort_order: formData.sort_order,
-          })
+          .update(payload)
           .eq('id', formData.id);
         if (error) throw error;
       } else {
         // Insert
         const { error } = await supabase
           .from('board_members')
-          .insert([{
-            name: formData.name,
-            role: formData.role,
-            affiliation: formData.affiliation,
-            image_url: finalImageUrl,
-            sort_order: formData.sort_order,
-          }]);
+          .insert([payload]);
         if (error) throw error;
       }
       
@@ -358,6 +391,62 @@ export default function AdminBoardMembers() {
                     className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors"
                   />
                   <p className="mt-1 text-xs text-gray-500 font-medium">Semakin kecil angkanya, semakin atas tampilnya.</p>
+                </div>
+                
+                <div className="border-t border-gray-100 pt-4">
+                  <h4 className="text-sm font-bold text-gray-900 mb-3">ID Profil Akademik (Opsional)</h4>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-gray-600 mb-1">Sinta ID</label>
+                      <input
+                        type="text"
+                        value={formData.sinta_id}
+                        onChange={(e) => setFormData({...formData, sinta_id: e.target.value})}
+                        className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-500 text-sm transition-colors"
+                        placeholder="Contoh: 6012345"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-600 mb-1">Google Scholar ID</label>
+                      <input
+                        type="text"
+                        value={formData.google_scholar_id}
+                        onChange={(e) => setFormData({...formData, google_scholar_id: e.target.value})}
+                        className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-500 text-sm transition-colors"
+                        placeholder="Contoh: gF3AAAAJ"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-600 mb-1">ORCID ID</label>
+                      <input
+                        type="text"
+                        value={formData.orcid_id}
+                        onChange={(e) => setFormData({...formData, orcid_id: e.target.value})}
+                        className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-500 text-sm transition-colors"
+                        placeholder="Contoh: 0000-0002-1825-0097"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-600 mb-1">Scopus ID</label>
+                      <input
+                        type="text"
+                        value={formData.scopus_id}
+                        onChange={(e) => setFormData({...formData, scopus_id: e.target.value})}
+                        className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-500 text-sm transition-colors"
+                        placeholder="Contoh: 57211234500"
+                      />
+                    </div>
+                    <div className="col-span-2">
+                      <label className="block text-xs font-bold text-gray-600 mb-1">Web of Science (WoS) ID</label>
+                      <input
+                        type="text"
+                        value={formData.wos_id}
+                        onChange={(e) => setFormData({...formData, wos_id: e.target.value})}
+                        className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-500 text-sm transition-colors"
+                        placeholder="Contoh: AAB-1234-2020"
+                      />
+                    </div>
+                  </div>
                 </div>
               </form>
             </div>
