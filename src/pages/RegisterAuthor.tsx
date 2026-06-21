@@ -33,11 +33,8 @@ export default function RegisterAuthor() {
 
   const fetchPartners = async () => {
     try {
-      const { data, error } = await supabase
-        .from('users')
-        .select('id, full_name, partner_type')
-        .not('partner_type', 'is', null)
-        .order('full_name');
+      const { data, error } = await supabase.rpc('get_active_partners');
+      if (error) throw error;
       if (data) {
         setPartners(data);
       }

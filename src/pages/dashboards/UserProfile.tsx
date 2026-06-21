@@ -56,11 +56,8 @@ export default function UserProfile() {
         });
       }
 
-      const { data: partnersData } = await supabase
-        .from('users')
-        .select('id, full_name, partner_type')
-        .not('partner_type', 'is', null)
-        .order('full_name');
+      const { data: partnersData, error: partnersError } = await supabase.rpc('get_active_partners');
+      if (partnersError) throw partnersError;
       if (partnersData) setPartners(partnersData);
     } catch (err) {
       console.error('Error fetching profile:', err);
