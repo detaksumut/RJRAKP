@@ -609,6 +609,35 @@ export default function AdminArticles() {
                     {/* Copyedited File */}
                     <div className="p-4 bg-purple-50 rounded-lg border border-purple-100">
                       <h4 className="text-xs font-bold text-purple-800 uppercase tracking-widest mb-2">File Copyediting</h4>
+                      
+                      {/* Copyediting Checklist */}
+                      <div className="mb-3.5 bg-white/60 rounded-lg p-3 border border-purple-100/50 space-y-1">
+                        <h5 className="text-[10px] font-bold text-purple-800 uppercase tracking-wider mb-1.5">Pemeriksaan Copyediting:</h5>
+                        <div className="grid grid-cols-1 gap-y-1 text-[11px] text-academic-700 font-medium">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-purple-600">✅</span> Tata bahasa
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-purple-600">✅</span> Ejaan (EYD/PUEBI)
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-purple-600">✅</span> Konsistensi istilah
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-purple-600">✅</span> Sitasi & daftar pustaka
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-purple-600">✅</span> Format heading
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-purple-600">✅</span> Typo
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-purple-600">✅</span> Kesalahan penulisan tabel/gambar
+                          </div>
+                        </div>
+                      </div>
+
                       {selectedArticle.copyedited_file ? (
                         <div className="space-y-2">
                           <p className="text-xs text-purple-600">File sudah diunggah.</p>
