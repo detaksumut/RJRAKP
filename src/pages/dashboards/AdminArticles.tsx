@@ -659,6 +659,38 @@ export default function AdminArticles() {
                     {/* Layout File */}
                     <div className="p-4 bg-indigo-50 rounded-lg border border-indigo-100">
                       <h4 className="text-xs font-bold text-indigo-800 uppercase tracking-widest mb-2">File Layout (Galley PDF)</h4>
+                      
+                      {/* Layouting Checklist */}
+                      <div className="mb-3.5 bg-white/60 rounded-lg p-3 border border-indigo-100/50 space-y-1">
+                        <h5 className="text-[10px] font-bold text-indigo-800 uppercase tracking-wider mb-1.5">Pemeriksaan Layouting:</h5>
+                        <div className="grid grid-cols-1 gap-y-1 text-[11px] text-academic-700 font-medium">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-indigo-600">📄</span> PDF final jurnal
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-indigo-600">📄</span> Tampilan halaman
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-indigo-600">📄</span> Nomor halaman
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-indigo-600">📄</span> Header dan footer
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-indigo-600">📄</span> Logo jurnal
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-indigo-600">📄</span> DOI
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-indigo-600">📄</span> Metadata artikel
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-indigo-600">📄</span> Tampilan tabel/gambar
+                          </div>
+                        </div>
+                      </div>
+
                       {selectedArticle.layout_file ? (
                         <div className="space-y-2">
                           <p className="text-xs text-indigo-600">File sudah diunggah.</p>

@@ -1151,6 +1151,38 @@ export default function AuthorArticleDetail() {
               {/* Layouting File */}
               <div className={`p-4 rounded-lg border ${['layouting', 'published'].includes(article.status.toLowerCase()) ? 'bg-indigo-50 border-indigo-100' : 'bg-academic-50 border-academic-100 opacity-50'}`}>
                 <h4 className="text-xs font-bold text-indigo-800 uppercase tracking-widest mb-2">2. Galley Final (PDF)</h4>
+                
+                {/* Layouting Checklist */}
+                <div className="mb-3.5 bg-white/60 rounded-lg p-3 border border-indigo-100/50 space-y-1">
+                  <h5 className="text-[10px] font-bold text-indigo-800 uppercase tracking-wider mb-1.5">Tugas Editor Layout:</h5>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-3 gap-y-1 text-[11px] text-academic-700 font-medium">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-indigo-600">📄</span> PDF final jurnal
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-indigo-600">📄</span> Tampilan halaman
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-indigo-600">📄</span> Nomor halaman
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-indigo-600">📄</span> Header dan footer
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-indigo-600">📄</span> Logo jurnal
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-indigo-600">📄</span> DOI
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-indigo-600">📄</span> Metadata artikel
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-indigo-600">📄</span> Tampilan tabel/gambar
+                    </div>
+                  </div>
+                </div>
+
                 {article.layout_file ? (
                   <div className="space-y-3">
                     <p className="text-xs text-indigo-700">Desain akhir artikel PDF (Galley) telah siap.</p>
