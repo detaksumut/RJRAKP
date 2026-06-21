@@ -188,6 +188,38 @@ export default function AdminUsers() {
                 </div>
               </div>
 
+              <div className="border-t border-academic-100 pt-6 mb-6">
+                <h3 className="text-sm font-bold text-academic-900 mb-4">Pengaturan Kemitraan Referal & Royalti</h3>
+                <div className="flex gap-4 items-end max-w-sm">
+                  <div className="flex-1">
+                    <label className="block text-xs font-bold text-academic-700 uppercase mb-2">Tipe Kemitraan</label>
+                    <select
+                      value={selectedUser.partner_type || ''}
+                      onChange={async (e) => {
+                        const val = e.target.value || null;
+                        try {
+                          const { error } = await supabase
+                            .from('users')
+                            .update({ partner_type: val })
+                            .eq('id', selectedUser.id);
+                          if (error) throw error;
+                          setSelectedUser({ ...selectedUser, partner_type: val });
+                          fetchUsers();
+                          alert('Tipe kemitraan berhasil diperbarui.');
+                        } catch (err: any) {
+                          alert('Gagal memperbarui tipe kemitraan: ' + err.message);
+                        }
+                      }}
+                      className="w-full border border-academic-300 rounded-md px-3 py-2 text-sm focus:ring-brand-500 bg-white cursor-pointer"
+                    >
+                      <option value="">Bukan Mitra Referal</option>
+                      <option value="lembaga">Lembaga Perujuk (Institution)</option>
+                      <option value="personal">Perujuk Perorangan (Personal)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
               <div className="border-t border-academic-100 pt-6 flex flex-wrap gap-3">
                 <button 
                   onClick={() => updateUserStatus(selectedUser.id, 'APPROVED')} 

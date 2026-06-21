@@ -1,7 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
 import { supabase } from '../../lib/supabase';
-import { Save, Lock } from 'lucide-react';
+import { Save, Lock, Shield, BookOpen, Award, TrendingUp } from 'lucide-react';
+
+const ROLE_ORDER = [
+  'direktur',
+  'administrator',
+  'sdm',
+  'finance_operator',
+  'editor_in_chief',
+  'editor',
+  'cover_editor',
+  'layout_editor',
+  'reviewer_with_id',
+  'reviewer_no_id',
+  'royalty_referrer_lembaga',
+  'royalty_referrer_personal'
+];
+
+const CATEGORIES = [
+  {
+    title: 'Manajemen & Administrasi',
+    roles: ['direktur', 'administrator', 'sdm', 'finance_operator'],
+    icon: <Shield className="w-4 h-4 text-amber-600" />
+  },
+  {
+    title: 'Tim Editorial',
+    roles: ['editor_in_chief', 'editor', 'cover_editor', 'layout_editor'],
+    icon: <BookOpen className="w-4 h-4 text-indigo-600" />
+  },
+  {
+    title: 'Reviewer / Mitra Bestari',
+    roles: ['reviewer_with_id', 'reviewer_no_id'],
+    icon: <Award className="w-4 h-4 text-emerald-600" />
+  },
+  {
+    title: 'Program Kemitraan (Referal / Royalti)',
+    roles: ['royalty_referrer_lembaga', 'royalty_referrer_personal'],
+    icon: <TrendingUp className="w-4 h-4 text-rose-600" />
+  }
+];
 
 export default function AdminSettings() {
   const [loading, setLoading] = useState(false);
@@ -74,9 +112,17 @@ export default function AdminSettings() {
   const fetchRates = async () => {
     try {
       setRatesLoading(true);
-      const { data, error } = await supabase.from('honorarium_rates').select('*').order('id', { ascending: true });
+      const { data, error } = await supabase.from('honorarium_rates').select('*');
       if (error) throw error;
-      setRates(data || []);
+      
+      const sorted = (data || []).sort((a, b) => {
+        const indexA = ROLE_ORDER.indexOf(a.role_key);
+        const indexB = ROLE_ORDER.indexOf(b.role_key);
+        const valA = indexA === -1 ? 999 : indexA;
+        const valB = indexB === -1 ? 999 : indexB;
+        return valA - valB;
+      });
+      setRates(sorted);
     } catch (err) {
       console.error('Error fetching rates:', err);
     } finally {
@@ -198,34 +244,48 @@ export default function AdminSettings() {
           <div className="px-6 py-4 border-b border-academic-100 flex items-center gap-2 bg-academic-50">
             <h2 className="font-bold text-lg text-academic-900">Pengaturan Standar Honorarium</h2>
           </div>
-          <div className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {ratesLoading ? (
-                <p className="text-academic-500">Memuat tarif...</p>
-              ) : (
-                rates?.map((rate) => (
-                  <div key={rate.id} className="p-4 border border-academic-200 rounded-lg bg-academic-50 flex flex-col justify-between">
-                    <div>
-                      <p className="font-bold text-academic-900 text-sm">{rate.role_name}</p>
-                      <p className="text-xs text-academic-500 mb-3">{rate.role_key}</p>
+          <div className="p-6 space-y-6">
+            {ratesLoading ? (
+              <p className="text-academic-500">Memuat tarif...</p>
+            ) : (
+              CATEGORIES.map((category) => {
+                const categoryRates = rates.filter((r) => category.roles.includes(r.role_key));
+                if (categoryRates.length === 0) return null;
+                return (
+                  <div key={category.title} className="space-y-3">
+                    <div className="flex items-center gap-2 pb-2 border-b border-academic-100">
+                      {category.icon}
+                      <h3 className="font-bold text-xs text-academic-700 uppercase tracking-wider">
+                        {category.title}
+                      </h3>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-academic-500 font-bold">Rp</span>
-                      <input
-                        type="number"
-                        defaultValue={rate.amount}
-                        className="flex-1 px-3 py-1.5 border border-academic-300 rounded focus:ring-2 focus:ring-brand-500 text-sm font-bold"
-                        onBlur={(e) => {
-                          if (Number(e.target.value) !== rate.amount) {
-                            handleUpdateRate(rate.id, Number(e.target.value));
-                          }
-                        }}
-                      />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {categoryRates.map((rate) => (
+                        <div key={rate.id} className="p-4 border border-academic-200 rounded-lg bg-academic-50 flex flex-col justify-between hover:border-academic-300 transition-colors">
+                          <div>
+                            <p className="font-bold text-academic-900 text-sm">{rate.role_name}</p>
+                            <p className="text-xs text-academic-500 mb-3">{rate.role_key}</p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-academic-500 font-bold">Rp</span>
+                            <input
+                              type="number"
+                              defaultValue={rate.amount}
+                              className="flex-1 px-3 py-1.5 border border-academic-300 rounded focus:ring-2 focus:ring-brand-500 text-sm font-bold bg-white"
+                              onBlur={(e) => {
+                                if (Number(e.target.value) !== rate.amount) {
+                                  handleUpdateRate(rate.id, Number(e.target.value));
+                                }
+                              }}
+                            />
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                ))
-              )}
-            </div>
+                );
+              })
+            )}
             <p className="text-xs text-academic-500 mt-4 italic">Tarif akan langsung disimpan saat Anda selesai mengetik angka.</p>
           </div>
         </div>
@@ -242,7 +302,7 @@ export default function AdminSettings() {
               {ratesLoading ? (
                 <p className="text-academic-500">Memuat peran...</p>
               ) : (
-                rates?.filter(r => !r.role_key?.includes('reviewer') && r.role_key !== 'editor').map((rate) => {
+                rates?.filter(r => !r.role_key?.includes('reviewer') && r.role_key !== 'editor' && !r.role_key?.startsWith('royalty')).map((rate) => {
                   const assignedUser = globalStaff?.find(s => s.role_key === rate.role_key)?.user_id || '';
                   return (
                     <div key={rate.role_key} className="p-4 border border-academic-200 rounded-lg bg-academic-50 flex flex-col justify-between">

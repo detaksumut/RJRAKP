@@ -16,8 +16,12 @@ export default function UserProfile() {
   const [formData, setFormData] = useState({
     bank_name: '',
     bank_account_number: '',
-    bank_account_holder: ''
+    bank_account_holder: '',
+    npwp: '',
+    referred_by: ''
   });
+
+  const [partners, setPartners] = useState<any[]>([]);
 
   const [passwords, setPasswords] = useState({
     newPassword: '',
@@ -37,7 +41,7 @@ export default function UserProfile() {
     try {
       const { data, error } = await supabase
         .from('users')
-        .select('bank_name, bank_account_number, bank_account_holder')
+        .select('bank_name, bank_account_number, bank_account_holder, npwp, referred_by')
         .eq('id', user?.id)
         .single();
 
@@ -46,9 +50,18 @@ export default function UserProfile() {
         setFormData({
           bank_name: data.bank_name || '',
           bank_account_number: data.bank_account_number || '',
-          bank_account_holder: data.bank_account_holder || ''
+          bank_account_holder: data.bank_account_holder || '',
+          npwp: data.npwp || '',
+          referred_by: data.referred_by || ''
         });
       }
+
+      const { data: partnersData } = await supabase
+        .from('users')
+        .select('id, full_name, partner_type')
+        .not('partner_type', 'is', null)
+        .order('full_name');
+      if (partnersData) setPartners(partnersData);
     } catch (err) {
       console.error('Error fetching profile:', err);
     }
@@ -65,7 +78,9 @@ export default function UserProfile() {
         .update({
           bank_name: formData.bank_name,
           bank_account_number: formData.bank_account_number,
-          bank_account_holder: formData.bank_account_holder
+          bank_account_holder: formData.bank_account_holder,
+          npwp: formData.npwp,
+          referred_by: formData.referred_by || null
         })
         .eq('id', user?.id);
 
@@ -166,18 +181,50 @@ export default function UserProfile() {
                   />
                 </div>
               </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-bold text-academic-900 mb-1">
+                    Nama Pemilik Rekening (Sesuai Buku Tabungan)
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.bank_account_holder}
+                    onChange={(e) => setFormData({...formData, bank_account_holder: e.target.value})}
+                    className="w-full px-4 py-2 border border-academic-300 rounded-lg focus:ring-2 focus:ring-brand-500"
+                    placeholder="Contoh: Budi Santoso"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-academic-900 mb-1">
+                    NPWP (Nomor Pokok Wajib Pajak) <span className="text-academic-400 font-normal">(Opsional)</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.npwp}
+                    onChange={(e) => setFormData({...formData, npwp: e.target.value})}
+                    className="w-full px-4 py-2 border border-academic-300 rounded-lg focus:ring-2 focus:ring-brand-500"
+                    placeholder="Contoh: 12.345.678.9-012.000"
+                  />
+                </div>
+              </div>
+
               <div>
                 <label className="block text-sm font-bold text-academic-900 mb-1">
-                  Nama Pemilik Rekening (Sesuai Buku Tabungan)
+                  Direkomendasikan Oleh (Rujukan Mitra) <span className="text-academic-400 font-normal">(Opsional)</span>
                 </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.bank_account_holder}
-                  onChange={(e) => setFormData({...formData, bank_account_holder: e.target.value})}
-                  className="w-full px-4 py-2 border border-academic-300 rounded-lg focus:ring-2 focus:ring-brand-500"
-                  placeholder="Contoh: Budi Santoso"
-                />
+                <select
+                  value={formData.referred_by}
+                  onChange={(e) => setFormData({...formData, referred_by: e.target.value})}
+                  className="w-full px-4 py-2 border border-academic-300 rounded-lg focus:ring-2 focus:ring-brand-500 bg-white cursor-pointer"
+                >
+                  <option value="">-- Tanpa Rujukan Mitra --</option>
+                  {partners.map(p => (
+                    <option key={p.id} value={p.id}>
+                      {p.full_name} ({p.partner_type === 'lembaga' ? 'Lembaga' : 'Personal'})
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div className="pt-4">

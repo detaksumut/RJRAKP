@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -19,10 +19,32 @@ export default function RegisterAuthor() {
     wos_id: '',
     sinta_id: '',
     google_scholar_id: '',
+    referred_by: '',
     password: '',
     confirm_password: '',
     agree_terms: false
   });
+
+  const [partners, setPartners] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetchPartners();
+  }, []);
+
+  const fetchPartners = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('id, full_name, partner_type')
+        .not('partner_type', 'is', null)
+        .order('full_name');
+      if (data) {
+        setPartners(data);
+      }
+    } catch (err) {
+      console.error('Error fetching partners:', err);
+    }
+  };
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [slowLoading, setSlowLoading] = useState(false);
@@ -88,7 +110,8 @@ export default function RegisterAuthor() {
         scopus_id: formData.scopus_id,
         wos_id: formData.wos_id,
         sinta_id: formData.sinta_id,
-        google_scholar_id: formData.google_scholar_id
+        google_scholar_id: formData.google_scholar_id,
+        referred_by: formData.referred_by || null
       });
 
       if (userError) throw userError;
@@ -175,13 +198,25 @@ export default function RegisterAuthor() {
                 </div>
               </div>
 
-               <div>
+                <div>
                 <label className="block text-xs font-bold text-academic-700 uppercase mb-2">Jenjang Pendidikan *</label>
                 <select required value={formData.education_level} onChange={e => setFormData({...formData, education_level: e.target.value})} className="w-full border border-academic-300 rounded-md px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white">
                   <option value="S1">S1</option>
                   <option value="S2">S2</option>
                   <option value="S3">S3</option>
                   <option value="Lainnya">Lainnya</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-academic-700 uppercase mb-2">Direkomendasikan Oleh (Rujukan Mitra) <span className="text-academic-400 font-normal">(Opsional)</span></label>
+                <select value={formData.referred_by} onChange={e => setFormData({...formData, referred_by: e.target.value})} className="w-full border border-academic-300 rounded-md px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white">
+                  <option value="">-- Tanpa Rujukan Mitra --</option>
+                  {partners.map(p => (
+                    <option key={p.id} value={p.id}>
+                      {p.full_name} ({p.partner_type === 'lembaga' ? 'Lembaga' : 'Personal'})
+                    </option>
+                  ))}
                 </select>
               </div>
 
