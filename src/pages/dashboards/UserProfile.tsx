@@ -18,11 +18,13 @@ export default function UserProfile() {
     bank_account_number: '',
     bank_account_holder: '',
     npwp: '',
-    referred_by: ''
+    referred_by: '',
+    referred_by_custom: ''
   });
 
   const [partners, setPartners] = useState<any[]>([]);
   const [hasReferral, setHasReferral] = useState<'yes' | 'no'>('no');
+  const [isManualReferral, setIsManualReferral] = useState(false);
 
   const [passwords, setPasswords] = useState({
     newPassword: '',
@@ -42,7 +44,7 @@ export default function UserProfile() {
     try {
       const { data, error } = await supabase
         .from('users')
-        .select('bank_name, bank_account_number, bank_account_holder, npwp, referred_by')
+        .select('bank_name, bank_account_number, bank_account_holder, npwp, referred_by, referred_by_custom')
         .eq('id', user?.id)
         .single();
 
@@ -53,14 +55,21 @@ export default function UserProfile() {
           bank_account_number: data.bank_account_number || '',
           bank_account_holder: data.bank_account_holder || '',
           npwp: data.npwp || '',
-          referred_by: data.referred_by || ''
+          referred_by: data.referred_by || '',
+          referred_by_custom: data.referred_by_custom || ''
         });
-        setHasReferral(data.referred_by ? 'yes' : 'no');
+        setHasReferral(data.referred_by || data.referred_by_custom ? 'yes' : 'no');
+        setIsManualReferral(!!data.referred_by_custom && !data.referred_by);
       }
 
       const { data: partnersData, error: partnersError } = await supabase.rpc('get_active_partners');
       if (partnersError) throw partnersError;
-      if (partnersData) setPartners(partnersData);
+      if (partnersData) {
+        setPartners(partnersData);
+        if (partnersData.length === 0) {
+          setIsManualReferral(true);
+        }
+      }
     } catch (err) {
       console.error('Error fetching profile:', err);
     }
@@ -79,7 +88,8 @@ export default function UserProfile() {
           bank_account_number: formData.bank_account_number,
           bank_account_holder: formData.bank_account_holder,
           npwp: formData.npwp,
-          referred_by: formData.referred_by || null
+          referred_by: formData.referred_by || null,
+          referred_by_custom: formData.referred_by_custom || null
         })
         .eq('id', user?.id);
 
@@ -234,7 +244,7 @@ export default function UserProfile() {
                       checked={hasReferral === 'no'}
                       onChange={() => {
                         setHasReferral('no');
-                        setFormData({...formData, referred_by: ''});
+                        setFormData({...formData, referred_by: '', referred_by_custom: ''});
                       }}
                       className="mr-2 text-brand-600 focus:ring-brand-500 w-4 h-4"
                     />
@@ -244,22 +254,52 @@ export default function UserProfile() {
 
                 {hasReferral === 'yes' && (
                   <div className="mt-3">
-                    <label className="block text-sm font-bold text-academic-900 mb-1">
-                      Pilih Mitra Rujukan *
-                    </label>
-                    <select
-                      required
-                      value={formData.referred_by}
-                      onChange={(e) => setFormData({...formData, referred_by: e.target.value})}
-                      className="w-full px-4 py-2 border border-academic-300 rounded-lg focus:ring-2 focus:ring-brand-500 bg-white cursor-pointer"
-                    >
-                      <option value="">-- Pilih Lembaga atau Personal --</option>
-                      {partners.map(p => (
-                        <option key={p.id} value={p.id}>
-                          {p.full_name} ({p.partner_type === 'lembaga' ? 'Lembaga' : 'Personal'})
-                        </option>
-                      ))}
-                    </select>
+                    {partners.length > 0 && (
+                      <div className="mb-3">
+                        <label className="block text-sm font-bold text-academic-900 mb-1">
+                          Pilih Mitra Rujukan *
+                        </label>
+                        <select
+                          required={!isManualReferral}
+                          value={isManualReferral ? 'custom' : formData.referred_by}
+                          onChange={e => {
+                            const val = e.target.value;
+                            if (val === 'custom') {
+                              setIsManualReferral(true);
+                              setFormData({...formData, referred_by: ''});
+                            } else {
+                              setIsManualReferral(false);
+                              setFormData({...formData, referred_by: val, referred_by_custom: ''});
+                            }
+                          }}
+                          className="w-full px-4 py-2 border border-academic-300 rounded-lg focus:ring-2 focus:ring-brand-500 bg-white cursor-pointer"
+                        >
+                          <option value="">-- Pilih Lembaga atau Personal --</option>
+                          {partners.map(p => (
+                            <option key={p.id} value={p.id}>
+                              {p.full_name} ({p.partner_type === 'lembaga' ? 'Lembaga' : 'Personal'})
+                            </option>
+                          ))}
+                          <option value="custom">Lainnya (Tulis Manual)</option>
+                        </select>
+                      </div>
+                    )}
+
+                    {(partners.length === 0 || isManualReferral) && (
+                      <div className="mt-3">
+                        <label className="block text-sm font-bold text-academic-900 mb-1">
+                          Tulis Nama Rujukan (Lembaga / Perorangan) *
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={formData.referred_by_custom}
+                          onChange={e => setFormData({...formData, referred_by_custom: e.target.value})}
+                          placeholder="Contoh: Universitas Indonesia atau Dr. Hermawan"
+                          className="w-full px-4 py-2 border border-academic-300 rounded-lg focus:ring-2 focus:ring-brand-500"
+                        />
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

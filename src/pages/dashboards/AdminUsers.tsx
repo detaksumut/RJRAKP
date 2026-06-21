@@ -323,6 +323,15 @@ export default function AdminUsers() {
                             ({users.find(partner => partner.id === u.referred_by)?.partner_type || 'Personal'})
                           </span>
                         </div>
+                      ) : u.referred_by_custom ? (
+                        <div>
+                          <span className="font-bold text-academic-900 block text-amber-700">
+                            {u.referred_by_custom}
+                          </span>
+                          <span className="text-xs text-amber-600 font-semibold block mt-0.5">
+                            (Belum Terdaftar)
+                          </span>
+                        </div>
                       ) : (
                         <span className="text-academic-400 italic">Tanpa Rujukan</span>
                       )}

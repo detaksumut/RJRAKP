@@ -20,6 +20,7 @@ export default function RegisterAuthor() {
     sinta_id: '',
     google_scholar_id: '',
     referred_by: '',
+    referred_by_custom: '',
     password: '',
     confirm_password: '',
     agree_terms: false
@@ -27,6 +28,7 @@ export default function RegisterAuthor() {
 
   const [partners, setPartners] = useState<any[]>([]);
   const [hasReferral, setHasReferral] = useState<'yes' | 'no'>('no');
+  const [isManualReferral, setIsManualReferral] = useState(false);
 
   useEffect(() => {
     fetchPartners();
@@ -38,6 +40,9 @@ export default function RegisterAuthor() {
       if (error) throw error;
       if (data) {
         setPartners(data);
+        if (data.length === 0) {
+          setIsManualReferral(true);
+        }
       }
     } catch (err) {
       console.error('Error fetching partners:', err);
@@ -109,7 +114,8 @@ export default function RegisterAuthor() {
         wos_id: formData.wos_id,
         sinta_id: formData.sinta_id,
         google_scholar_id: formData.google_scholar_id,
-        referred_by: formData.referred_by || null
+        referred_by: formData.referred_by || null,
+        referred_by_custom: formData.referred_by_custom || null
       });
 
       if (userError) throw userError;
@@ -230,7 +236,7 @@ export default function RegisterAuthor() {
                       checked={hasReferral === 'no'}
                       onChange={() => {
                         setHasReferral('no');
-                        setFormData({...formData, referred_by: ''});
+                        setFormData({...formData, referred_by: '', referred_by_custom: ''});
                       }}
                       className="mr-2 text-brand-600 focus:ring-brand-500 w-4 h-4"
                     />
@@ -240,20 +246,50 @@ export default function RegisterAuthor() {
 
                 {hasReferral === 'yes' && (
                   <div className="mt-3">
-                    <label className="block text-xs font-bold text-academic-700 uppercase mb-2">Pilih Mitra Rujukan *</label>
-                    <select
-                      required
-                      value={formData.referred_by}
-                      onChange={e => setFormData({...formData, referred_by: e.target.value})}
-                      className="w-full border border-academic-300 rounded-md px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white"
-                    >
-                      <option value="">-- Pilih Lembaga atau Personal --</option>
-                      {partners.map(p => (
-                        <option key={p.id} value={p.id}>
-                          {p.full_name} ({p.partner_type === 'lembaga' ? 'Lembaga' : 'Personal'})
-                        </option>
-                      ))}
-                    </select>
+                    {partners.length > 0 && (
+                      <div className="mb-3">
+                        <label className="block text-xs font-bold text-academic-700 uppercase mb-2">Pilih Mitra Rujukan *</label>
+                        <select
+                          required={!isManualReferral}
+                          value={isManualReferral ? 'custom' : formData.referred_by}
+                          onChange={e => {
+                            const val = e.target.value;
+                            if (val === 'custom') {
+                              setIsManualReferral(true);
+                              setFormData({...formData, referred_by: ''});
+                            } else {
+                              setIsManualReferral(false);
+                              setFormData({...formData, referred_by: val, referred_by_custom: ''});
+                            }
+                          }}
+                          className="w-full border border-academic-300 rounded-md px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white"
+                        >
+                          <option value="">-- Pilih Lembaga atau Personal --</option>
+                          {partners.map(p => (
+                            <option key={p.id} value={p.id}>
+                              {p.full_name} ({p.partner_type === 'lembaga' ? 'Lembaga' : 'Personal'})
+                            </option>
+                          ))}
+                          <option value="custom">Lainnya (Tulis Manual)</option>
+                        </select>
+                      </div>
+                    )}
+
+                    {(partners.length === 0 || isManualReferral) && (
+                      <div className="mt-3">
+                        <label className="block text-xs font-bold text-academic-700 uppercase mb-2">
+                          Tulis Nama Rujukan (Lembaga / Perorangan) *
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={formData.referred_by_custom}
+                          onChange={e => setFormData({...formData, referred_by_custom: e.target.value})}
+                          placeholder="Contoh: Universitas Indonesia atau Dr. Hermawan"
+                          className="w-full border border-academic-300 rounded-md px-4 py-2 text-sm focus:ring-brand-500"
+                        />
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
