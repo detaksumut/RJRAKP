@@ -14,6 +14,8 @@ interface BoardMember {
   orcid_id?: string;
   scopus_id?: string;
   wos_id?: string;
+  ssrn_author_id?: string;
+  ssrn_abstract_id?: string;
 }
 
 export default function AdminBoardMembers() {
@@ -35,6 +37,8 @@ export default function AdminBoardMembers() {
     orcid_id: string;
     scopus_id: string;
     wos_id: string;
+    ssrn_author_id: string;
+    ssrn_abstract_id: string;
   }>({
     name: '',
     role: '',
@@ -46,6 +50,8 @@ export default function AdminBoardMembers() {
     orcid_id: '',
     scopus_id: '',
     wos_id: '',
+    ssrn_author_id: '',
+    ssrn_abstract_id: '',
   });
 
   useEffect(() => {
@@ -87,6 +93,8 @@ export default function AdminBoardMembers() {
         orcid_id: member.orcid_id || '',
         scopus_id: member.scopus_id || '',
         wos_id: member.wos_id || '',
+        ssrn_author_id: member.ssrn_author_id || '',
+        ssrn_abstract_id: member.ssrn_abstract_id || '',
       });
     } else {
       setFormData({
@@ -100,6 +108,8 @@ export default function AdminBoardMembers() {
         orcid_id: '',
         scopus_id: '',
         wos_id: '',
+        ssrn_author_id: '',
+        ssrn_abstract_id: '',
       });
     }
     setSelectedFile(null);
@@ -146,6 +156,8 @@ export default function AdminBoardMembers() {
         orcid_id: formData.orcid_id || null,
         scopus_id: formData.scopus_id || null,
         wos_id: formData.wos_id || null,
+        ssrn_author_id: formData.ssrn_author_id || null,
+        ssrn_abstract_id: formData.ssrn_abstract_id || null,
       };
 
       if (formData.id) {
@@ -444,6 +456,26 @@ export default function AdminBoardMembers() {
                         onChange={(e) => setFormData({...formData, wos_id: e.target.value})}
                         className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-500 text-sm transition-colors"
                         placeholder="Contoh: AAB-1234-2020"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-600 mb-1">SSRN Author ID</label>
+                      <input
+                        type="text"
+                        value={formData.ssrn_author_id}
+                        onChange={(e) => setFormData({...formData, ssrn_author_id: e.target.value})}
+                        className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-500 text-sm transition-colors"
+                        placeholder="Contoh: 11897288"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-600 mb-1">SSRN Abstract ID</label>
+                      <input
+                        type="text"
+                        value={formData.ssrn_abstract_id}
+                        onChange={(e) => setFormData({...formData, ssrn_abstract_id: e.target.value})}
+                        className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-500 text-sm transition-colors"
+                        placeholder="Contoh: 6917418"
                       />
                     </div>
                   </div>

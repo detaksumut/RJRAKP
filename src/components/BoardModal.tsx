@@ -18,6 +18,8 @@ interface BoardMember {
   orcid_id?: string;
   scopus_id?: string;
   wos_id?: string;
+  ssrn_author_id?: string;
+  ssrn_abstract_id?: string;
 }
 
 const getProfileUrl = (type: string, id: string) => {
@@ -35,6 +37,10 @@ const getProfileUrl = (type: string, id: string) => {
       return `https://www.scopus.com/authid/detail.uri?authorId=${trimmed}`;
     case 'wos':
       return `https://www.webofscience.com/wos/author/record/${trimmed}`;
+    case 'ssrn_author':
+      return `https://ssrn.com/author=${trimmed}`;
+    case 'ssrn_abstract':
+      return `https://ssrn.com/abstract=${trimmed}`;
     default:
       return trimmed;
   }
@@ -154,7 +160,7 @@ export default function BoardModal({ isOpen, onClose }: BoardModalProps) {
                   </div>
 
                   {/* Academic Profile Badges */}
-                  {(member.sinta_id || member.google_scholar_id || member.orcid_id || member.scopus_id || member.wos_id) && (
+                  {(member.sinta_id || member.google_scholar_id || member.orcid_id || member.scopus_id || member.wos_id || member.ssrn_author_id || member.ssrn_abstract_id) && (
                     <div className="flex flex-wrap justify-center gap-1.5 mb-4 mt-1">
                       {member.sinta_id && (
                         <a
@@ -209,6 +215,28 @@ export default function BoardModal({ isOpen, onClose }: BoardModalProps) {
                           title="Web of Science Profile"
                         >
                           WoS
+                        </a>
+                      )}
+                      {member.ssrn_author_id && (
+                        <a
+                          href={getProfileUrl('ssrn_author', member.ssrn_author_id)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-2 py-0.5 text-[10px] font-bold rounded bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 transition-all hover:scale-105"
+                          title="SSRN Author Profile"
+                        >
+                          SSRN Author
+                        </a>
+                      )}
+                      {member.ssrn_abstract_id && (
+                        <a
+                          href={getProfileUrl('ssrn_abstract', member.ssrn_abstract_id)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-2 py-0.5 text-[10px] font-bold rounded bg-fuchsia-500/10 hover:bg-fuchsia-500/20 text-fuchsia-300 border border-fuchsia-500/30 transition-all hover:scale-105"
+                          title="SSRN Abstract Page"
+                        >
+                          SSRN Abstract
                         </a>
                       )}
                     </div>
