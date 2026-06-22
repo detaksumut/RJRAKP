@@ -26,13 +26,18 @@ export default function AdminEditors() {
 
       const formattedData = data.map(u => {
         let profile = {};
-        if (u.editor_profiles && u.editor_profiles.length > 0) {
-          profile = u.editor_profiles[0];
+        if (u.editor_profiles) {
+          profile = Array.isArray(u.editor_profiles)
+            ? (u.editor_profiles[0] || {})
+            : u.editor_profiles;
         }
+
+        const { id: profileId, ...restProfile } = profile as any;
 
         return {
           ...u,
-          ...profile
+          ...restProfile,
+          profile_id: profileId
         };
       });
 
@@ -231,7 +236,7 @@ export default function AdminEditors() {
                       </div>
                       <select
                         value={selectedUser.editor_type || 'CO_EDITOR'}
-                        onChange={(e) => updateEditorType(selectedUser.id, selectedUser.editor_profiles?.[0]?.id || selectedUser.id, e.target.value)}
+                        onChange={(e) => updateEditorType(selectedUser.id, selectedUser.profile_id, e.target.value)}
                         className="border border-academic-300 rounded px-3 py-1.5 text-xs font-bold bg-white"
                       >
                         <option value="CO_EDITOR">Co-Editor (Cadangan)</option>
@@ -247,7 +252,7 @@ export default function AdminEditors() {
                           <p className="text-[10px] text-rose-700">Aktifkan kapan saja jika Editor Utama berhalangan atau kewalahan.</p>
                         </div>
                         <button
-                          onClick={() => updateBackupStatus(selectedUser.id, selectedUser.editor_profiles?.[0]?.id || selectedUser.id, !selectedUser.is_backup_active)}
+                          onClick={() => updateBackupStatus(selectedUser.id, selectedUser.profile_id, !selectedUser.is_backup_active)}
                           className={`px-4 py-1.5 rounded text-xs font-bold border transition-colors ${
                             selectedUser.is_backup_active 
                               ? 'bg-emerald-600 text-white border-emerald-700 hover:bg-emerald-700' 

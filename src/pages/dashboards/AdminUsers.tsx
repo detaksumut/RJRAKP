@@ -29,15 +29,22 @@ export default function AdminUsers() {
       // Flatten data for easier consumption in the existing UI
       const formattedData = data.map(u => {
         let profile = {};
-        if (u.role === 'reviewer' && u.reviewer_profiles && u.reviewer_profiles.length > 0) {
-          profile = u.reviewer_profiles[0];
-        } else if (u.role === 'editor' && u.editor_profiles && u.editor_profiles.length > 0) {
-          profile = u.editor_profiles[0];
+        if (u.role === 'reviewer' && u.reviewer_profiles) {
+          profile = Array.isArray(u.reviewer_profiles)
+            ? (u.reviewer_profiles[0] || {})
+            : u.reviewer_profiles;
+        } else if (u.role === 'editor' && u.editor_profiles) {
+          profile = Array.isArray(u.editor_profiles)
+            ? (u.editor_profiles[0] || {})
+            : u.editor_profiles;
         }
+
+        const { id: profileId, ...restProfile } = profile as any;
 
         return {
           ...u,
-          ...profile
+          ...restProfile,
+          profile_id: profileId
         };
       });
 

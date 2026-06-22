@@ -26,13 +26,18 @@ export default function AdminReviewers() {
 
       const formattedData = data.map(u => {
         let profile = {};
-        if (u.reviewer_profiles && u.reviewer_profiles.length > 0) {
-          profile = u.reviewer_profiles[0];
+        if (u.reviewer_profiles) {
+          profile = Array.isArray(u.reviewer_profiles)
+            ? (u.reviewer_profiles[0] || {})
+            : u.reviewer_profiles;
         }
+
+        const { id: profileId, ...restProfile } = profile as any;
 
         return {
           ...u,
-          ...profile
+          ...restProfile,
+          profile_id: profileId
         };
       });
 
@@ -246,7 +251,7 @@ export default function AdminReviewers() {
                       </div>
                       <select
                         value={selectedUser.reviewer_type || 'CO_REVIEWER'}
-                        onChange={(e) => updateReviewerType(selectedUser.id, selectedUser.reviewer_profiles?.[0]?.id || selectedUser.id, e.target.value)}
+                        onChange={(e) => updateReviewerType(selectedUser.id, selectedUser.profile_id, e.target.value)}
                         className="border border-academic-300 rounded px-3 py-1.5 text-xs font-bold"
                       >
                         <option value="CO_REVIEWER">Co-Reviewer (Cadangan)</option>
@@ -261,7 +266,7 @@ export default function AdminReviewers() {
                       </div>
                       <select
                         value={selectedUser.reviewer_class || 'EXTERNAL'}
-                        onChange={(e) => updateReviewerClass(selectedUser.id, selectedUser.reviewer_profiles?.[0]?.id || selectedUser.id, e.target.value)}
+                        onChange={(e) => updateReviewerClass(selectedUser.id, selectedUser.profile_id, e.target.value)}
                         className="border border-academic-300 rounded px-3 py-1.5 text-xs font-bold"
                       >
                         <option value="EXTERNAL">Eksternal (Mitra Bestari Luar)</option>
@@ -276,7 +281,7 @@ export default function AdminReviewers() {
                           <p className="text-[10px] text-rose-700">Aktifkan kapan saja jika Reviewer Utama berhalangan atau kewalahan.</p>
                         </div>
                         <button
-                          onClick={() => updateBackupStatus(selectedUser.id, selectedUser.reviewer_profiles?.[0]?.id || selectedUser.id, !selectedUser.is_backup_active)}
+                          onClick={() => updateBackupStatus(selectedUser.id, selectedUser.profile_id, !selectedUser.is_backup_active)}
                           className={`px-4 py-1.5 rounded text-xs font-bold border transition-colors ${
                             selectedUser.is_backup_active 
                               ? 'bg-emerald-600 text-white border-emerald-700 hover:bg-emerald-700' 
