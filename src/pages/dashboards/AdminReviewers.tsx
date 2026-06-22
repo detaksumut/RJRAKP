@@ -96,6 +96,26 @@ export default function AdminReviewers() {
     }
   };
 
+  const updateReviewerClass = async (userId: string, profileId: string | undefined, newClass: string) => {
+    try {
+      if (!profileId) return;
+      const { error } = await supabase
+        .from('reviewer_profiles')
+        .update({ reviewer_class: newClass })
+        .eq('id', profileId);
+        
+      if (error) throw error;
+      
+      fetchUsers();
+      if (selectedUser && selectedUser.id === userId) {
+        setSelectedUser({...selectedUser, reviewer_class: newClass});
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Gagal merubah kelas reviewer.');
+    }
+  };
+
   const updateBackupStatus = async (userId: string, profileId: string | undefined, isActive: boolean) => {
     try {
       if (!profileId) return;
@@ -234,6 +254,21 @@ export default function AdminReviewers() {
                       </select>
                     </div>
 
+                    <div className="bg-slate-50 border border-slate-200 p-3 rounded-lg w-full mt-2 flex items-center justify-between">
+                      <div>
+                        <p className="text-xs font-bold text-academic-900">Kelas Reviewer</p>
+                        <p className="text-[10px] text-academic-500">Tentukan apakah reviewer adalah anggota Editorial Board (Internal) atau Mitra Bestari Luar (Eksternal).</p>
+                      </div>
+                      <select
+                        value={selectedUser.reviewer_class || 'EXTERNAL'}
+                        onChange={(e) => updateReviewerClass(selectedUser.id, selectedUser.reviewer_profiles?.[0]?.id || selectedUser.id, e.target.value)}
+                        className="border border-academic-300 rounded px-3 py-1.5 text-xs font-bold"
+                      >
+                        <option value="EXTERNAL">Eksternal (Mitra Bestari Luar)</option>
+                        <option value="ON_BOARD">Internal (On Board / Editorial Board)</option>
+                      </select>
+                    </div>
+
                     {(!selectedUser.reviewer_type || selectedUser.reviewer_type === 'CO_REVIEWER') && (
                       <div className="bg-rose-50 border border-rose-200 p-3 rounded-lg w-full mt-2 flex items-center justify-between">
                         <div>
@@ -305,7 +340,16 @@ export default function AdminReviewers() {
               ) : getFilteredUsers().map(u => (
                 <tr key={u.id} className="hover:bg-academic-50 transition-colors">
                   <td className="p-4">
-                     <span className="font-bold text-academic-900 block">{u.full_name}</span>
+                     <div className="flex items-center gap-2">
+                       <span className="font-bold text-academic-900 block">{u.full_name}</span>
+                       <span className={`px-1.5 py-0.5 text-[9px] font-bold rounded ${
+                         u.reviewer_class === 'ON_BOARD' 
+                           ? 'bg-indigo-100 text-indigo-800 border border-indigo-200' 
+                           : 'bg-slate-100 text-slate-700 border border-slate-200'
+                       }`}>
+                         {u.reviewer_class === 'ON_BOARD' ? 'Internal (On Board)' : 'Eksternal'}
+                       </span>
+                     </div>
                      <span className="text-xs text-academic-500">{u.email}</span>
                   </td>
                   <td className="p-4 text-sm text-academic-800">

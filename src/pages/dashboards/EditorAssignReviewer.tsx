@@ -62,7 +62,9 @@ export default function EditorAssignReviewer() {
           reviewer_profiles (
             expertise_area,
             affiliation,
-            academic_title
+            academic_title,
+            reviewer_class,
+            reviewer_type
           )
         `)
         .eq('role', 'reviewer')
@@ -175,7 +177,8 @@ export default function EditorAssignReviewer() {
         expertiseArea: profile?.expertise_area || '-',
         academicTitle: profile?.academic_title || '',
         affiliation: profile?.affiliation || '-',
-        reviewerType: profile?.reviewer_type || 'CO_REVIEWER'
+        reviewerType: profile?.reviewer_type || 'CO_REVIEWER',
+        reviewerClass: profile?.reviewer_class || 'EXTERNAL'
       };
     }).sort((a, b) => {
       // Sort primarily by reviewerType (PRIMARY first)
@@ -363,7 +366,7 @@ export default function EditorAssignReviewer() {
                             const isFull = count >= 5;
                             return (
                               <option key={r.id} value={r.id} disabled={isFull}>
-                                {r.academicTitle ? `${r.academicTitle} ` : ''}{r.full_name} [{r.expertiseArea}] {isFull ? '(KUOTA PENUH)' : ''}
+                                {r.academicTitle ? `${r.academicTitle} ` : ''}{r.full_name} ({r.reviewerClass === 'ON_BOARD' ? 'On Board' : 'Eksternal'}) [{r.expertiseArea}] {isFull ? '(KUOTA PENUH)' : ''}
                               </option>
                             );
                           })}
@@ -377,7 +380,7 @@ export default function EditorAssignReviewer() {
                             const isFull = count >= 5;
                             return (
                               <option key={r.id} value={r.id} disabled={isFull}>
-                                {r.academicTitle ? `${r.academicTitle} ` : ''}{r.full_name} [{r.expertiseArea}] {isFull ? '(KUOTA PENUH)' : ''}
+                                {r.academicTitle ? `${r.academicTitle} ` : ''}{r.full_name} ({r.reviewerClass === 'ON_BOARD' ? 'On Board' : 'Eksternal'}) [{r.expertiseArea}] {isFull ? '(KUOTA PENUH)' : ''}
                               </option>
                             );
                           })}
@@ -391,7 +394,7 @@ export default function EditorAssignReviewer() {
                             const isFull = count >= 5;
                             return (
                               <option key={r.id} value={r.id} disabled={isFull}>
-                                {r.academicTitle ? `${r.academicTitle} ` : ''}{r.full_name} [{r.expertiseArea}] {isFull ? '(KUOTA PENUH)' : ''}
+                                {r.academicTitle ? `${r.academicTitle} ` : ''}{r.full_name} ({r.reviewerClass === 'ON_BOARD' ? 'On Board' : 'Eksternal'}) [{r.expertiseArea}] {isFull ? '(KUOTA PENUH)' : ''}
                               </option>
                             );
                           })}
@@ -509,6 +512,15 @@ export default function EditorAssignReviewer() {
                           </div>
                         </div>
                         <div className="text-[10px] text-academic-500 mt-1">{rev.affiliation}</div>
+                        <div className="mt-1 flex items-center gap-1.5">
+                          <span className={`px-1.5 py-0.5 text-[8px] font-bold rounded ${
+                            rev.reviewerClass === 'ON_BOARD' 
+                              ? 'bg-indigo-100 text-indigo-800 border border-indigo-200' 
+                              : 'bg-slate-100 text-slate-600 border border-slate-200'
+                          }`}>
+                            {rev.reviewerClass === 'ON_BOARD' ? 'Internal (On Board)' : 'Eksternal'}
+                          </span>
+                        </div>
                         <div className="mt-2 pt-2 border-t border-dashed border-academic-200">
                           <span className="font-bold text-academic-600 uppercase text-[8px] tracking-wide block">Bidang Keahlian:</span>
                           <span className="text-academic-800 font-medium">{rev.expertiseArea}</span>
