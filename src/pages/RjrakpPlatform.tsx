@@ -135,15 +135,14 @@ export default function RjrakpPlatform() {
       <Navbar />
 
       {/* HERO */}
-      <section className="relative py-20 lg:py-32 overflow-hidden">
+      <section className="relative bg-[#040d1a] py-20 lg:py-32 overflow-hidden">
         {/* Background image underlay */}
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          className="absolute inset-0 bg-contain bg-right bg-no-repeat opacity-80"
           style={{ backgroundImage: 'url("/bg-platform.png")' }}
         />
-        {/* Dark overlay with brand color gradients */}
-        <div className="absolute inset-0 bg-gradient-to-br from-brand-950/95 via-brand-900/90 to-slate-950/95 mix-blend-multiply" />
-        <div className="absolute inset-0 bg-gradient-to-tr from-brand-950/30 via-transparent to-accent-600/10" />
+        {/* Dark gradient overlay for text readability on the left */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#040d1a] via-[#040d1a]/80 to-transparent" />
 
         <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #fff 1px, transparent 0)', backgroundSize: '40px 40px' }} />
         {/* Animated blobs */}
