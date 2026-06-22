@@ -200,7 +200,7 @@ export default function RjrakpPlatform() {
       {/* DOI CARDS */}
       <section className="py-12 bg-slate-50 border-b border-academic-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
             {/* Concept DOI */}
             <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="bg-brand-900 rounded-2xl p-5 shadow-lg">
               <p className="text-[10px] font-bold text-brand-300 uppercase tracking-widest mb-1">DOI Permanen (Concept)</p>
@@ -464,7 +464,7 @@ export default function RjrakpPlatform() {
             <p className="text-brand-200/70 mt-3 font-medium">Alur distribusi dan verifikasi karya ilmiah RJRAKP Platform</p>
           </div>
 
-          <div className="flex flex-wrap justify-center items-center gap-3 lg:gap-0">
+          <div className="flex flex-nowrap overflow-x-auto justify-start xl:justify-center items-center gap-0 pb-2">
             {ecosystemSteps.map((step, i) => (
               <div key={i} className="flex items-center gap-3">
                 <motion.a
@@ -475,17 +475,17 @@ export default function RjrakpPlatform() {
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.08 }}
-                  className={`flex flex-col items-center bg-gradient-to-br ${step.color} p-5 rounded-2xl w-36 text-white shadow-xl hover:scale-105 transition-transform cursor-pointer group`}
+                  className={`flex flex-col items-center bg-gradient-to-br ${step.color} p-3.5 rounded-xl w-28 shrink-0 text-white shadow-xl hover:scale-105 transition-transform cursor-pointer group`}
                 >
-                  <div className={`w-12 h-12 ${step.badge} rounded-xl flex items-center justify-center mb-3`}>
+                  <div className={`w-10 h-10 ${step.badge} rounded-lg flex items-center justify-center mb-2`}>
                     {step.icon}
                   </div>
-                  <p className="font-black text-sm text-center">{step.label}</p>
-                  <p className="text-[10px] text-white/70 text-center mt-1">{step.desc}</p>
+                  <p className="font-black text-xs text-center leading-tight">{step.label}</p>
+                  <p className="text-[9px] text-white/70 text-center mt-0.5 leading-tight">{step.desc}</p>
                   <ExternalLink className="w-3 h-3 mt-2 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </motion.a>
                 {i < ecosystemSteps.length - 1 && (
-                  <ArrowRight className="w-6 h-6 text-brand-300/50 shrink-0 hidden lg:block" />
+                  <ArrowRight className="w-4 h-4 text-brand-300/50 shrink-0" />
                 )}
               </div>
             ))}
