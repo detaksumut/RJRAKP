@@ -353,25 +353,6 @@ export default function RjrakpPlatform() {
                 <p className="text-xs text-slate-500 mt-2 font-medium">Open Source Repository</p>
               </div>
 
-              {/* Web of Science Badge */}
-              <div className="bg-red-50 border border-red-200 rounded-2xl p-5">
-                <p className="text-[10px] font-bold text-red-600 uppercase tracking-wider mb-3">Web of Science Badge</p>
-                  <a href="https://www.webofscience.com/wos/author/record/QKY-3514-2026" target="_blank" rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-red-800 hover:bg-red-900 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors">
-                  <Database className="w-4 h-4" /> ✓ Web of Science
-                </a>
-                <p className="text-xs text-red-500 mt-2 font-medium">Clarivate Analytics · WoS</p>
-              </div>
-
-              {/* Scopus Badge */}
-              <div className="bg-orange-50 border border-orange-200 rounded-2xl p-5">
-                <p className="text-[10px] font-bold text-orange-600 uppercase tracking-wider mb-3">Scopus Badge</p>
-                <a href="https://www.scopus.com/feedback/results/authorNamesList.uri?origin=searchauthorlookup&src=al&edit=&poppUp=&st1=Amal&st2=Bakhrul&authSubject=LFSC&_authSubject=on&authSubject=HLSC&_authSubject=on&authSubject=PHSC&_authSubject=on&authSubject=SOSC&_authSubject=on&s=AUTHLASTNAME%28Amal%29+AND+AUTHFIRST%28Bakhrul%29&sdt=&sot=&searchId=&authorIdSearch=&activeFlag=true&showDocument=true&sl=41&exactSearch=off&sid=&carsError=&timeDelay=&redirectURL=&requestFlowType=" target="_blank" rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-orange-700 hover:bg-orange-800 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors">
-                  <BookOpen className="w-4 h-4" /> ✓ Scopus Indexed
-                </a>
-                <p className="text-xs text-orange-500 mt-2 font-medium">Elsevier Abstract & Citation DB</p>
-              </div>
             </motion.div>
           </div>
         </div>
