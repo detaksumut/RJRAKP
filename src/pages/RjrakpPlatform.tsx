@@ -70,7 +70,7 @@ const ecosystemSteps = [
     icon: <Globe className="w-6 h-6" />,
     label: 'Web of Science',
     desc: 'Clarivate WoS Index',
-    href: 'https://www.webofscience.com',
+    href: 'https://www.webofscience.com/wos/author/record/QKY-3514-2026',
     color: 'from-red-800 to-red-700',
     badge: 'bg-red-800 text-red-100',
   },
@@ -251,7 +251,7 @@ export default function RjrakpPlatform() {
             <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }} className="bg-red-800 rounded-2xl p-5 shadow-lg">
               <p className="text-[10px] font-bold text-red-200 uppercase tracking-widest mb-1">Web of Science</p>
               <code className="text-sm font-mono font-bold text-white break-all">Clarivate Analytics</code>
-              <a href="https://www.webofscience.com" target="_blank" rel="noopener noreferrer"
+                <a href="https://www.webofscience.com/wos/author/record/QKY-3514-2026" target="_blank" rel="noopener noreferrer"
                 className="mt-3 text-xs text-red-200 hover:text-white flex items-center gap-1 transition-colors">
                 Lihat Web of Science <ExternalLink className="w-3 h-3" />
               </a>
@@ -356,7 +356,7 @@ export default function RjrakpPlatform() {
               {/* Web of Science Badge */}
               <div className="bg-red-50 border border-red-200 rounded-2xl p-5">
                 <p className="text-[10px] font-bold text-red-600 uppercase tracking-wider mb-3">Web of Science Badge</p>
-                <a href="https://www.webofscience.com" target="_blank" rel="noopener noreferrer"
+                  <a href="https://www.webofscience.com/wos/author/record/QKY-3514-2026" target="_blank" rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 bg-red-800 hover:bg-red-900 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors">
                   <Database className="w-4 h-4" /> ✓ Web of Science
                 </a>
