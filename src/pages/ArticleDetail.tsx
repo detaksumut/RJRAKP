@@ -1304,7 +1304,7 @@ export default function ArticleDetail() {
                             <a href="https://scholar.google.com/citations?user=e89cADYAAAAJ&hl=id" target="_blank" rel="noopener noreferrer" className="px-2.5 py-1 bg-sky-50 text-sky-700 font-bold border border-sky-200 rounded hover:bg-sky-100 transition-colors">
                               ✓ Scholar Verified
                             </a>
-                            <a href="https://www.scopus.com/authid/detail.uri?authorId=59675598500" target="_blank" rel="noopener noreferrer" className="px-2.5 py-1 bg-orange-50 text-orange-700 font-bold border border-orange-200 rounded hover:bg-orange-100 transition-colors">
+                            <a href="https://www.scopus.com/feedback/results/authorNamesList.uri?origin=searchauthorlookup&src=al&edit=&poppUp=&st1=Amal&st2=Bakhrul&authSubject=LFSC&_authSubject=on&authSubject=HLSC&_authSubject=on&authSubject=PHSC&_authSubject=on&authSubject=SOSC&_authSubject=on&s=AUTHLASTNAME%28Amal%29+AND+AUTHFIRST%28Bakhrul%29&sdt=&sot=&searchId=&authorIdSearch=&activeFlag=true&showDocument=true&sl=41&exactSearch=off&sid=&carsError=&timeDelay=&redirectURL=&requestFlowType=" target="_blank" rel="noopener noreferrer" className="px-2.5 py-1 bg-orange-50 text-orange-700 font-bold border border-orange-200 rounded hover:bg-orange-100 transition-colors">
                               ✓ Scopus Verified
                             </a>
                             <a href="https://www.researchgate.net/profile/Bakhrul-Amal" target="_blank" rel="noopener noreferrer" className="px-2.5 py-1 bg-cyan-50 text-cyan-700 font-bold border border-cyan-200 rounded hover:bg-cyan-100 transition-colors">

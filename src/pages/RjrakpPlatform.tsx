@@ -78,7 +78,7 @@ const ecosystemSteps = [
     icon: <BookOpen className="w-6 h-6" />,
     label: 'Scopus',
     desc: 'Elsevier Abstract DB',
-    href: 'https://www.scopus.com/authid/detail.uri?authorId=59675598500',
+    href: 'https://www.scopus.com/feedback/results/authorNamesList.uri?origin=searchauthorlookup&src=al&edit=&poppUp=&st1=Amal&st2=Bakhrul&authSubject=LFSC&_authSubject=on&authSubject=HLSC&_authSubject=on&authSubject=PHSC&_authSubject=on&authSubject=SOSC&_authSubject=on&s=AUTHLASTNAME%28Amal%29+AND+AUTHFIRST%28Bakhrul%29&sdt=&sot=&searchId=&authorIdSearch=&activeFlag=true&showDocument=true&sl=41&exactSearch=off&sid=&carsError=&timeDelay=&redirectURL=&requestFlowType=',
     color: 'from-orange-700 to-orange-600',
     badge: 'bg-orange-700 text-orange-100',
   },
@@ -261,7 +261,7 @@ export default function RjrakpPlatform() {
             <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.25 }} className="bg-orange-700 rounded-2xl p-5 shadow-lg">
               <p className="text-[10px] font-bold text-orange-200 uppercase tracking-widest mb-1">Scopus</p>
               <code className="text-sm font-mono font-bold text-white break-all">Elsevier · Author ID</code>
-              <a href="https://www.scopus.com/authid/detail.uri?authorId=59675598500" target="_blank" rel="noopener noreferrer"
+              <a href="https://www.scopus.com/feedback/results/authorNamesList.uri?origin=searchauthorlookup&src=al&edit=&poppUp=&st1=Amal&st2=Bakhrul&authSubject=LFSC&_authSubject=on&authSubject=HLSC&_authSubject=on&authSubject=PHSC&_authSubject=on&authSubject=SOSC&_authSubject=on&s=AUTHLASTNAME%28Amal%29+AND+AUTHFIRST%28Bakhrul%29&sdt=&sot=&searchId=&authorIdSearch=&activeFlag=true&showDocument=true&sl=41&exactSearch=off&sid=&carsError=&timeDelay=&redirectURL=&requestFlowType=" target="_blank" rel="noopener noreferrer"
                 className="mt-3 text-xs text-orange-200 hover:text-white flex items-center gap-1 transition-colors">
                 Lihat Profil Scopus <ExternalLink className="w-3 h-3" />
               </a>
@@ -366,7 +366,7 @@ export default function RjrakpPlatform() {
               {/* Scopus Badge */}
               <div className="bg-orange-50 border border-orange-200 rounded-2xl p-5">
                 <p className="text-[10px] font-bold text-orange-600 uppercase tracking-wider mb-3">Scopus Badge</p>
-                <a href="https://www.scopus.com/authid/detail.uri?authorId=59675598500" target="_blank" rel="noopener noreferrer"
+                <a href="https://www.scopus.com/feedback/results/authorNamesList.uri?origin=searchauthorlookup&src=al&edit=&poppUp=&st1=Amal&st2=Bakhrul&authSubject=LFSC&_authSubject=on&authSubject=HLSC&_authSubject=on&authSubject=PHSC&_authSubject=on&authSubject=SOSC&_authSubject=on&s=AUTHLASTNAME%28Amal%29+AND+AUTHFIRST%28Bakhrul%29&sdt=&sot=&searchId=&authorIdSearch=&activeFlag=true&showDocument=true&sl=41&exactSearch=off&sid=&carsError=&timeDelay=&redirectURL=&requestFlowType=" target="_blank" rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 bg-orange-700 hover:bg-orange-800 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors">
                   <BookOpen className="w-4 h-4" /> ✓ Scopus Indexed
                 </a>
