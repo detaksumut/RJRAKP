@@ -66,6 +66,22 @@ const ecosystemSteps = [
     color: 'from-indigo-700 to-indigo-600',
     badge: 'bg-indigo-700 text-indigo-100',
   },
+  {
+    icon: <Globe className="w-6 h-6" />,
+    label: 'Web of Science',
+    desc: 'Clarivate WoS Index',
+    href: 'https://www.webofscience.com',
+    color: 'from-red-800 to-red-700',
+    badge: 'bg-red-800 text-red-100',
+  },
+  {
+    icon: <BookOpen className="w-6 h-6" />,
+    label: 'Scopus',
+    desc: 'Elsevier Abstract DB',
+    href: 'https://www.scopus.com/authid/detail.uri?authorId=59675598500',
+    color: 'from-orange-700 to-orange-600',
+    badge: 'bg-orange-700 text-orange-100',
+  },
 ];
 
 function CopyButton({ text }: { text: string }) {
@@ -230,6 +246,26 @@ export default function RjrakpPlatform() {
                 Lihat Repository <ExternalLink className="w-3 h-3" />
               </a>
             </motion.div>
+
+            {/* Web of Science */}
+            <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }} className="bg-red-800 rounded-2xl p-5 shadow-lg">
+              <p className="text-[10px] font-bold text-red-200 uppercase tracking-widest mb-1">Web of Science</p>
+              <code className="text-sm font-mono font-bold text-white break-all">Clarivate Analytics</code>
+              <a href="https://www.webofscience.com" target="_blank" rel="noopener noreferrer"
+                className="mt-3 text-xs text-red-200 hover:text-white flex items-center gap-1 transition-colors">
+                Lihat Web of Science <ExternalLink className="w-3 h-3" />
+              </a>
+            </motion.div>
+
+            {/* Scopus */}
+            <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.25 }} className="bg-orange-700 rounded-2xl p-5 shadow-lg">
+              <p className="text-[10px] font-bold text-orange-200 uppercase tracking-widest mb-1">Scopus</p>
+              <code className="text-sm font-mono font-bold text-white break-all">Elsevier · Author ID</code>
+              <a href="https://www.scopus.com/authid/detail.uri?authorId=59675598500" target="_blank" rel="noopener noreferrer"
+                className="mt-3 text-xs text-orange-200 hover:text-white flex items-center gap-1 transition-colors">
+                Lihat Profil Scopus <ExternalLink className="w-3 h-3" />
+              </a>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -315,6 +351,26 @@ export default function RjrakpPlatform() {
                   <GitBranch className="w-4 h-4" /> detaksumut/RJRAKP
                 </a>
                 <p className="text-xs text-slate-500 mt-2 font-medium">Open Source Repository</p>
+              </div>
+
+              {/* Web of Science Badge */}
+              <div className="bg-red-50 border border-red-200 rounded-2xl p-5">
+                <p className="text-[10px] font-bold text-red-600 uppercase tracking-wider mb-3">Web of Science Badge</p>
+                <a href="https://www.webofscience.com" target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-red-800 hover:bg-red-900 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors">
+                  <Database className="w-4 h-4" /> ✓ Web of Science
+                </a>
+                <p className="text-xs text-red-500 mt-2 font-medium">Clarivate Analytics · WoS</p>
+              </div>
+
+              {/* Scopus Badge */}
+              <div className="bg-orange-50 border border-orange-200 rounded-2xl p-5">
+                <p className="text-[10px] font-bold text-orange-600 uppercase tracking-wider mb-3">Scopus Badge</p>
+                <a href="https://www.scopus.com/authid/detail.uri?authorId=59675598500" target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-orange-700 hover:bg-orange-800 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors">
+                  <BookOpen className="w-4 h-4" /> ✓ Scopus Indexed
+                </a>
+                <p className="text-xs text-orange-500 mt-2 font-medium">Elsevier Abstract & Citation DB</p>
               </div>
             </motion.div>
           </div>
