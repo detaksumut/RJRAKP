@@ -135,14 +135,15 @@ export default function RjrakpPlatform() {
       <Navbar />
 
       {/* HERO */}
-      <section className="relative bg-[#040d1a] py-20 lg:py-32 overflow-hidden">
+      <section className="relative bg-[#020712] py-24 lg:py-36 overflow-hidden flex items-center min-h-[500px] lg:min-h-[600px]">
         {/* Background image underlay */}
         <div 
-          className="absolute inset-0 bg-contain bg-right bg-no-repeat opacity-80"
+          className="absolute inset-0 bg-no-repeat opacity-95 transition-all bg-[length:auto_55%] bg-[position:center_bottom] md:bg-[length:auto_80%] md:bg-[position:right_5%_center]"
           style={{ backgroundImage: 'url("/bg-platform.png")' }}
         />
-        {/* Dark gradient overlay for text readability on the left */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#040d1a] via-[#040d1a]/80 to-transparent" />
+        {/* Dark gradient overlays for text readability and seamless blending */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#020712] via-[#020712]/80 to-transparent z-0 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#020712] via-transparent to-[#020712]/40 z-0 pointer-events-none" />
 
         <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #fff 1px, transparent 0)', backgroundSize: '40px 40px' }} />
         {/* Animated blobs */}
