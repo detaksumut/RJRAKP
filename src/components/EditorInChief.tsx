@@ -421,7 +421,7 @@ export default function EditorInChief() {
               <Award className="w-3.5 h-3.5 text-accent-500" />
               Academic Identifiers
             </p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-11 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5">
               {ACADEMIC_IDS.map((id) => (
                 <a
                   key={id.label}
