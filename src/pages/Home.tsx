@@ -2,6 +2,7 @@ import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
 import VisionMission from '../components/VisionMission';
 import Statistics from '../components/Statistics';
+import EditorInChief from '../components/EditorInChief';
 import LatestJournals from '../components/LatestJournals';
 import LatestArticles from '../components/LatestArticles';
 import IndexingRoadmap from '../components/IndexingRoadmap';
@@ -14,6 +15,7 @@ export default function Home() {
       <Navbar />
       <Hero />
       <Statistics />
+      <EditorInChief />
       <VisionMission />
       <LatestJournals />
       <IndexingRoadmap />
