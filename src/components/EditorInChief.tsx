@@ -22,16 +22,16 @@ const QUARTILE_DATA = [
 ];
 
 const METRICS = [
-  { label: 'Article',        scopus: 7,   gscholar: 132, icon: FileText },
-  { label: 'Citation',       scopus: 22,  gscholar: 952, icon: Quote },
+  { label: 'Article',        scopus: 7,   gscholar: 141, icon: FileText },
+  { label: 'Citation',       scopus: 22,  gscholar: 1037, icon: Quote },
   { label: 'Cited Document', scopus: 22,  gscholar: 72,  icon: BookOpen },
-  { label: 'H-Index',        scopus: 2,   gscholar: 18,  icon: TrendingUp },
-  { label: 'i10-Index',      scopus: 1,   gscholar: 24,  icon: Award },
+  { label: 'H-Index',        scopus: 2,   gscholar: 19,  icon: TrendingUp },
+  { label: 'i10-Index',      scopus: 1,   gscholar: 26,  icon: Award },
   { label: 'G-Index',        scopus: 1,   gscholar: 1,   icon: Award },
 ];
 
 const RESEARCH_OUTPUT = [
-  { label: 'Articles',    scopus: 7,   garuda: 8,  gscholar: 132, icon: FileText,  color: 'text-cyan-400' },
+  { label: 'Articles',    scopus: 7,   garuda: 8,  gscholar: 141, icon: FileText,  color: 'text-cyan-400' },
   { label: 'Books',       scopus: 0,   garuda: 0,  gscholar: 5,   icon: BookOpen,  color: 'text-amber-400' },
   { label: 'IPRs',        scopus: 0,   garuda: 0,  gscholar: 3,   icon: Lightbulb, color: 'text-violet-400' },
   { label: 'Researches',  scopus: 0,   garuda: 8,  gscholar: 0,   icon: Users,     color: 'text-emerald-400' },
