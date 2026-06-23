@@ -156,7 +156,7 @@ const ACADEMIC_IDS = [
     bg: 'bg-emerald-600/10',
     border: 'border-emerald-500/30',
     textColor: 'text-emerald-300',
-    logo: '/wiley.png',
+    logo: '/WIley.png',
     logoAlt: 'Wiley Online Library',
   },
 ];
