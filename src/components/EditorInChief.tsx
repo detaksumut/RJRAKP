@@ -139,6 +139,17 @@ const ACADEMIC_IDS = [
     logo: 'https://cyberleninka.ru/img/cyberleninka-logo.png',
     logoAlt: 'CyberLeninka',
   },
+  {
+    label: 'Remittances Review',
+    value: 'Vol.8 No.4 (2023)',
+    url: 'https://remittancesreview.com/menu-script/index.php/remittances/article/view/708',
+    bg: 'bg-orange-600/10',
+    border: 'border-orange-500/30',
+    textColor: 'text-orange-300',
+    logo: null,
+    logoAlt: 'Remittances Review',
+    abbr: 'RR',
+  },
 ];
 
 // ──────────────────────────────────────────────
@@ -410,7 +421,7 @@ export default function EditorInChief() {
               <Award className="w-3.5 h-3.5 text-accent-500" />
               Academic Identifiers
             </p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-10 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-11 gap-2">
               {ACADEMIC_IDS.map((id) => (
                 <a
                   key={id.label}
