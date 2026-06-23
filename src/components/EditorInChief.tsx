@@ -119,6 +119,17 @@ const ACADEMIC_IDS = [
     logo: 'https://upload.wikimedia.org/wikipedia/commons/5/5e/ResearchGate_icon_SVG.svg',
     logoAlt: 'ResearchGate',
   },
+  {
+    label: 'EAI Publication',
+    value: '10.4108/eai.19-9-2023',
+    url: 'https://eudl.eu/doi/10.4108/eai.19-9-2023.2340543',
+    bg: 'bg-[#00B09B]/10',
+    border: 'border-[#00B09B]/30',
+    textColor: 'text-[#00B09B]',
+    logo: null,
+    logoAlt: 'EAI',
+    abbr: 'EAI',
+  },
 ];
 
 // ──────────────────────────────────────────────
@@ -368,7 +379,7 @@ export default function EditorInChief() {
               <Award className="w-3.5 h-3.5 text-accent-500" />
               Academic Identifiers
             </p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-8 gap-2.5">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-9 gap-2.5">
               {ACADEMIC_IDS.map((id) => (
                 <a
                   key={id.label}
