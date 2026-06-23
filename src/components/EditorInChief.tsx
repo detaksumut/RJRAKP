@@ -109,6 +109,16 @@ const ACADEMIC_IDS = [
     logo: '/OpenAIRE.png',
     logoAlt: 'OpenAIRE',
   },
+  {
+    label: 'ResearchGate',
+    value: 'Bakhrul-Amal',
+    url: 'https://www.researchgate.net/profile/Bakhrul-Amal',
+    bg: 'bg-[#00CCBB]/10',
+    border: 'border-[#00CCBB]/30',
+    textColor: 'text-[#00CCBB]',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/5/5e/ResearchGate_icon_SVG.svg',
+    logoAlt: 'ResearchGate',
+  },
 ];
 
 // ──────────────────────────────────────────────
@@ -358,7 +368,7 @@ export default function EditorInChief() {
               <Award className="w-3.5 h-3.5 text-accent-500" />
               Academic Identifiers
             </p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-2.5">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-8 gap-2.5">
               {ACADEMIC_IDS.map((id) => (
                 <a
                   key={id.label}
