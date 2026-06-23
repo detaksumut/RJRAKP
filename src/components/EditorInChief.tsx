@@ -149,6 +149,16 @@ const ACADEMIC_IDS = [
     logo: '/remittance.png',
     logoAlt: 'Remittances Review',
   },
+  {
+    label: 'Wiley Online Library',
+    value: '10.1155/2022/6242062',
+    url: 'https://onlinelibrary.wiley.com/doi/10.1155/2022/6242062',
+    bg: 'bg-emerald-600/10',
+    border: 'border-emerald-500/30',
+    textColor: 'text-emerald-300',
+    logo: '/wiley.png',
+    logoAlt: 'Wiley Online Library',
+  },
 ];
 
 // ──────────────────────────────────────────────
