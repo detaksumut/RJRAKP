@@ -146,7 +146,7 @@ const ACADEMIC_IDS = [
     bg: 'bg-orange-600/10',
     border: 'border-orange-500/30',
     textColor: 'text-orange-300',
-    logo: '/Remittance.png',
+    logo: '/remittance.png',
     logoAlt: 'Remittances Review',
   },
 ];
