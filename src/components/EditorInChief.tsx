@@ -126,7 +126,7 @@ const ACADEMIC_IDS = [
     bg: 'bg-[#00B09B]/10',
     border: 'border-[#00B09B]/30',
     textColor: 'text-[#00B09B]',
-    logo: 'https://eudl.eu/images/logo_new-1-1.png',
+    logo: '/EAI.png',
     logoAlt: 'EAI',
   },
   {
@@ -136,7 +136,7 @@ const ACADEMIC_IDS = [
     bg: 'bg-slate-500/10',
     border: 'border-slate-400/30',
     textColor: 'text-slate-300',
-    logo: 'https://cyberleninka.ru/img/cyberleninka-logo.png',
+    logo: '/LENINKA.png',
     logoAlt: 'CyberLeninka',
   },
   {
@@ -146,9 +146,8 @@ const ACADEMIC_IDS = [
     bg: 'bg-orange-600/10',
     border: 'border-orange-500/30',
     textColor: 'text-orange-300',
-    logo: null,
+    logo: '/Remittance.png',
     logoAlt: 'Remittances Review',
-    abbr: 'RR',
   },
 ];
 
