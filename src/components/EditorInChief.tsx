@@ -22,16 +22,16 @@ const QUARTILE_DATA = [
 ];
 
 const METRICS = [
-  { label: 'Article',        scopus: 0,  gscholar: 132, icon: FileText },
-  { label: 'Citation',       scopus: 0,  gscholar: 952, icon: Quote },
-  { label: 'Cited Document', scopus: 0,  gscholar: 72,  icon: BookOpen },
-  { label: 'H-Index',        scopus: 2,  gscholar: 18,  icon: TrendingUp },
-  { label: 'i10-Index',      scopus: 1,  gscholar: 24,  icon: Award },
-  { label: 'G-Index',        scopus: 1,  gscholar: 1,   icon: Award },
+  { label: 'Article',        scopus: 7,   gscholar: 132, icon: FileText },
+  { label: 'Citation',       scopus: 22,  gscholar: 952, icon: Quote },
+  { label: 'Cited Document', scopus: 22,  gscholar: 72,  icon: BookOpen },
+  { label: 'H-Index',        scopus: 2,   gscholar: 18,  icon: TrendingUp },
+  { label: 'i10-Index',      scopus: 1,   gscholar: 24,  icon: Award },
+  { label: 'G-Index',        scopus: 1,   gscholar: 1,   icon: Award },
 ];
 
 const RESEARCH_OUTPUT = [
-  { label: 'Articles',    scopus: 9,   garuda: 8,  gscholar: 132, icon: FileText,  color: 'text-cyan-400' },
+  { label: 'Articles',    scopus: 7,   garuda: 8,  gscholar: 132, icon: FileText,  color: 'text-cyan-400' },
   { label: 'Books',       scopus: 0,   garuda: 0,  gscholar: 5,   icon: BookOpen,  color: 'text-amber-400' },
   { label: 'IPRs',        scopus: 0,   garuda: 0,  gscholar: 3,   icon: Lightbulb, color: 'text-violet-400' },
   { label: 'Researches',  scopus: 0,   garuda: 8,  gscholar: 0,   icon: Users,     color: 'text-emerald-400' },
@@ -70,8 +70,8 @@ const ACADEMIC_IDS = [
   },
   {
     label: 'Scopus ID',
-    value: '57216618216',
-    url: 'https://www.scopus.com/feedback/results/authorNamesList.uri?origin=searchauthorlookup&src=al&edit=&poppUp=&st1=Amal&st2=Bakhrul&authSubject=LFSC&_authSubject=on&authSubject=HLSC&_authSubject=on&authSubject=PHSC&_authSubject=on&authSubject=SOSC&_authSubject=on&s=AUTHLASTNAME%28Amal%29+AND+AUTHFIRST%28Bakhrul%29&sdt=&sot=&searchId=&authorIdSearch=&activeFlag=true&showDocument=true&sl=41&exactSearch=off&sid=&carsError=&timeDelay=&redirectURL=&requestFlowType=',
+    value: '59675598500',
+    url: 'https://www.scopus.com/authid/detail.uri?authorId=59675598500',
     bg: 'bg-orange-500/10',
     border: 'border-orange-400/30',
     textColor: 'text-orange-300',
