@@ -224,8 +224,30 @@ export default function EditorInChief() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, delay: 0.1 }}
-          className="rounded-3xl border border-white/10 bg-white/3 backdrop-blur-sm overflow-hidden shadow-2xl"
+          className="relative rounded-3xl border border-white/10 bg-white/3 backdrop-blur-sm shadow-2xl overflow-hidden"
         >
+          {/* ── 🏆 MILESTONE BADGE — pojok kanan atas ── */}
+          <div className="absolute top-4 right-4 z-20 hidden xl:block">
+            <div className="relative overflow-hidden rounded-2xl border border-amber-400/50 bg-gradient-to-br from-[#0a1b33]/95 via-amber-950/80 to-[#061122]/95 backdrop-blur-md p-3 shadow-2xl shadow-amber-500/20 min-w-[180px]">
+              {/* Shimmer */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent" style={{ animation: 'shimmer 2.5s infinite' }} />
+              {/* Stars */}
+              <div className="absolute top-1 right-2 text-amber-300/40 text-base select-none">✦</div>
+              <div className="absolute bottom-2 left-2 text-yellow-300/20 text-xs select-none">✦</div>
+              <div className="relative">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="text-base">🏆</span>
+                  <span className="text-[10px] font-black text-amber-400 uppercase tracking-widest">Pencapaian</span>
+                </div>
+                <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-300 to-orange-300 leading-none">1,037</div>
+                <div className="text-[9px] text-amber-400/70 font-bold uppercase tracking-widest mt-0.5">Total Citasi</div>
+                <p className="text-[10px] text-white/50 mt-1.5 leading-snug border-t border-amber-400/20 pt-1.5">
+                  <span className="text-blue-400 font-semibold">Google Scholar</span> &amp; <span className="text-orange-400 font-semibold">Scopus</span>
+                  <span className="block text-white/30 text-[9px]">(Jun 2026)</span>
+                </p>
+              </div>
+            </div>
+          </div>
           <div className="grid grid-cols-1 xl:grid-cols-5">
 
             {/* ── LEFT: Profile Photo ── */}
@@ -262,47 +284,7 @@ export default function EditorInChief() {
                 <p className="text-white/50 text-sm mt-1">{EDITOR.affiliation} · {EDITOR.department}</p>
               </div>
 
-              {/* ── 🎉 MILESTONE PROMO BANNER ── */}
-              <div className="relative overflow-hidden rounded-2xl border border-amber-400/40 bg-gradient-to-r from-amber-500/15 via-yellow-400/10 to-orange-500/15 p-4">
-                {/* Animated shimmer */}
-                <div className="absolute inset-0 -translate-x-full animate-[shimmer_2.5s_infinite] bg-gradient-to-r from-transparent via-white/5 to-transparent" style={{ animation: 'shimmer 2.5s infinite', backgroundSize: '200% 100%' }} />
-                {/* Glow dots decoration */}
-                <div className="absolute top-1 right-3 text-amber-300/30 text-2xl select-none">✦</div>
-                <div className="absolute bottom-1 right-10 text-yellow-300/20 text-xl select-none">✦</div>
-                <div className="absolute top-3 right-20 text-orange-300/20 text-sm select-none">✦</div>
 
-                <div className="relative flex items-center gap-3">
-                  {/* Trophy icon */}
-                  <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/30">
-                    <span className="text-xl leading-none">🏆</span>
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                    <div className="flex flex-wrap items-baseline gap-2">
-                      <span className="text-xl sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-300 to-orange-300 leading-tight">
-                        1,000+ Citations
-                      </span>
-                      <span className="text-[10px] font-bold text-amber-400/80 uppercase tracking-widest bg-amber-400/10 border border-amber-400/30 px-2 py-0.5 rounded-full">
-                        🎉 Pencapaian
-                      </span>
-                    </div>
-                    <p className="text-[11px] text-white/60 mt-0.5 leading-snug">
-                      Pencapaian luar biasa Dr. Bakhrul — data terkini dari{' '}
-                      <span className="text-blue-400 font-semibold">Google Scholar</span> &{' '}
-                      <span className="text-orange-400 font-semibold">Scopus</span>{' '}
-                      <span className="text-white/40">(Jun 2026)</span>
-                    </p>
-                  </div>
-
-                  {/* Citation count big badge */}
-                  <div className="flex-shrink-0 text-right hidden sm:block">
-                    <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-b from-amber-300 to-orange-400 leading-none">1,037</div>
-                    <div className="text-[9px] text-amber-400/60 font-bold uppercase tracking-widest mt-0.5">total citasi</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* ── SINTA SCORE BADGES ── */}
               <div className="flex flex-wrap gap-3">
                 <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-teal-500/10 border border-teal-400/30">
                   <img src="/logosinta.png" alt="SINTA" className="h-5 object-contain" />
