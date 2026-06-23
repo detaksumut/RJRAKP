@@ -237,7 +237,7 @@ export default function EditorInChief() {
               <div className="relative">
                 <div className="flex items-center gap-2 mb-1.5">
                   <span className="text-base">🏆</span>
-                  <span className="text-[10px] font-black text-amber-400 uppercase tracking-widest">Pencapaian</span>
+                  <span className="text-[10px] font-black text-amber-400 uppercase tracking-widest">Pencapaian Luar Biasa</span>
                 </div>
                 <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-300 to-orange-300 leading-none">1,037</div>
                 <div className="text-[9px] text-amber-400/70 font-bold uppercase tracking-widest mt-0.5">Total Citasi</div>
