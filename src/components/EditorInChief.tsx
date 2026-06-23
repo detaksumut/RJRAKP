@@ -71,7 +71,7 @@ const ACADEMIC_IDS = [
   {
     label: 'Scopus ID',
     value: '57216618216',
-    url: 'https://www.scopus.com/authid/detail.uri?authorId=57216618216',
+    url: 'https://www.scopus.com/feedback/results/authorNamesList.uri?origin=searchauthorlookup&src=al&edit=&poppUp=&st1=Amal&st2=Bakhrul&authSubject=LFSC&_authSubject=on&authSubject=HLSC&_authSubject=on&authSubject=PHSC&_authSubject=on&authSubject=SOSC&_authSubject=on&s=AUTHLASTNAME%28Amal%29+AND+AUTHFIRST%28Bakhrul%29&sdt=&sot=&searchId=&authorIdSearch=&activeFlag=true&showDocument=true&sl=41&exactSearch=off&sid=&carsError=&timeDelay=&redirectURL=&requestFlowType=',
     bg: 'bg-orange-500/10',
     border: 'border-orange-400/30',
     textColor: 'text-orange-300',
