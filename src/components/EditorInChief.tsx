@@ -126,9 +126,18 @@ const ACADEMIC_IDS = [
     bg: 'bg-[#00B09B]/10',
     border: 'border-[#00B09B]/30',
     textColor: 'text-[#00B09B]',
-    logo: null,
+    logo: 'https://eudl.eu/images/logo_new-1-1.png',
     logoAlt: 'EAI',
-    abbr: 'EAI',
+  },
+  {
+    label: 'CyberLeninka',
+    value: 'Feminization of Poverty',
+    url: 'https://cyberleninka.ru/article/n/feminization-of-poverty-a-study-of-women-housewife-in-communities-in-medan-city',
+    bg: 'bg-slate-500/10',
+    border: 'border-slate-400/30',
+    textColor: 'text-slate-300',
+    logo: 'https://cyberleninka.ru/img/cyberleninka-logo.png',
+    logoAlt: 'CyberLeninka',
   },
 ];
 
@@ -379,7 +388,7 @@ export default function EditorInChief() {
               <Award className="w-3.5 h-3.5 text-accent-500" />
               Academic Identifiers
             </p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-9 gap-2.5">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-10 gap-2">
               {ACADEMIC_IDS.map((id) => (
                 <a
                   key={id.label}
