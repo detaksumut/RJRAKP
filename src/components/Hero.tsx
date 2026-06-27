@@ -174,11 +174,23 @@ export default function Hero() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className="lg:col-span-6 relative flex justify-center items-center"
+            className="lg:col-span-6 relative flex flex-col justify-center items-center gap-6"
           >
             {/* Decorative background glow behind image */}
             <div className="absolute w-96 h-96 rounded-full bg-accent-500/10 blur-[100px] -z-10 animate-pulse" />
             
+            {/* Promo Video Container placed above the image */}
+            <div className="relative mx-auto w-full max-w-xl rounded-2xl shadow-xl overflow-hidden bg-brand-950/50 border border-white/10">
+              <video
+                className="w-full aspect-video object-cover"
+                src="/Promo-RJRAKP.mp4"
+                autoPlay
+                muted
+                loop
+                playsInline
+              />
+            </div>
+
             {/* Elegant Image Container with Glassmorphic Border */}
             <div className="relative mx-auto w-full max-w-xl rounded-3xl shadow-2xl overflow-hidden bg-white/5 border border-white/10 p-3 group hover:border-accent-500/30 transition-all duration-500">
               <div className="relative rounded-2xl overflow-hidden aspect-[4/3] sm:aspect-[3/2] lg:aspect-[4/3] bg-brand-950">
