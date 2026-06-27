@@ -180,9 +180,9 @@ export default function Hero() {
             <div className="absolute w-96 h-96 rounded-full bg-accent-500/10 blur-[100px] -z-10 animate-pulse" />
             
             {/* Promo Video Container placed above the image */}
-            <div className="relative mx-auto w-full max-w-xl rounded-2xl shadow-xl overflow-hidden bg-brand-950/50 border border-white/10">
+            <div className="relative mx-auto w-fit max-w-xl rounded-2xl shadow-xl overflow-hidden border border-white/10">
               <video
-                className="w-full max-h-[350px] object-contain block"
+                className="w-auto h-auto max-h-[350px] object-contain block"
                 src="/Promo-RJRAKP.mp4"
                 autoPlay
                 muted
