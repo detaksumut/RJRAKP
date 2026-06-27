@@ -182,7 +182,7 @@ export default function Hero() {
             {/* Promo Video Container placed above the image */}
             <div className="relative mx-auto w-full max-w-xl rounded-2xl shadow-xl overflow-hidden bg-brand-950/50 border border-white/10">
               <video
-                className="w-full aspect-video object-cover"
+                className="w-full h-auto block"
                 src="/Promo-RJRAKP.mp4"
                 autoPlay
                 muted
