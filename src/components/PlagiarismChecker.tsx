@@ -124,7 +124,7 @@ export const PlagiarismChecker: React.FC<PlagiarismCheckerProps> = ({ initialTex
           <div className="w-full bg-gray-200 rounded-full h-2.5">
             <div 
               className="bg-blue-600 h-2.5 rounded-full transition-all duration-300" 
-              style={{ width: \`\${progress}%\` }}
+              style={{ width: `${progress}%` }}
             ></div>
           </div>
           <p className="text-sm text-gray-500 mt-2 text-center">Progres: {progress}%</p>
@@ -148,7 +148,7 @@ export const PlagiarismChecker: React.FC<PlagiarismCheckerProps> = ({ initialTex
               <p className="text-red-600 text-sm">Terdeteksi Plagiat</p>
               <p className="text-2xl font-bold">{report.plagiarizedSentences}</p>
             </div>
-            <div className={\`p-4 rounded-md border text-center \${report.plagiarismPercentage > 20 ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}\`}>
+            <div className={`p-4 rounded-md border text-center ${report.plagiarismPercentage > 20 ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
               <p className="text-sm">Persentase</p>
               <p className="text-2xl font-bold">{report.plagiarismPercentage}%</p>
             </div>
@@ -161,7 +161,7 @@ export const PlagiarismChecker: React.FC<PlagiarismCheckerProps> = ({ initialTex
             ) : (
               <ul className="space-y-3">
                 {report.results.map((result, idx) => (
-                  <li key={idx} className={\`p-3 rounded-md border text-sm \${result.isPlagiarized ? 'border-red-300 bg-red-50' : 'border-green-300 bg-green-50'}\`}>
+                  <li key={idx} className={`p-3 rounded-md border text-sm ${result.isPlagiarized ? 'border-red-300 bg-red-50' : 'border-green-300 bg-green-50'}`}>
                     <p className="mb-1">{result.sentence}</p>
                     <div className="flex justify-between items-center text-xs">
                       <span className="font-medium">
