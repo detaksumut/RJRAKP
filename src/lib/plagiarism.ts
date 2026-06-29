@@ -8,9 +8,9 @@ export interface PlagiarismResult {
 }
 
 export interface PlagiarismReport {
-  totalSentences: number;
-  checkedSentences: number; // Sentences >= 10 words
-  plagiarizedSentences: number;
+  totalParagraphs: number;
+  checkedParagraphs: number;
+  plagiarizedParagraphs: number;
   plagiarismPercentage: number;
   results: PlagiarismResult[];
 }
@@ -32,17 +32,15 @@ export function removeBibliography(text: string): string {
 }
 
 /**
- * Memecah teks menjadi kalimat-kalimat.
+ * Memecah teks menjadi paragraf.
  */
-export function extractSentences(text: string): string[] {
-  // Memecah berdasarkan titik, tanda tanya, tanda seru yang diikuti spasi atau akhir string.
-  // Menghindari pemecahan pada singkatan seperti "Dr.", "Prof.", dll bisa kompleks, 
-  // tapi kita pakai regex sederhana untuk sementara.
-  const rawSentences = text.split(/(?<=[.!?])\s+(?=[A-Z0-9])/);
+export function extractParagraphs(text: string): string[] {
+  // Memecah berdasarkan baris baru (newline)
+  const rawParagraphs = text.split(/\n+/);
   
-  return rawSentences
-    .map(s => s.trim())
-    .filter(s => s.length > 0);
+  return rawParagraphs
+    .map(p => p.trim())
+    .filter(p => p.length > 0);
 }
 
 /**
@@ -59,7 +57,7 @@ export function countWords(text: string): number {
  * CATATAN: Fungsi ini membutuhkan API Key dan Search Engine ID (CX).
  * Karena kita menjalankan di sisi klien, pastikan variabel environment tersedia.
  */
-export async function checkSentencePlagiarism(sentence: string): Promise<string[]> {
+export async function checkParagraphPlagiarism(paragraph: string): Promise<string[]> {
   const apiKey = import.meta.env.VITE_GOOGLE_SEARCH_API_KEY;
   const cx = import.meta.env.VITE_GOOGLE_SEARCH_CX;
 
@@ -77,7 +75,7 @@ export async function checkSentencePlagiarism(sentence: string): Promise<string[
 
   try {
     // Exact match query: menggunakan tanda kutip
-    const query = encodeURIComponent(`"${sentence}"`);
+    const query = encodeURIComponent(`"${paragraph}"`);
     const url = `https://www.googleapis.com/customsearch/v1?q=${query}&key=${apiKey}&cx=${cx}`;
     
     const response = await fetch(url);

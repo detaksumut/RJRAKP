@@ -2,9 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { 
   removeBibliography, 
-  extractSentences, 
+  extractParagraphs, 
   countWords, 
-  checkSentencePlagiarism,
+  checkParagraphPlagiarism,
   PlagiarismResult,
   PlagiarismReport
 } from '../lib/plagiarism';
@@ -36,35 +36,34 @@ export const PlagiarismChecker: React.FC<PlagiarismCheckerProps> = ({ initialTex
     // 1. Hapus daftar pustaka
     const cleanText = removeBibliography(text);
     
-    // 2. Ekstrak kalimat
-    const sentences = extractSentences(cleanText);
+    // 2. Ekstrak paragraf
+    const paragraphs = extractParagraphs(cleanText);
     
     const results: PlagiarismResult[] = [];
     let checkedCount = 0;
     let plagiarizedCount = 0;
 
-    // Filter kalimat >= 10 kata
-    const targetSentences = sentences.filter(s => countWords(s) >= 10);
-    const totalTarget = targetSentences.length;
+    const targetParagraphs = paragraphs;
+    const totalTarget = targetParagraphs.length;
 
     if (totalTarget === 0) {
       setIsChecking(false);
       setReport({
-        totalSentences: sentences.length,
-        checkedSentences: 0,
-        plagiarizedSentences: 0,
+        totalParagraphs: paragraphs.length,
+        checkedParagraphs: 0,
+        plagiarizedParagraphs: 0,
         plagiarismPercentage: 0,
         results: []
       });
       return;
     }
 
-    // 3. Cek per kalimat ke API
-    for (let i = 0; i < targetSentences.length; i++) {
-      const sentence = targetSentences[i];
-      const wordCount = countWords(sentence);
+    // 3. Cek per paragraf ke API
+    for (let i = 0; i < targetParagraphs.length; i++) {
+      const paragraph = targetParagraphs[i];
+      const wordCount = countWords(paragraph);
       
-      const sources = await checkSentencePlagiarism(sentence);
+      const sources = await checkParagraphPlagiarism(paragraph);
       const isPlagiarized = sources.length > 0;
       
       if (isPlagiarized) {
@@ -74,7 +73,7 @@ export const PlagiarismChecker: React.FC<PlagiarismCheckerProps> = ({ initialTex
       checkedCount++;
       
       results.push({
-        sentence,
+        sentence: paragraph, // keeping key as sentence for interface
         isPlagiarized,
         wordCount,
         sources
@@ -86,9 +85,9 @@ export const PlagiarismChecker: React.FC<PlagiarismCheckerProps> = ({ initialTex
     const percentage = Math.round((plagiarizedCount / checkedCount) * 100);
 
     setReport({
-      totalSentences: sentences.length,
-      checkedSentences: checkedCount,
-      plagiarizedSentences: plagiarizedCount,
+      totalParagraphs: paragraphs.length,
+      checkedParagraphs: checkedCount,
+      plagiarizedParagraphs: plagiarizedCount,
       plagiarismPercentage: percentage,
       results
     });
@@ -100,7 +99,7 @@ export const PlagiarismChecker: React.FC<PlagiarismCheckerProps> = ({ initialTex
     <div className="bg-white p-6 rounded-lg shadow-md max-w-4xl mx-auto my-8">
       <h2 className="text-2xl font-bold mb-4 text-gray-800">Cek Plagiarisme Artikel</h2>
       <p className="text-gray-600 mb-4 text-sm">
-        Sistem akan memotong bagian Daftar Pustaka dan hanya mengecek kalimat yang memiliki panjang minimal 10 kata menggunakan pencarian Google.
+        Sistem akan memotong bagian Daftar Pustaka dan mengecek artikel secara per paragraf menggunakan pencarian Google.
       </p>
 
       <textarea
@@ -137,16 +136,16 @@ export const PlagiarismChecker: React.FC<PlagiarismCheckerProps> = ({ initialTex
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             <div className="bg-gray-50 p-4 rounded-md border text-center">
-              <p className="text-gray-500 text-sm">Total Kalimat</p>
-              <p className="text-2xl font-bold">{report.totalSentences}</p>
+              <p className="text-gray-500 text-sm">Total Paragraf</p>
+              <p className="text-2xl font-bold">{report.totalParagraphs}</p>
             </div>
             <div className="bg-blue-50 p-4 rounded-md border text-center">
-              <p className="text-blue-600 text-sm">Kalimat Diperiksa</p>
-              <p className="text-2xl font-bold">{report.checkedSentences}</p>
+              <p className="text-blue-600 text-sm">Paragraf Diperiksa</p>
+              <p className="text-2xl font-bold">{report.checkedParagraphs}</p>
             </div>
             <div className="bg-red-50 p-4 rounded-md border text-center">
               <p className="text-red-600 text-sm">Terdeteksi Plagiat</p>
-              <p className="text-2xl font-bold">{report.plagiarizedSentences}</p>
+              <p className="text-2xl font-bold">{report.plagiarizedParagraphs}</p>
             </div>
             <div className={`p-4 rounded-md border text-center ${report.plagiarismPercentage > 20 ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
               <p className="text-sm">Persentase</p>
@@ -155,9 +154,9 @@ export const PlagiarismChecker: React.FC<PlagiarismCheckerProps> = ({ initialTex
           </div>
 
           <div className="space-y-4">
-            <h4 className="font-medium text-gray-700">Detail Kalimat yang Diperiksa:</h4>
+            <h4 className="font-medium text-gray-700">Detail Paragraf yang Diperiksa:</h4>
             {report.results.length === 0 ? (
-              <p className="text-gray-500 text-sm italic">Tidak ada kalimat dengan panjang minimum 10 kata yang ditemukan.</p>
+              <p className="text-gray-500 text-sm italic">Tidak ada paragraf yang ditemukan.</p>
             ) : (
               <ul className="space-y-3">
                 {report.results.map((result, idx) => (
