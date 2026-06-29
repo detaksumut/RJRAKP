@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import DashboardLayout from '../../components/DashboardLayout';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
+import { PlagiarismChecker } from '../../components/PlagiarismChecker';
 import { Send, Upload, FileText, Plus, Trash2, ChevronUp, ChevronDown, UserPlus, DollarSign } from 'lucide-react';
 
 interface AuthorData {
@@ -424,6 +425,14 @@ https://rjrakp.com`;
         <div className="mb-8">
           <h1 className="text-2xl font-serif font-bold text-academic-900 mb-2">Submit Artikel Baru</h1>
           <p className="text-academic-500">Silakan lengkapi formulir metadata di bawah ini. Anda dapat menambahkan lebih dari satu penulis.</p>
+        </div>
+
+        <div className="mb-8 border border-blue-200 rounded-xl overflow-hidden shadow-sm">
+          <div className="bg-blue-50 px-6 py-4 border-b border-blue-200">
+            <h3 className="font-bold text-blue-800">Alat Cek Plagiarisme (Pra-Submit)</h3>
+            <p className="text-sm text-blue-600">Pastikan artikel Anda bebas plagiarisme sebelum disubmit ke tim editorial.</p>
+          </div>
+          <PlagiarismChecker />
         </div>
 
         {success ? (

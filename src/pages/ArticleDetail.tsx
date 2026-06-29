@@ -5,6 +5,7 @@ import { Helmet } from 'react-helmet-async';
 import { BookOpen, Calendar, Download, FileText, ArrowLeft, Building2, User, Eye, Quote, Check, Copy, X, ShieldCheck, CreditCard, DollarSign, Clock, AlertCircle, ExternalLink } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import { PlagiarismChecker } from '../components/PlagiarismChecker';
 
 // Source type detector helper
 const getSourceType = (name: string = '', url: string = '') => {
@@ -158,6 +159,7 @@ export default function ArticleDetail() {
   const [similaritySources, setSimilaritySources] = useState<any[]>([]);
   const [showReportModal, setShowReportModal] = useState(false);
   const [showIntegrityModal, setShowIntegrityModal] = useState(false);
+  const [showPlagiarism, setShowPlagiarism] = useState(false);
   const [versions, setVersions] = useState<any[]>([]);
   const [selectedVersionNum, setSelectedVersionNum] = useState<number | 'current'>('current');
   const [activeArticleData, setActiveArticleData] = useState<any>(null);
@@ -974,33 +976,54 @@ export default function ArticleDetail() {
               <div className="prose prose-academic max-w-none">
                 <div className="flex items-center justify-between border-b-2 border-academic-100 pb-2 mb-4">
                   <h3 className="text-xl font-bold text-academic-900 m-0">Abstrak</h3>
-                  {article.similarity_score !== null ? (() => {
-                    const { overallScore } = parseIntegrityReport(article);
-                    const statusText = overallScore >= 85 ? 'Fully Compliant' :
-                                       overallScore >= 70 ? 'Compliant' :
-                                       overallScore >= 50 ? 'Partially Compliant' :
-                                       'Verified';
-                    const btnClass = overallScore >= 85 ? 'text-emerald-700 bg-emerald-50 border-emerald-200' :
-                                     overallScore >= 70 ? 'text-blue-700 bg-blue-50 border-blue-200' :
-                                     overallScore >= 50 ? 'text-amber-700 bg-amber-50 border-amber-200' :
-                                     'text-emerald-700 bg-emerald-50 border-emerald-200';
-                    return (
+                  <div className="flex flex-col items-end gap-2">
+                    {article.similarity_score !== null ? (() => {
+                      const { overallScore } = parseIntegrityReport(article);
+                      const statusText = overallScore >= 85 ? 'Fully Compliant' :
+                                         overallScore >= 70 ? 'Compliant' :
+                                         overallScore >= 50 ? 'Partially Compliant' :
+                                         'Verified';
+                      const btnClass = overallScore >= 85 ? 'text-emerald-700 bg-emerald-50 border-emerald-200' :
+                                       overallScore >= 70 ? 'text-blue-700 bg-blue-50 border-blue-200' :
+                                       overallScore >= 50 ? 'text-amber-700 bg-amber-50 border-amber-200' :
+                                       'text-emerald-700 bg-emerald-50 border-emerald-200';
+                      return (
+                        <button 
+                          onClick={() => setShowIntegrityModal(true)}
+                          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border cursor-pointer hover:opacity-90 transition-opacity ${btnClass}`}
+                        >
+                          <ShieldCheck className="w-3.5 h-3.5 animate-pulse" /> Integrity: {statusText}
+                        </button>
+                      );
+                    })() : (
                       <button 
                         onClick={() => setShowIntegrityModal(true)}
-                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border cursor-pointer hover:opacity-90 transition-opacity ${btnClass}`}
+                        className="inline-flex items-center gap-1.5 bg-slate-50 text-slate-500 px-3 py-1 rounded-full text-xs font-bold border border-slate-200 hover:bg-slate-100 transition-colors cursor-pointer"
                       >
-                        <ShieldCheck className="w-3.5 h-3.5 animate-pulse" /> Integrity: {statusText}
+                        <Check className="w-3.5 h-3.5 animate-pulse" /> Integrity Report
                       </button>
-                    );
-                  })() : (
+                    )}
+                    
+                    {/* Plagiarism Checker Toggle Button */}
                     <button 
-                      onClick={() => setShowIntegrityModal(true)}
-                      className="inline-flex items-center gap-1.5 bg-slate-50 text-slate-500 px-3 py-1 rounded-full text-xs font-bold border border-slate-200 hover:bg-slate-100 transition-colors cursor-pointer"
+                      onClick={() => setShowPlagiarism(!showPlagiarism)}
+                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border border-purple-200 bg-purple-50 text-purple-700 hover:opacity-90 transition-opacity cursor-pointer"
                     >
-                      <Check className="w-3.5 h-3.5 animate-pulse" /> Integrity Report
+                      <FileText className="w-3.5 h-3.5" /> Plagiarism Check
                     </button>
-                  )}
+                  </div>
                 </div>
+                
+                {/* Plagiarism Checker Component conditionally rendered */}
+                {showPlagiarism && (
+                  <div className="mb-6 -mt-2">
+                    <PlagiarismChecker 
+                      initialText={activeArticleData?.abstract || article.abstract || ''}
+                      autoCheck={true}
+                    />
+                  </div>
+                )}
+
                 <div className="text-academic-700 leading-relaxed text-justify whitespace-pre-wrap">
                   {activeArticleData?.abstract || article.abstract || 'Abstrak tidak tersedia untuk artikel ini.'}
                 </div>
