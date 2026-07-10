@@ -3,11 +3,12 @@ import DashboardLayout from '../../components/DashboardLayout';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
 import { generateCrossrefXML } from '../../lib/crossref';
+import { publishArticleToZenodo, ZenodoMetadata } from '../../lib/zenodo';
 import { 
   FileText, Trash2, Eye, ArrowLeft, Download, 
   Search, Filter, Calendar, User, ExternalLink, 
   AlertCircle, RefreshCw, CheckCircle, Clock, X, Plus,
-  Fingerprint
+  Fingerprint, UploadCloud
 } from 'lucide-react';
 
 export default function AdminArticles() {
@@ -32,6 +33,7 @@ export default function AdminArticles() {
   const [selectedIssueId, setSelectedIssueId] = useState('');
   const [customDoi, setCustomDoi] = useState('');
   const [similarityScore, setSimilarityScore] = useState<string>('');
+  const [isPublishingZenodo, setIsPublishingZenodo] = useState(false);
 
   const [issuingLoa, setIssuingLoa] = useState<Record<string, boolean>>({});
 
@@ -406,6 +408,75 @@ export default function AdminArticles() {
     a.download = `crossref_${selectedArticle.id}.xml`;
     a.click();
     URL.revokeObjectURL(url);
+  };
+
+  const handlePublishToZenodo = async () => {
+    if (!selectedArticle) return;
+    if (!selectedArticle.manuscript_file) {
+      setError('File PDF manuskrip belum diunggah. Silakan unggah PDF terlebih dahulu.');
+      return;
+    }
+
+    setIsPublishingZenodo(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      const creators = selectedArticle.article_authors?.map((a: any) => ({
+        name: a.full_name,
+        affiliation: a.affiliation || '',
+        orcid: a.orcid_id || undefined
+      })) || [];
+      
+      // Add submitter if no authors listed
+      if (creators.length === 0 && selectedArticle.users) {
+        creators.push({
+          name: selectedArticle.users.full_name,
+          affiliation: selectedArticle.users.institution || ''
+        });
+      }
+
+      const metadata: ZenodoMetadata = {
+        title: selectedArticle.title,
+        description: selectedArticle.abstract || 'Published via RJRAKP Platform',
+        upload_type: 'publication',
+        publication_type: 'article',
+        creators: creators,
+        communities: [{ identifier: 'rjrakp' }],
+        access_right: 'open',
+        keywords: selectedArticle.keywords ? selectedArticle.keywords.split(',').map((k: string) => k.trim()) : []
+      };
+
+      // Extract filename from URL or generate a default one
+      const fileUrl = selectedArticle.manuscript_file;
+      const fileName = fileUrl.split('/').pop()?.split('?')[0] || `Article_${selectedArticle.id}.pdf`;
+
+      const result = await publishArticleToZenodo(metadata, fileUrl, fileName);
+
+      if (!result.success) {
+        throw new Error(result.error);
+      }
+
+      // Update Supabase with the new DOI
+      const { error: updateErr } = await supabase
+        .from('publications')
+        .update({ doi: result.doi })
+        .eq('article_id', selectedArticle.id);
+
+      if (updateErr) throw updateErr;
+
+      setSuccess(`Berhasil diterbitkan ke Zenodo! DOI baru: ${result.doi}`);
+      
+      // Refresh selected article data to show the new DOI
+      await fetchArticles();
+      setCustomDoi(result.doi); // Also update the local state for customDoi input
+      
+    } catch (err: any) {
+      console.error(err);
+      setError('Gagal menerbitkan ke Zenodo: ' + err.message);
+    } finally {
+      setIsPublishingZenodo(false);
+    }
   };
 
   // Filtered articles selector
@@ -808,9 +879,9 @@ export default function AdminArticles() {
                   />
                 </div>
 
-                {/* Direct Status Override */}
+                {/* Status Progression */}
                 <div className="space-y-2 pt-2 border-t border-academic-100">
-                  <label className="block text-xs font-black text-academic-500 uppercase tracking-widest">Ubah Status Paksa (Override)</label>
+                  <label className="block text-xs font-black text-academic-500 uppercase tracking-widest">Proses Workflow Artikel</label>
                   <div className="flex gap-2">
                     <select
                       value={newStatus}
@@ -871,17 +942,61 @@ export default function AdminArticles() {
                   </div>
                 </div>
 
-                {/* Crossref Export button */}
-                {selectedArticle.status === 'published' && (
-                  <div className="pt-4 border-t border-academic-100">
-                    <button
-                      onClick={handleDownloadCrossref}
-                      className="w-full inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 font-bold text-xs rounded-lg transition-colors"
-                    >
-                      <Download className="w-4 h-4" /> Unduh XML Crossref (DOI)
-                    </button>
+                {/* Publication System Integrations Panel */}
+                <div className="pt-4 border-t border-academic-100 space-y-3">
+                  <h4 className="text-[10px] font-bold text-academic-500 uppercase tracking-widest mb-2 flex items-center justify-between">
+                    <span>Integrasi Sistem Publikasi</span>
+                    {selectedArticle.status === 'published' ? (
+                      <span className="bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded text-[8px]">LIVE</span>
+                    ) : (
+                      <span className="bg-slate-200 text-slate-500 px-1.5 py-0.5 rounded text-[8px]">OFFLINE</span>
+                    )}
+                  </h4>
+                  
+                  <button
+                    onClick={handleDownloadCrossref}
+                    disabled={selectedArticle.status !== 'published'}
+                    className={`w-full inline-flex items-center justify-center gap-1.5 px-4 py-2 font-bold text-xs rounded-lg transition-colors ${
+                      selectedArticle.status === 'published' 
+                        ? 'bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 shadow-sm' 
+                        : 'bg-slate-50 text-slate-400 border border-slate-200 cursor-not-allowed'
+                    }`}
+                  >
+                    <Download className="w-4 h-4" /> Unduh XML Crossref
+                  </button>
+
+                  <button
+                    onClick={handlePublishToZenodo}
+                    disabled={isPublishingZenodo || selectedArticle.status !== 'published'}
+                    className={`w-full inline-flex items-center justify-center gap-1.5 px-4 py-2 font-bold text-xs rounded-lg transition-colors ${
+                      selectedArticle.status === 'published'
+                        ? 'bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 shadow-sm'
+                        : 'bg-slate-50 text-slate-400 border border-slate-200 cursor-not-allowed'
+                    }`}
+                  >
+                    {isPublishingZenodo ? (
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <UploadCloud className="w-4 h-4" />
+                    )}
+                    {isPublishingZenodo ? 'Mengirim ke Zenodo...' : 'Terbitkan ke Zenodo (Otomatis)'}
+                  </button>
+                  
+                  <div className="flex gap-2 pt-2">
+                    <div className={`flex-1 flex flex-col items-center justify-center p-2 rounded-lg border transition-all ${selectedArticle.status === 'published' ? 'bg-[#A6CE39]/10 border-[#A6CE39]/30 text-[#7ca221] shadow-sm' : 'bg-slate-50 border-slate-200 text-slate-400'}`}>
+                      <span className="text-[10px] font-black uppercase tracking-wider">ORCID</span>
+                      <span className="text-[9px] font-medium mt-0.5">{selectedArticle.status === 'published' ? 'Tracking' : 'Pasif'}</span>
+                    </div>
+                    <div className={`flex-1 flex flex-col items-center justify-center p-2 rounded-lg border transition-all ${selectedArticle.status === 'published' ? 'bg-orange-50 border-orange-200 text-orange-700 shadow-sm' : 'bg-slate-50 border-slate-200 text-slate-400'}`}>
+                      <span className="text-[10px] font-black uppercase tracking-wider">Scopus</span>
+                      <span className="text-[9px] font-medium mt-0.5">{selectedArticle.status === 'published' ? 'Tracking' : 'Pasif'}</span>
+                    </div>
+                    <div className={`flex-1 flex flex-col items-center justify-center p-2 rounded-lg border transition-all ${selectedArticle.status === 'published' ? 'bg-indigo-50 border-indigo-200 text-indigo-700 shadow-sm' : 'bg-slate-50 border-slate-200 text-slate-400'}`}>
+                      <span className="text-[10px] font-black uppercase tracking-wider">WoS</span>
+                      <span className="text-[9px] font-medium mt-0.5">{selectedArticle.status === 'published' ? 'Tracking' : 'Pasif'}</span>
+                    </div>
                   </div>
-                )}
+                </div>
 
                 {/* LoA Button */}
                 {['accepted', 'copyediting', 'layouting', 'published'].includes(selectedArticle.status.toLowerCase()) && (
