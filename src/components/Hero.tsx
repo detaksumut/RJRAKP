@@ -18,7 +18,9 @@ export default function Hero() {
   };
 
   return (
-    <div className="relative bg-gradient-to-b from-[#061122] via-[#091b35] to-[#040d1a] min-h-[650px] lg:min-h-[750px] overflow-hidden flex items-center py-16 lg:py-24">
+    <div className="relative min-h-[650px] lg:min-h-[750px] overflow-hidden flex items-center py-16 lg:py-24 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('/asia_index_hero.png')" }}>
+      {/* Dark overlay for readability */}
+      <div className="absolute inset-0 bg-[#05050a]/85 backdrop-blur-[2px] z-0" />
       {/* Background Mesh Gradients */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[55%] h-[55%] rounded-full bg-brand-500/15 blur-[130px] animate-pulse" />
@@ -34,68 +36,78 @@ export default function Hero() {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10">
         
-        {/* Top Banner: OJS & Connected (Moved right below top menu) */}
-        <div className="flex flex-col items-center justify-center w-full mb-10 lg:mb-16 border-b border-white/10 pb-8 pt-4">
-          <div className="mb-6 flex items-center justify-center gap-4">
-            <div className="inline-flex bg-slate-100/10 backdrop-blur-md px-5 py-2.5 rounded-full text-xs font-bold text-slate-200 shadow-[0_0_20px_rgba(255,255,255,0.05)] border border-slate-200/20 items-center gap-2 uppercase tracking-widest">
-              <ShieldCheck className="w-4 h-4 text-slate-300" />
-              <span>Fully Compatible OJS 3</span>
-            </div>
-            <span className="text-[10px] md:text-xs uppercase tracking-[0.2em] text-slate-300 font-black">Connected</span>
-          </div>
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-5 md:gap-6 opacity-80 hover:opacity-100 transition-opacity duration-500">
-            
-            <a href="https://www.scopus.com/feedback/results/authorNamesList.uri?origin=searchauthorlookup&src=al&edit=&poppUp=&st1=Amal&st2=Bakhrul&authSubject=LFSC&_authSubject=on&authSubject=HLSC&_authSubject=on&authSubject=PHSC&_authSubject=on&authSubject=SOSC&_authSubject=on&s=AUTHLASTNAME%28Amal%29+AND+AUTHFIRST%28Bakhrul%29&sdt=&sot=&searchId=&authorIdSearch=&activeFlag=true&showDocument=true&sl=41&exactSearch=off&sid=&carsError=&timeDelay=&redirectURL=&requestFlowType=" target="_blank" rel="noopener noreferrer">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Scopus_logo.svg" alt="Scopus" className="h-10 md:h-14 transition-all duration-300 transform hover:scale-110 cursor-pointer" />
-            </a>
-            
-            <img src="https://assets.crossref.org/logo/crossref-logo-landscape-200.svg" alt="Crossref logo" className="h-9 md:h-12 transition-all duration-300 transform hover:scale-110 cursor-pointer" />
-
-
-            <a href="https://scholar.google.com/citations?user=EoHXXg0AAAAJ&hl=en" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 transition-all duration-300 transform hover:scale-110 cursor-pointer">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Google_Scholar_logo.svg" alt="Google Scholar Logo" className="h-10 md:h-14" />
-              <span className="text-white font-bold text-lg md:text-2xl font-sans tracking-tight">Google Scholar</span>
-            </a>
-
-            <a href="https://sinta.kemdiktisaintek.go.id/authors/profile/6019786" target="_blank" rel="noopener noreferrer" className="flex items-center transition-all duration-300 transform hover:scale-110 cursor-pointer">
-              <img src="/logosinta.png" alt="SINTA Logo" className="h-9 md:h-12 object-contain" />
-            </a>
-
-            <a href="https://zenodo.org/communities/rjrakp/records?q=&l=list&p=1&s=10&sort=newest" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 transition-all duration-300 transform hover:scale-110 cursor-pointer">
-              <img src="/zenodo.png" alt="Zenodo Logo" className="h-10 md:h-14 rounded-md" />
-            </a>
-
-            <a href="https://www.doi.org" target="_blank" rel="noopener noreferrer" className="flex items-center transition-all duration-300 transform hover:scale-110 cursor-pointer">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/1/11/DOI_logo.svg" alt="DOI Logo" className="h-10 md:h-14" />
-            </a>
-
-            <a href="https://orcid.org/my-orcid?orcid=0009-0006-8416-6156" target="_blank" rel="noopener noreferrer" className="flex items-center transition-all duration-300 transform hover:scale-110 cursor-pointer">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/0/06/ORCID_iD.svg" alt="ORCID Logo" className="h-10 md:h-14" />
-            </a>
-
-            <a href="https://www.webofscience.com/wos/author/record/QKY-3514-2026" target="_blank" rel="noopener noreferrer" className="flex items-center transition-all duration-300 transform hover:scale-110 cursor-pointer">
-              <img src="/logo-WebofScience.png" alt="Web of Science Logo" className="h-9 md:h-12 bg-white/95 rounded-lg px-2.5 py-1.5 shadow-sm" />
-            </a>
-
-            <a href="https://explore.openaire.eu/search/advanced/research-outcomes?f0=resultauthor&fv0=Muhibbuddin%20Mr" target="_blank" rel="noopener noreferrer" className="flex items-center transition-all duration-300 transform hover:scale-110 cursor-pointer">
-              <img src="/OpenAIRE.png" alt="OpenAIRE Logo" className="h-9 md:h-12 bg-white/95 rounded-lg px-2.5 py-1.5 shadow-sm" />
-            </a>
-
-            <a href="https://hq.ssrn.com/submissions/MyPapers.cfm?partid=11897288" target="_blank" rel="noopener noreferrer" className="flex items-center transition-all duration-300 transform hover:scale-110 cursor-pointer">
-              <img src={ElsevierLogo} alt="Elsevier Logo" className="h-8 md:h-10 bg-white/95 rounded shadow-sm px-2 py-1" />
-            </a>
-          </div>
+        {/* Mobile Banner: Horizontal Logos (Only on small screens) */}
+        <div className="flex lg:hidden flex-wrap items-center justify-center gap-4 opacity-80 mt-4 mb-8 border-b border-white/10 pb-6">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Scopus_logo.svg" alt="Scopus" className="h-6" />
+          <img src="https://assets.crossref.org/logo/crossref-logo-landscape-200.svg" alt="Crossref" className="h-5" />
+          <img src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Google_Scholar_logo.svg" alt="Google Scholar" className="h-6" />
+          <img src="/logosinta.png" alt="SINTA" className="h-6 object-contain" />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-6 items-center">
           
-          {/* Left Column: Typography & Search */}
+          {/* Left Column: Vertical Logos (Desktop Only) */}
+          <motion.div 
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
+            className="hidden lg:flex lg:col-span-1 flex-col items-center justify-center gap-6 border-r border-white/10 pr-2 py-4 opacity-70 hover:opacity-100 transition-opacity duration-500"
+          >
+            <a href="https://www.scopus.com/feedback/results/authorNamesList.uri?origin=searchauthorlookup&src=al&edit=&poppUp=&st1=Amal&st2=Bakhrul&authSubject=LFSC&_authSubject=on&authSubject=HLSC&_authSubject=on&authSubject=PHSC&_authSubject=on&authSubject=SOSC&_authSubject=on&s=AUTHLASTNAME%28Amal%29+AND+AUTHFIRST%28Bakhrul%29&sdt=&sot=&searchId=&authorIdSearch=&activeFlag=true&showDocument=true&sl=41&exactSearch=off&sid=&carsError=&timeDelay=&redirectURL=&requestFlowType=" target="_blank" rel="noopener noreferrer">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Scopus_logo.svg" alt="Scopus" className="w-16 transition-all duration-300 transform hover:scale-110 cursor-pointer opacity-90" />
+            </a>
+            
+            <img src="https://assets.crossref.org/logo/crossref-logo-landscape-200.svg" alt="Crossref" className="w-14 transition-all duration-300 transform hover:scale-110 cursor-pointer opacity-90" />
+
+            <a href="https://scholar.google.com/citations?user=EoHXXg0AAAAJ&hl=en" target="_blank" rel="noopener noreferrer">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Google_Scholar_logo.svg" alt="Google Scholar" className="w-10 transition-all duration-300 transform hover:scale-110 cursor-pointer opacity-90" />
+            </a>
+
+            <a href="https://sinta.kemdiktisaintek.go.id/authors/profile/6019786" target="_blank" rel="noopener noreferrer">
+              <img src="/logosinta.png" alt="SINTA" className="w-12 object-contain bg-white/10 rounded p-1 transition-all duration-300 transform hover:scale-110 cursor-pointer" />
+            </a>
+
+            <a href="https://zenodo.org/communities/rjrakp/records?q=&l=list&p=1&s=10&sort=newest" target="_blank" rel="noopener noreferrer">
+              <img src="/zenodo.png" alt="Zenodo" className="w-12 rounded-md transition-all duration-300 transform hover:scale-110 cursor-pointer" />
+            </a>
+
+            <a href="https://www.doi.org" target="_blank" rel="noopener noreferrer">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/1/11/DOI_logo.svg" alt="DOI" className="w-10 transition-all duration-300 transform hover:scale-110 cursor-pointer opacity-90" />
+            </a>
+
+            <a href="https://orcid.org/my-orcid?orcid=0009-0006-8416-6156" target="_blank" rel="noopener noreferrer">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/0/06/ORCID_iD.svg" alt="ORCID" className="w-10 transition-all duration-300 transform hover:scale-110 cursor-pointer opacity-90" />
+            </a>
+
+            <a href="https://www.webofscience.com/wos/author/record/QKY-3514-2026" target="_blank" rel="noopener noreferrer">
+              <img src="/logo-WebofScience.png" alt="Web of Science" className="w-10 bg-white/95 rounded-lg p-1.5 shadow-sm transition-all duration-300 transform hover:scale-110 cursor-pointer" />
+            </a>
+
+            <a href="https://explore.openaire.eu/search/advanced/research-outcomes?f0=resultauthor&fv0=Muhibbuddin%20Mr" target="_blank" rel="noopener noreferrer">
+              <img src="/OpenAIRE.png" alt="OpenAIRE" className="w-10 bg-white/95 rounded-lg p-1.5 shadow-sm transition-all duration-300 transform hover:scale-110 cursor-pointer" />
+            </a>
+
+            <a href="https://hq.ssrn.com/submissions/MyPapers.cfm?partid=11897288" target="_blank" rel="noopener noreferrer">
+              <img src={ElsevierLogo} alt="Elsevier" className="w-8 bg-white/95 rounded p-1 shadow-sm transition-all duration-300 transform hover:scale-110 cursor-pointer" />
+            </a>
+          </motion.div>
+
+          {/* Main Content: Typography & Search */}
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="lg:col-span-6 flex flex-col justify-center text-left"
           >
+
+            {/* OJS Compatible Badge */}
+            <div className="flex items-center justify-start gap-3 md:gap-4 mb-4">
+              <div className="inline-flex bg-[#c9a84c]/10 backdrop-blur-md px-4 py-2 rounded-full text-[10px] sm:text-xs font-bold text-[#c9a84c] shadow-[0_0_15px_rgba(201,168,76,0.15)] border border-[#c9a84c]/30 items-center gap-2 uppercase tracking-widest">
+                <ShieldCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#c9a84c]" />
+                <span>Fully Compatible OJS 3</span>
+              </div>
+              <span className="text-[9px] sm:text-xs uppercase tracking-[0.2em] text-slate-300 font-black">Connected</span>
+            </div>
 
             {/* Top Badges / Actions */}
             <div className="flex flex-wrap items-center gap-3 mb-6">
@@ -114,32 +126,32 @@ export default function Hero() {
 
             {/* Main Title */}
             <h1 className="text-4xl sm:text-5xl lg:text-5xl xl:text-6xl font-serif font-black text-white leading-tight tracking-tight">
-              Rumah Jurnal Riset,
-              <span className="block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-accent-500 via-amber-500 to-accent-600 font-sans tracking-wide">
-                Analisis & Keadilan
+              ASIA Index
+              <span className="block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-[#c9a84c] via-[#e8c97a] to-[#c9a84c] font-sans tracking-wide">
+                & Metrics
               </span>
-              Publik Indonesia
+              <span className="block mt-2 text-2xl sm:text-3xl text-gray-300 font-normal">Official Academic Database</span>
             </h1>
 
             {/* Subtitle - Professional Academic Description */}
-            <p className="mt-6 text-[15px] sm:text-base text-brand-100/90 max-w-2xl leading-relaxed font-medium">
-              RJRAKP berkomitmen menyediakan platform publikasi ilmiah bertaraf internasional melalui sistem <strong>Open Journal Systems (OJS)</strong> yang transparan. Melalui proses <strong>Double-Blind Peer Review</strong> yang ketat, kami menjamin kualitas akademis setiap naskah. Kami mendedikasikan komitmen penuh untuk kemajuan ilmu pengetahuan terbuka (Open Access) dan penyebaran karya Anda ke berbagai lembaga pengindeks global bergengsi.
+            <p className="mt-6 text-[15px] sm:text-base text-gray-300 max-w-2xl leading-relaxed font-medium">
+              ASIA Index (sebelumnya RJRAKP) adalah mesin pengindeks global dan pusat pangkalan data sitasi bertaraf internasional yang bernaung di bawah <strong>Association of Asia Pacific Academician</strong>. Kami mendokumentasikan, mengevaluasi, dan memberikan metrik kualitas jurnal-jurnal akademik di seluruh kawasan Asia Pasifik.
             </p>
             
             {/* Action Buttons */}
             <div className="mt-8 flex flex-wrap gap-2 sm:gap-3 items-center">
               <a 
                 href="/#jurnal" 
-                className="flex items-center justify-center gap-1.5 px-4 sm:px-5 py-3 rounded-xl font-bold text-[10px] sm:text-xs shadow-lg text-brand-950 bg-gradient-to-r from-accent-400 to-amber-400 hover:from-accent-500 hover:to-amber-500 hover:shadow-accent-500/20 hover:shadow-xl transition-all hover:-translate-y-0.5 duration-200 uppercase tracking-wider whitespace-nowrap"
+                className="flex items-center justify-center gap-1.5 px-4 sm:px-5 py-3 rounded-xl font-bold text-[10px] sm:text-xs shadow-lg text-black bg-gradient-to-r from-[#c9a84c] to-[#e8c97a] hover:from-[#b8953c] hover:to-[#c9a84c] hover:shadow-[#c9a84c]/20 hover:shadow-xl transition-all hover:-translate-y-0.5 duration-200 uppercase tracking-wider whitespace-nowrap"
               >
-                Membaca Jurnal <ArrowRight className="w-3.5 h-3.5" />
+                Jelajahi Database <ArrowRight className="w-3.5 h-3.5" />
               </a>
               <a 
                 href="/portofolio-rjrakp.png" 
-                download="Portofolio_RJRAKP.png"
-                className="flex items-center justify-center gap-1.5 px-4 sm:px-5 py-3 rounded-xl font-bold text-[10px] sm:text-xs shadow-lg text-emerald-950 bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-500 hover:to-teal-500 hover:shadow-emerald-500/30 hover:shadow-xl transition-all hover:-translate-y-0.5 duration-200 uppercase tracking-wider whitespace-nowrap"
+                download="Portofolio_ASIA_Index.png"
+                className="flex items-center justify-center gap-1.5 px-4 sm:px-5 py-3 rounded-xl font-bold text-[10px] sm:text-xs shadow-lg text-white bg-gray-800 hover:bg-gray-700 hover:shadow-gray-800/30 hover:shadow-xl transition-all hover:-translate-y-0.5 duration-200 uppercase tracking-wider whitespace-nowrap"
               >
-                Unduh Portofolio
+                Unduh Metrik
               </a>
               <a 
                 href="/pedoman" 
@@ -162,7 +174,7 @@ export default function Hero() {
                   className="block w-full pl-3 pr-3 py-3.5 border-0 focus:ring-0 text-sm text-white placeholder-brand-200/40 rounded-xl outline-none bg-transparent"
                   placeholder="Cari artikel, penulis, atau kata kunci..."
                 />
-                <button type="submit" className="bg-gradient-to-r from-accent-500 to-accent-600 hover:from-accent-600 hover:to-accent-700 text-brand-950 font-black px-6 py-2.5 text-xs uppercase tracking-widest hover:shadow-lg transition-all duration-300 m-1.5 rounded-lg active:scale-95">
+                <button type="submit" className="bg-gradient-to-r from-[#c9a84c] to-[#b8953c] hover:from-[#b8953c] hover:to-[#a3802b] text-black font-black px-6 py-2.5 text-xs uppercase tracking-widest hover:shadow-lg transition-all duration-300 m-1.5 rounded-lg active:scale-95">
                   Cari
                 </button>
               </div>
@@ -174,7 +186,7 @@ export default function Hero() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className="lg:col-span-6 relative flex flex-col justify-center items-center gap-6"
+            className="lg:col-span-5 relative flex flex-col justify-center items-center gap-6"
           >
             {/* Decorative background glow behind image */}
             <div className="absolute w-96 h-96 rounded-full bg-accent-500/10 blur-[100px] -z-10 animate-pulse" />
@@ -201,8 +213,6 @@ export default function Hero() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-brand-950/60 via-transparent to-transparent pointer-events-none" />
               </div>
-
-              {/* Floating Badge 1 - Top Left (Moved) */}
 
               {/* Floating Badge 2 - Bottom Right */}
               <div className="absolute bottom-6 right-6 bg-brand-950/90 backdrop-blur-md px-4 py-2 rounded-xl text-[9px] font-bold text-white shadow-lg border border-white/10 flex items-center gap-1.5 uppercase tracking-widest">

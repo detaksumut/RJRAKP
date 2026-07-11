@@ -1,18 +1,111 @@
-import React, { useState } from 'react';
-import { X, Send } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { X, Send, MessageCircle } from 'lucide-react';
+import { supabase } from '../lib/supabase';
+import { useAuth } from '../contexts/AuthContext';
+
+interface ChatMessage {
+  id: string;
+  user_id: string | null;
+  guest_name: string | null;
+  message: string;
+  created_at: string;
+  users?: { full_name: string } | null;
+}
 
 export default function WhatsAppWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [guestName, setGuestName] = useState(() => localStorage.getItem('rjrakp_guest_name') || '');
+  const [isAskingName, setIsAskingName] = useState(false);
+  const { user } = useAuth();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const handleStartChat = (e: React.FormEvent) => {
+  // Fetch initial messages and subscribe to real-time changes
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const fetchMessages = async () => {
+      const { data, error } = await supabase
+        .from('global_chats')
+        .select(`
+          id, user_id, guest_name, message, created_at,
+          users ( full_name )
+        `)
+        .order('created_at', { ascending: false })
+        .limit(50);
+        
+      if (data && !error) {
+        setMessages(data.reverse());
+      }
+    };
+
+    fetchMessages();
+
+    const channel = supabase
+      .channel('public:global_chats')
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'global_chats' },
+        (payload) => {
+          const newMessage = payload.new as ChatMessage;
+          if (newMessage.user_id) {
+            // Fetch name for registered users
+            supabase.from('users').select('full_name').eq('id', newMessage.user_id).single().then(({ data }) => {
+              newMessage.users = data;
+              setMessages((prev) => [...prev, newMessage]);
+            });
+          } else {
+            setMessages((prev) => [...prev, newMessage]);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [isOpen]);
+
+  // Auto-scroll
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  const handleStartChat = async (e: React.FormEvent) => {
     e.preventDefault();
-    const phone = '62811665212';
-    const encodedText = encodeURIComponent(message || 'Halo Admin RJRAKP, saya ingin bertanya mengenai publikasi jurnal.');
-    const waUrl = `https://wa.me/${phone}?text=${encodedText}`;
-    window.open(waUrl, '_blank');
-    setMessage('');
-    setIsOpen(false);
+    
+    if (!message.trim()) return;
+
+    // Guest name prompt logic
+    if (!user && !guestName) {
+      setIsAskingName(true);
+      return;
+    }
+
+    const currentMsg = message;
+    setMessage(''); // Optimistic clear
+    
+    const { error } = await supabase.from('global_chats').insert([
+      {
+        user_id: user ? user.id : null,
+        guest_name: user ? null : guestName,
+        message: currentMsg
+      }
+    ]);
+
+    if (error) {
+      console.error("Error sending message", error);
+      setMessage(currentMsg); // Revert on error
+    }
+  };
+
+  const handleSetGuestName = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!guestName.trim()) return;
+    localStorage.setItem('rjrakp_guest_name', guestName);
+    setIsAskingName(false);
+    handleStartChat(e); // Proceed sending the message
   };
 
   return (
@@ -21,35 +114,31 @@ export default function WhatsAppWidget() {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="flex items-center justify-center w-14 h-14 bg-[#25D366] hover:bg-[#20ba56] text-white rounded-full shadow-[0_4px_15px_rgba(37,211,102,0.4)] transition-all duration-300 hover:scale-110 hover:-translate-y-1 relative group cursor-pointer border-none outline-none"
-          title="Hubungi Kami via WhatsApp"
+          className="flex items-center justify-center w-14 h-14 bg-gradient-to-r from-[#c9a84c] to-[#a3802b] text-academic-950 rounded-full shadow-[0_4px_25px_rgba(201,168,76,0.5)] transition-all duration-300 hover:scale-110 hover:-translate-y-1 relative group cursor-pointer border border-[#c9a84c]/50 outline-none"
+          title="Buka Global Discussion"
         >
-          {/* Ripple effect */}
-          <span className="absolute inset-0 rounded-full bg-[#25D366]/30 animate-ping pointer-events-none" />
-          
-          <svg viewBox="0 0 24 24" className="w-7 h-7 fill-current">
-            <path d="M12.031 2c-5.524 0-10 4.48-10 10 0 1.954.563 3.775 1.533 5.316l-1.53 5.684 5.839-1.505c1.478.85 3.197 1.34 5.011 1.34 5.524 0 10-4.48 10-10s-4.476-10-10-10zm-.031 18c-1.634 0-3.17-.456-4.505-1.246l-.323-.191-3.35.863.88-3.265-.21-.334C3.696 14.53 3.2 12.825 3.2 11c0-4.852 3.948-8.8 8.8-8.8 4.851 0 8.8 3.948 8.8 8.8s-3.949 8.8-8.8 8.8zm4.704-6.493c-.258-.129-1.524-.752-1.76-.838-.236-.086-.407-.129-.579.129-.172.258-.666.838-.816.994-.15.156-.3.172-.558.043-.258-.129-1.089-.402-2.074-1.282-.767-.684-1.285-1.53-1.436-1.787-.15-.258-.016-.398.113-.526.116-.115.258-.3.387-.451.129-.15.172-.258.258-.43.086-.172.043-.322-.022-.451-.064-.13-.578-1.393-.794-1.91-.21-.505-.44-.436-.602-.444-.156-.008-.335-.01-.515-.01-.18 0-.472.067-.719.335-.246.268-.94.92-.94 2.24 0 1.32.96 2.593 1.096 2.772.137.18 1.888 2.88 4.575 4.04.639.277 1.137.442 1.527.566.643.204 1.228.175 1.691.106.516-.077 1.524-.623 1.738-1.226.215-.602.215-1.118.15-1.226-.064-.108-.236-.172-.494-.3z"/>
-          </svg>
+          <span className="absolute inset-0 rounded-full bg-[#c9a84c]/30 animate-ping pointer-events-none" />
+          <MessageCircle className="w-7 h-7 fill-current" />
         </button>
       )}
 
       {/* Chat Window Popup */}
       {isOpen && (
-        <div className="w-[320px] sm:w-[350px] bg-white rounded-3xl shadow-[0_10px_40px_rgba(0,0,0,0.15)] border border-slate-200/60 overflow-hidden flex flex-col animate-in fade-in slide-in-from-bottom-5 duration-300 text-left">
+        <div className="w-[320px] sm:w-[350px] bg-white rounded-3xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] border border-[#c9a84c]/30 overflow-hidden flex flex-col animate-in fade-in slide-in-from-bottom-5 duration-300 text-left h-[500px] max-h-[80vh]">
           
           {/* Header */}
-          <div className="bg-gradient-to-r from-academic-950 to-brand-900 text-white p-5 flex items-center justify-between relative">
+          <div className="bg-gradient-to-r from-[#05050a] via-[#111120] to-[#05050a] text-white p-4 flex items-center justify-between border-b border-[#c9a84c]/20 relative">
             <div className="flex items-center gap-3">
               <div className="relative">
-                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center border border-white/20">
-                  <img src="/logo-rjrakp.png" alt="RJRAKP" className="w-7 h-7 object-contain brightness-0 invert" />
+                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center border border-[#c9a84c]/50">
+                  <MessageCircle className="w-5 h-5 text-[#c9a84c]" />
                 </div>
-                <span className="absolute bottom-0 right-0 w-3 h-3 bg-[#25D366] border-2 border-academic-950 rounded-full" />
+                <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-[#111120] rounded-full" />
               </div>
               <div className="text-left">
-                <h4 className="font-bold text-sm tracking-wide">Redaksi RJRAKP</h4>
-                <p className="text-[10px] text-brand-200 font-medium flex items-center gap-1">
-                  Online &bull; Biasanya membalas cepat
+                <h4 className="font-bold text-sm tracking-wide text-[#c9a84c]">Global Discussion</h4>
+                <p className="text-[10px] text-slate-400 font-medium flex items-center gap-1">
+                  Forum Terbuka ASIA Index
                 </p>
               </div>
             </div>
@@ -62,29 +151,64 @@ export default function WhatsAppWidget() {
           </div>
 
           {/* Chat Body */}
-          <div className="p-5 bg-slate-50 flex-1 min-h-[100px]">
-            <div className="bg-white p-3 rounded-2xl rounded-tl-none shadow-sm border border-slate-100 max-w-[90%] text-xs text-slate-700 leading-relaxed font-medium">
-              Halo! Ada yang bisa kami bantu terkait submisi, review, pembayaran reward, atau penerbitan artikel di RJRAKP? Silakan kirimkan pesan Anda di bawah ini. 😊
+          <div className="p-4 bg-slate-50 flex-1 overflow-y-auto flex flex-col gap-3">
+            <div className="bg-white p-3 rounded-2xl rounded-tl-none shadow-sm border border-slate-100 max-w-[90%] text-xs text-slate-700 leading-relaxed font-medium self-start">
+              Selamat datang di Forum Global ASIA Index! Silakan berdiskusi atau bertanya bebas di sini.
             </div>
+            
+            {messages.map((msg) => {
+              const isMine = user ? msg.user_id === user.id : msg.guest_name === guestName && !msg.user_id;
+              const senderName = msg.user_id && msg.users ? msg.users.full_name : msg.guest_name || 'Guest';
+              
+              return (
+                <div key={msg.id} className={`flex flex-col max-w-[85%] ${isMine ? 'self-end items-end' : 'self-start items-start'}`}>
+                  <span className="text-[9px] text-slate-400 font-bold mb-1 ml-1">{senderName}</span>
+                  <div className={`p-2.5 rounded-2xl shadow-sm text-xs leading-relaxed break-words ${isMine ? 'bg-[#c9a84c] text-academic-950 rounded-tr-none font-medium' : 'bg-white border border-slate-100 text-slate-700 rounded-tl-none'}`}>
+                    {msg.message}
+                  </div>
+                </div>
+              );
+            })}
+            <div ref={messagesEndRef} />
           </div>
 
           {/* Chat Footer / Form */}
-          <form onSubmit={handleStartChat} className="p-4 border-t border-slate-100 bg-white flex items-center gap-2">
-            <input
-              type="text"
-              placeholder="Tulis pesan..."
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              className="flex-grow border border-slate-200 rounded-xl px-4 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-slate-50"
-            />
-            <button
-              type="submit"
-              className="w-8 h-8 rounded-xl bg-[#25D366] hover:bg-[#20ba56] text-white flex items-center justify-center shadow-md transition-colors cursor-pointer shrink-0 border-none outline-none"
-              title="Kirim ke WhatsApp"
-            >
-              <Send className="w-4 h-4" />
-            </button>
-          </form>
+          {isAskingName ? (
+             <form onSubmit={handleSetGuestName} className="p-4 border-t border-[#c9a84c]/20 bg-white flex flex-col gap-2">
+                <p className="text-xs text-slate-500 font-medium">Siapa nama Anda?</p>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="Masukkan nama Anda..."
+                    value={guestName}
+                    onChange={(e) => setGuestName(e.target.value)}
+                    className="flex-grow border border-slate-200 rounded-xl px-4 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#c9a84c] bg-slate-50"
+                    autoFocus
+                  />
+                  <button type="submit" className="px-4 bg-[#111120] text-[#c9a84c] rounded-xl text-xs font-bold hover:bg-[#1a1a2e]">
+                    OK
+                  </button>
+                </div>
+             </form>
+          ) : (
+            <form onSubmit={handleStartChat} className="p-4 border-t border-[#c9a84c]/20 bg-white flex items-center gap-2">
+              <input
+                type="text"
+                placeholder="Tulis pesan..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                className="flex-grow border border-slate-200 rounded-xl px-4 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#c9a84c] focus:border-[#c9a84c] bg-slate-50"
+              />
+              <button
+                type="submit"
+                disabled={!message.trim()}
+                className="w-9 h-9 rounded-xl bg-[#c9a84c] hover:bg-[#b8953c] text-academic-950 flex items-center justify-center shadow-md transition-colors cursor-pointer shrink-0 border-none outline-none disabled:opacity-50"
+                title="Kirim Pesan"
+              >
+                <Send className="w-4 h-4 ml-0.5" />
+              </button>
+            </form>
+          )}
         </div>
       )}
     </div>
