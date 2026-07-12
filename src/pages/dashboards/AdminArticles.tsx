@@ -4,11 +4,12 @@ import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
 import { generateCrossrefXML } from '../../lib/crossref';
 import { publishArticleToZenodo, ZenodoMetadata } from '../../lib/zenodo';
+import { verifyArticle } from '../../lib/asiaRating';
 import { 
   FileText, Trash2, Eye, ArrowLeft, Download, 
   Search, Filter, Calendar, User, ExternalLink, 
   AlertCircle, RefreshCw, CheckCircle, Clock, X, Plus,
-  Fingerprint, UploadCloud
+  Fingerprint, UploadCloud, Star
 } from 'lucide-react';
 
 export default function AdminArticles() {
@@ -34,6 +35,10 @@ export default function AdminArticles() {
   const [customDoi, setCustomDoi] = useState('');
   const [similarityScore, setSimilarityScore] = useState<string>('');
   const [isPublishingZenodo, setIsPublishingZenodo] = useState(false);
+  const [isIndexingAsia, setIsIndexingAsia] = useState(false);
+  const [asiaIndexed, setAsiaIndexed] = useState(false);
+  const [asiaScore, setAsiaScore] = useState<number | null>(null);
+  const [asiaRating, setAsiaRating] = useState<number | null>(null);
 
   const [issuingLoa, setIssuingLoa] = useState<Record<string, boolean>>({});
 
@@ -476,6 +481,52 @@ export default function AdminArticles() {
       setError('Gagal menerbitkan ke Zenodo: ' + err.message);
     } finally {
       setIsPublishingZenodo(false);
+    }
+  };
+
+  const handleIndexAsia = async () => {
+    if (!selectedArticle) return;
+    setIsIndexingAsia(true);
+    setError('');
+    setSuccess('');
+    try {
+      const authors = selectedArticle.article_authors?.map((a: any) => a.full_name).join(', ') 
+        || selectedArticle.users?.full_name || '';
+      
+      const verification = await verifyArticle({
+        doi: customDoi || selectedArticle.publications?.doi || '',
+        title: selectedArticle.title,
+        authors,
+        abstract: selectedArticle.abstract || '',
+        issn: selectedArticle.journals?.issn || '',
+      });
+
+      // Save to asia_index table
+      const { error: insertErr } = await supabase.from('asia_index').upsert({
+        title: selectedArticle.title,
+        authors,
+        abstract: selectedArticle.abstract || '',
+        keywords: selectedArticle.keywords || '',
+        journal_name: selectedArticle.journals?.name || '',
+        issn: selectedArticle.journals?.issn || '',
+        year: new Date(selectedArticle.submission_date).getFullYear(),
+        doi: customDoi || selectedArticle.publications?.doi || '',
+        source_url: `${window.location.origin}/article/${selectedArticle.id}`,
+        pdf_url: selectedArticle.manuscript_file || '',
+        origin: 'internal',
+        ...verification,
+      }, { onConflict: 'source_url' });
+
+      if (insertErr) throw insertErr;
+
+      setAsiaIndexed(true);
+      setAsiaScore(verification.asia_score);
+      setAsiaRating(verification.asia_rating);
+      setSuccess(`✅ Berhasil diindeks ke ASIA Index! Skor: ${verification.asia_score}/100 (${verification.asia_label})`);
+    } catch (err: any) {
+      setError('Gagal mengindeks ke ASIA Index: ' + err.message);
+    } finally {
+      setIsIndexingAsia(false);
     }
   };
 
@@ -980,6 +1031,28 @@ export default function AdminArticles() {
                       <UploadCloud className="w-4 h-4" />
                     )}
                     {isPublishingZenodo ? 'Mengirim ke Zenodo...' : 'Terbitkan ke Zenodo (Otomatis)'}
+                  </button>
+
+                  {/* ASIA Index Button */}
+                  <button
+                    onClick={handleIndexAsia}
+                    disabled={isIndexingAsia || asiaIndexed || selectedArticle.status !== 'published'}
+                    className={`w-full inline-flex items-center justify-center gap-1.5 px-4 py-2 font-bold text-xs rounded-lg transition-colors ${
+                      asiaIndexed
+                        ? 'bg-amber-50 text-amber-700 border border-amber-300 cursor-default'
+                        : selectedArticle.status === 'published'
+                        ? 'bg-gradient-to-r from-amber-500 to-yellow-500 text-black hover:from-amber-400 hover:to-yellow-400 shadow-sm'
+                        : 'bg-slate-50 text-slate-400 border border-slate-200 cursor-not-allowed'
+                    }`}
+                  >
+                    {isIndexingAsia ? (
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                    ) : asiaIndexed ? (
+                      <CheckCircle className="w-4 h-4" />
+                    ) : (
+                      <Star className="w-4 h-4" />
+                    )}
+                    {isIndexingAsia ? 'Memverifikasi & Mengindeks...' : asiaIndexed ? `✅ ASIA Indexed (${asiaScore}/100)` : 'Indeks ASIA'}
                   </button>
                   
                   <div className="flex gap-2 pt-2">

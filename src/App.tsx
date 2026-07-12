@@ -75,6 +75,7 @@ import AuthorOpinionForm from './pages/dashboards/AuthorOpinionForm';
 import JurnalKampus from './pages/JurnalKampus';
 import AuthorJurnalKampus from './pages/dashboards/AuthorJurnalKampus';
 import RjrakpPlatform from './pages/RjrakpPlatform';
+import AsiaIndex from './pages/AsiaIndex';
 
 export default function App() {
   return (
@@ -98,7 +99,8 @@ export default function App() {
               <Route path="/opini" element={<OpinionList />} />
               <Route path="/opini/:slug" element={<OpinionDetail />} />
               <Route path="/jurnal-kampus" element={<JurnalKampus />} />
-            <Route path="/rjrakp-platform" element={<RjrakpPlatform />} />
+              <Route path="/rjrakp-platform" element={<RjrakpPlatform />} />
+              <Route path="/asia-index" element={<AsiaIndex />} />
             <Route path="/panduan-penulis" element={<PanduanPenulis />} />
             <Route path="/panduan-reviewer" element={<PanduanReviewer />} />
             <Route path="/panduan-editor" element={<PanduanEditor />} />

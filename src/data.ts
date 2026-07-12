@@ -7,5 +7,6 @@ export const MENU_ITEMS = [
   { label: 'Publikasi', href: '/publikasi' },
   { label: 'Jurnal Kampus', href: '/jurnal-kampus' },
   { label: 'RJRAKP Platform', href: '/rjrakp-platform' },
+  { label: '⭐ ASIA Index', href: '/asia-index' },
 ];
 
