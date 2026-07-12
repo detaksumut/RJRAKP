@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -38,10 +38,21 @@ export default function AsiaIndex() {
   const [totalIndexed, setTotalIndexed] = useState(0);
 
   useEffect(() => {
-    // Get total indexed count
     supabase.from('asia_index').select('id', { count: 'exact', head: true })
       .then(({ count }) => setTotalIndexed(count || 0));
+
+    // Auto-search if ?q= param exists (redirect from APASIFIC)
+    const urlParams = new URLSearchParams(window.location.search);
+    const qParam = urlParams.get('q');
+    if (qParam) {
+      setQuery(qParam);
+      // Trigger search after state is set
+      setTimeout(() => {
+        document.getElementById('asia-search-btn')?.click();
+      }, 100);
+    }
   }, []);
+
 
   const searchInternal = async (q: string): Promise<AsiaArticle[]> => {
     const { data } = await supabase
@@ -56,12 +67,13 @@ export default function AsiaIndex() {
   // Search via Crossref API (free, no key needed, academic articles)
   const searchCrossref = async (q: string): Promise<AsiaArticle[]> => {
     try {
-      const res = await fetch(
-        `https://api.crossref.org/works?query=${encodeURIComponent(q)}&rows=5&filter=type:journal-article&select=title,author,abstract,published,DOI,container-title,ISSN,URL`
-      );
-      if (!res.ok) return [];
-      const data = await res.json();
-      return (data.message?.items || []).map((item: any) => ({
+      // Search both general query AND author-specific in parallel
+      const [genRes, authorRes] = await Promise.all([
+        fetch(`https://api.crossref.org/works?query=${encodeURIComponent(q)}&rows=4&filter=type:journal-article&select=title,author,abstract,published,DOI,container-title,ISSN,URL`),
+        fetch(`https://api.crossref.org/works?query.author=${encodeURIComponent(q)}&rows=3&filter=type:journal-article&select=title,author,abstract,published,DOI,container-title,ISSN,URL`),
+      ]);
+
+      const mapItem = (item: any): AsiaArticle => ({
         id: crypto.randomUUID(),
         title: Array.isArray(item.title) ? item.title[0] : item.title || '',
         authors: (item.author || []).map((a: any) => `${a.given || ''} ${a.family || ''}`.trim()).join(', '),
@@ -77,13 +89,21 @@ export default function AsiaIndex() {
         zenodo_verified: false,
         orcid_verified: false,
         scopus_verified: false,
-        crossref_verified: true, // from Crossref itself
+        crossref_verified: true,
         has_abstract: !!(item.abstract),
         has_issn: !!(item.ISSN),
-        asia_score: item.abstract ? 25 : 15, // has Crossref + maybe abstract
+        asia_score: item.abstract ? 25 : 15,
         asia_rating: 2,
         indexed_at: new Date().toISOString(),
-      }));
+      });
+
+      const genData = genRes.ok ? await genRes.json() : null;
+      const authorData = authorRes.ok ? await authorRes.json() : null;
+
+      return [
+        ...(genData?.message?.items || []).map(mapItem),
+        ...(authorData?.message?.items || []).map(mapItem),
+      ];
     } catch { return []; }
   };
 
@@ -197,37 +217,56 @@ export default function AsiaIndex() {
         <title>ASIA Index — Mesin Pengindeks Jurnal APASIFIC</title>
         <meta name="description" content="ASIA Index adalah lembaga pengindeks resmi jurnal ilmiah di bawah naungan APASIFIC, dengan verifikasi Scopus, Zenodo, ORCID, dan Crossref." />
       </Helmet>
-      <div className="min-h-screen bg-gradient-to-b from-[#0d1b2a] to-[#1a2f47] text-white">
+      <div className="min-h-screen text-white" style={{ background: 'linear-gradient(160deg, #080810 0%, #0d0d1a 40%, #111120 100%)' }}>
         <Navbar />
 
-        {/* Hero */}
-        <div className="max-w-4xl mx-auto px-4 pt-20 pb-12 text-center">
-          <div className="inline-flex items-center gap-2 bg-amber-500/20 border border-amber-400/30 rounded-full px-4 py-1.5 text-amber-300 text-xs font-bold uppercase tracking-widest mb-6">
-            <Star className="w-3.5 h-3.5 fill-amber-400" /> ASIA Index — Lembaga Pengindeks Resmi APASIFIC
+        {/* Hero — with APASIFIC banner background */}
+        <div className="relative text-center overflow-hidden" style={{ minHeight: '420px' }}>
+          {/* Banner image */}
+          <div style={{
+            position: 'absolute', inset: 0,
+            backgroundImage: 'url(/banner-apasific.png)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center top',
+            opacity: 0.85,
+          }} />
+          {/* Gradient overlay — lighter so banner shows through */}
+          <div style={{
+            position: 'absolute', inset: 0,
+            background: 'linear-gradient(to bottom, rgba(8,8,16,0.1) 0%, rgba(8,8,16,0.35) 55%, #080810 100%)',
+          }} />
+
+          <div className="relative max-w-4xl mx-auto px-4 pt-20 pb-12">
+            <div className="inline-flex items-center gap-2 bg-amber-500/20 border border-amber-400/30 rounded-full px-4 py-1.5 text-amber-300 text-xs font-bold uppercase tracking-widest mb-6">
+              <Star className="w-3.5 h-3.5 fill-amber-400" /> ASIA Index — Lembaga Pengindeks Resmi APASIFIC
           </div>
           <h1 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4 leading-tight">
             Temukan Karya Ilmiah<br />
             <span className="text-amber-400">Terverifikasi Global</span>
           </h1>
-          <p className="text-blue-200 text-lg mb-3">
-            Diverifikasi oleh <strong className="text-white">Scopus · Zenodo · ORCID · Crossref</strong>
+          <p className="text-[#8888aa] text-lg mb-3">
+            Diverifikasi oleh <strong className="text-[#c9a84c]">Scopus · Zenodo · ORCID · Crossref</strong>
           </p>
-          <p className="text-blue-300/70 text-sm mb-10">
+          <p className="text-[#c9a84c]/60 text-sm mb-10">
             {totalIndexed.toLocaleString()} artikel terindeks · Terus bertumbuh setiap pencarian
           </p>
 
           {/* Search Box */}
           <form onSubmit={handleSearch} className="relative max-w-2xl mx-auto">
-            <div className="relative flex items-center bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-2xl overflow-hidden hover:border-amber-400/50 transition-colors">
-              <Search className="w-5 h-5 text-blue-300 ml-5 shrink-0" />
+            <div className="relative flex items-center border rounded-2xl shadow-2xl overflow-hidden transition-colors" style={{ background: 'rgba(18,18,31,0.9)', backdropFilter: 'blur(12px)', border: '1px solid rgba(201,168,76,0.3)' }}
+              onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(201,168,76,0.6)')}
+              onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(201,168,76,0.3)')}
+            >
+              <Search className="w-5 h-5 ml-5 shrink-0" style={{ color: '#c9a84c' }} />
               <input
                 type="text"
                 value={query}
                 onChange={e => setQuery(e.target.value)}
                 placeholder="Cari judul, penulis, kata kunci, nama jurnal..."
-                className="flex-1 bg-transparent px-4 py-5 text-white placeholder-blue-300/60 text-base focus:outline-none"
+                className="flex-1 bg-transparent px-4 py-5 text-white placeholder-[#8888aa] text-base focus:outline-none"
               />
               <button
+                id="asia-search-btn"
                 type="submit"
                 disabled={loading}
                 className="m-2 px-6 py-3 bg-amber-500 hover:bg-amber-400 disabled:opacity-60 text-black font-bold text-sm rounded-xl transition-colors shrink-0"
@@ -236,20 +275,21 @@ export default function AsiaIndex() {
               </button>
             </div>
           </form>
+          </div>
         </div>
 
         {/* Results */}
         <div className="max-w-4xl mx-auto px-4 pb-20">
           {loading && (
-            <div className="text-center py-16 text-blue-300">
+            <div className="text-center py-16" style={{ color: '#8888aa' }}>
               <Loader2 className="w-10 h-10 animate-spin mx-auto mb-4 text-amber-400" />
-              <p className="font-medium">Menelusuri database ASIA Index & internet...</p>
-              <p className="text-sm mt-1 text-blue-400">Memverifikasi melalui Scopus, Zenodo, ORCID, Crossref</p>
+              <p className="font-medium">Menelusuri database ASIA Index &amp; internet...</p>
+              <p className="text-sm mt-1" style={{ color: '#c9a84c' }}>Memverifikasi melalui Scopus, Zenodo, ORCID, Crossref</p>
             </div>
           )}
 
           {!loading && searched && results.length === 0 && (
-            <div className="text-center py-16 text-blue-300">
+            <div className="text-center py-16" style={{ color: '#8888aa' }}>
               <FileText className="w-12 h-12 mx-auto mb-4 opacity-40" />
               <p className="text-lg font-medium">Tidak ada hasil ditemukan</p>
               <p className="text-sm mt-1">Coba kata kunci yang berbeda</p>
@@ -258,13 +298,16 @@ export default function AsiaIndex() {
 
           {!loading && results.length > 0 && (
             <div className="space-y-4">
-              <p className="text-blue-300 text-sm mb-6">
-                Menampilkan <strong className="text-white">{results.length}</strong> hasil untuk "<em className="text-amber-300">{query}</em>"
+              <p className="text-sm mb-6" style={{ color: '#8888aa' }}>
+                Menampilkan <strong className="text-white">{results.length}</strong> hasil untuk "<em className="text-amber-400">{query}</em>"
               </p>
               {results.map(article => {
                 const { label, color } = getRatingLabel(article.asia_score);
                 return (
-                  <div key={article.id} className="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-6 hover:border-amber-400/30 hover:bg-white/10 transition-all group">
+                  <div key={article.id} className="backdrop-blur rounded-2xl p-6 transition-all group" style={{ background: 'rgba(18,18,31,0.85)', border: '1px solid rgba(201,168,76,0.12)' }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(201,168,76,0.35)'; (e.currentTarget as HTMLDivElement).style.background = 'rgba(24,24,46,0.95)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(201,168,76,0.12)'; (e.currentTarget as HTMLDivElement).style.background = 'rgba(18,18,31,0.85)'; }}
+                  >
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1 min-w-0">
                         {/* Badges */}
@@ -290,7 +333,7 @@ export default function AsiaIndex() {
                         </h3>
 
                         {/* Meta */}
-                        <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-blue-300 mb-3">
+                        <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs mb-3" style={{ color: '#8888aa' }}>
                           {article.authors && <span className="flex items-center gap-1"><User className="w-3 h-3" /> {article.authors}</span>}
                           {article.journal_name && <span className="flex items-center gap-1"><BookOpen className="w-3 h-3" /> {article.journal_name}</span>}
                           {article.year && <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {article.year}</span>}
