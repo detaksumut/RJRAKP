@@ -55,6 +55,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         { label: 'Manajemen Pengguna', path: '/dashboard/admin/users', icon: User },
         { label: 'Manajemen Opini', path: '/dashboard/admin/opinions', icon: MessageSquare },
         { label: 'Jabatan Staf', path: '/dashboard/admin/staff-roles', icon: Crown },
+        { label: 'Integrasi OJS & DOI', path: '/dashboard/admin/ojs-importer', icon: BookOpen },
         { label: 'Keuangan & Honor', path: '/dashboard/admin/finance', icon: DollarSign },
         { label: 'Activity Logs', path: '/dashboard/admin/logs', icon: BarChart },
         { label: 'Profil & Rekening', path: '/dashboard/profile', icon: User },

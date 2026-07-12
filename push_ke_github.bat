@@ -8,7 +8,7 @@ git add .
 
 echo.
 echo Membuat commit...
-git commit -m "feat: add pagination to reviewers admin dashboard"
+git commit -m "feat: add OJS Zenodo Importer machine"
 
 echo.
 echo Mengirim ke GitHub (push)...
