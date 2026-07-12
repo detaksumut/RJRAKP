@@ -4,7 +4,7 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { supabase } from '../lib/supabase';
 import { Search, Star, ExternalLink, FileText, User, BookOpen, CheckCircle, Clock, Loader2 } from 'lucide-react';
-
+import bgAsiaIndex from '../../bg-asiaindex.png';
 interface AsiaArticle {
   id: string;
   title: string;
@@ -141,17 +141,58 @@ export default function AsiaIndex() {
     } catch { return []; }
   };
 
+  // Search via DataCite API (free, no key needed)
+  const searchDataCite = async (q: string): Promise<AsiaArticle[]> => {
+    try {
+      const res = await fetch(`https://api.datacite.org/dois?query=${encodeURIComponent(q)}&page[size]=5`);
+      if (!res.ok) return [];
+      const data = await res.json();
+      return (data.data || []).map((item: any) => {
+        const attr = item.attributes || {};
+        const title = attr.titles?.[0]?.title || '';
+        const abstractObj = attr.descriptions?.find((d: any) => d.descriptionType === 'Abstract' || d.descriptionType === 'Other');
+        const abstract = abstractObj?.description?.replace(/<[^>]*>/g, '') || '';
+        const isZenodo = attr.publisher?.toLowerCase().includes('zenodo');
+        
+        return {
+          id: crypto.randomUUID(),
+          title: title,
+          authors: (attr.creators || []).map((c: any) => c.name).join(', '),
+          abstract: abstract,
+          keywords: '',
+          journal_name: attr.publisher || '',
+          issn: '',
+          year: attr.publicationYear || new Date().getFullYear(),
+          doi: attr.doi || '',
+          source_url: attr.url || (attr.doi ? `https://doi.org/${attr.doi}` : ''),
+          pdf_url: '',
+          origin: 'web',
+          zenodo_verified: isZenodo,
+          orcid_verified: false,
+          scopus_verified: false,
+          crossref_verified: false,
+          has_abstract: !!abstract,
+          has_issn: false,
+          asia_score: abstract ? 15 : 5,
+          asia_rating: 1,
+          indexed_at: new Date().toISOString(),
+        };
+      });
+    } catch { return []; }
+  };
+
   const searchWebAndSave = async (q: string) => {
     try {
-      // Run Crossref and Semantic Scholar in parallel
-      const [crossrefResults, scholarResults] = await Promise.all([
+      // Run Crossref, Semantic Scholar, and DataCite in parallel
+      const [crossrefResults, scholarResults, dataciteResults] = await Promise.all([
         searchCrossref(q),
         searchSemanticScholar(q),
+        searchDataCite(q),
       ]);
 
       // Merge, deduplicate by title
       const seen = new Set<string>();
-      const webResults = [...crossrefResults, ...scholarResults].filter(r => {
+      const webResults = [...crossrefResults, ...scholarResults, ...dataciteResults].filter(r => {
         const key = r.title.toLowerCase().substring(0, 50);
         if (seen.has(key)) return false;
         seen.add(key);
@@ -225,7 +266,7 @@ export default function AsiaIndex() {
           {/* Banner image */}
           <div style={{
             position: 'absolute', inset: 0,
-            backgroundImage: 'url(/banner-apasific.png)',
+            backgroundImage: `url(${bgAsiaIndex})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center top',
             opacity: 0.85,
@@ -245,7 +286,7 @@ export default function AsiaIndex() {
             <span className="text-amber-400">Terverifikasi Global</span>
           </h1>
           <p className="text-[#8888aa] text-lg mb-3">
-            Diverifikasi oleh <strong className="text-[#c9a84c]">Scopus · Zenodo · ORCID · Crossref</strong>
+            Diverifikasi oleh <strong className="text-[#c9a84c]">Scopus · Zenodo · DataCite · ORCID · Crossref</strong>
           </p>
           <p className="text-[#c9a84c]/60 text-sm mb-10">
             {totalIndexed.toLocaleString()} artikel terindeks · Terus bertumbuh setiap pencarian
@@ -284,7 +325,7 @@ export default function AsiaIndex() {
             <div className="text-center py-16" style={{ color: '#8888aa' }}>
               <Loader2 className="w-10 h-10 animate-spin mx-auto mb-4 text-amber-400" />
               <p className="font-medium">Menelusuri database ASIA Index &amp; internet...</p>
-              <p className="text-sm mt-1" style={{ color: '#c9a84c' }}>Memverifikasi melalui Scopus, Zenodo, ORCID, Crossref</p>
+              <p className="text-sm mt-1" style={{ color: '#c9a84c' }}>Memverifikasi melalui Scopus, Zenodo, DataCite, ORCID, Crossref</p>
             </div>
           )}
 
