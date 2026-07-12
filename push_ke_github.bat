@@ -8,7 +8,7 @@ git add .
 
 echo.
 echo Membuat commit...
-git commit -m "update: system & WA copy enhancements"
+git commit -m "feat: add pagination to reviewers admin dashboard"
 
 echo.
 echo Mengirim ke GitHub (push)...

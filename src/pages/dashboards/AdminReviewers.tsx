@@ -10,6 +10,8 @@ export default function AdminReviewers() {
   const [loading, setLoading] = useState(true);
   const [selectedUser, setSelectedUser] = useState<any | null>(null);
   const [activeTab, setActiveTab] = useState<'PENDING' | 'APPROVED'>('PENDING');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   const fetchUsers = async () => {
     try {
@@ -144,6 +146,15 @@ export default function AdminReviewers() {
   const getFilteredUsers = () => {
     return users.filter(u => u.status === activeTab);
   };
+
+  const filteredUsers = getFilteredUsers();
+  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage) || 1;
+  const paginatedUsers = filteredUsers.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  // Reset page when tab changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeTab]);
 
   if (selectedUser) {
     return (
@@ -340,9 +351,9 @@ export default function AdminReviewers() {
             <tbody className="divide-y divide-academic-100">
               {loading ? (
                 <tr><td colSpan={5} className="p-8 text-center text-academic-500">Memuat data...</td></tr>
-              ) : getFilteredUsers().length === 0 ? (
-                <tr><td colSpan={5} className="p-12 text-center text-academic-500 font-medium">Tidak ada reviewer yang menunggu verifikasi.</td></tr>
-              ) : getFilteredUsers().map(u => (
+              ) : paginatedUsers.length === 0 ? (
+                <tr><td colSpan={5} className="p-12 text-center text-academic-500 font-medium">Tidak ada reviewer untuk ditampilkan.</td></tr>
+              ) : paginatedUsers.map(u => (
                 <tr key={u.id} className="hover:bg-academic-50 transition-colors">
                   <td className="p-4">
                      <div className="flex items-center gap-2">
@@ -390,6 +401,42 @@ export default function AdminReviewers() {
               ))}
             </tbody>
           </table>
+          
+          {/* Pagination Controls */}
+          {!loading && filteredUsers.length > 0 && (
+            <div className="px-6 py-4 border-t border-academic-200 bg-academic-50 flex items-center justify-between">
+              <span className="text-sm text-academic-600">
+                Menampilkan <span className="font-bold">{(currentPage - 1) * itemsPerPage + 1}</span> - <span className="font-bold">{Math.min(currentPage * itemsPerPage, filteredUsers.length)}</span> dari <span className="font-bold">{filteredUsers.length}</span> reviewer
+              </span>
+              <div className="flex gap-2">
+                <button 
+                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  className="px-3 py-1.5 text-sm font-bold bg-white border border-academic-300 rounded hover:bg-academic-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  Sebelumnya
+                </button>
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: totalPages }).map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setCurrentPage(i + 1)}
+                      className={`w-8 h-8 flex items-center justify-center text-sm font-bold rounded border transition-colors ${currentPage === i + 1 ? 'bg-brand-600 text-white border-brand-700' : 'bg-white text-academic-700 border-academic-300 hover:bg-academic-100'}`}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
+                </div>
+                <button 
+                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  className="px-3 py-1.5 text-sm font-bold bg-white border border-academic-300 rounded hover:bg-academic-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  Selanjutnya
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </DashboardLayout>
