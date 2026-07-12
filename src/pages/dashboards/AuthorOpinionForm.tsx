@@ -242,7 +242,7 @@ export default function AuthorOpinionForm() {
       // Kirim Notifikasi WhatsApp ke HP Dosen Pengampu
       const authorName = user?.full_name || 'Mahasiswa';
       const opinionUrl = `${window.location.origin}/opini/${finalSlug}`;
-      const waMessage = `*NOTIFIKASI OPINI MAHASISWA (RJRAKP)*\n\nHalo Bapak/Ibu Dosen,\n\nMahasiswa Anda yang bernama *${authorName}* baru saja mengirimkan tulisan opini sebagai pemenuhan Tugas Jurnal dengan judul:\n\n*"${title}"*\n\nBapak/Ibu dapat membaca tulisan opini lengkap mahasiswa tersebut melalui tautan publik berikut:\n${opinionUrl}\n\nTerima kasih.\n_Rumah Jurnal RJRAKP_`;
+      const waMessage = `*NOTIFIKASI OPINI AKADEMIK (Asia Index & Metric)*\n\nHalo Bapak/Ibu Dosen,\n\nMahasiswa Anda yang bernama *${authorName}* baru saja menyelesaikan dan mengirimkan tulisan opini akademik sebagai pemenuhan Tugas Jurnal dengan judul:\n\n*"${title}"*\n\nBapak/Ibu dapat meninjau tulisan opini mahasiswa tersebut melalui tautan publik berikut:\n${opinionUrl}\n\nSebagai bentuk apresiasi terhadap karya tulis akademik, naskah ini akan mendapatkan fasilitas eksklusif:\n✓ Pendampingan penerbitan artikel di Repositori Zenodo\n✓ Registrasi Nomor Identitas Internasional (DOI)\n✓ Indeksasi metadata artikel oleh OpenAIRE (Europe Base Index)\n\nTerima kasih atas bimbingan luar biasa dari Bapak/Ibu.\n\nSalam hormat,\n_Asia Index & Metric_`;
 
       try {
         await supabase.functions.invoke('send-wa', {

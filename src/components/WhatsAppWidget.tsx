@@ -151,19 +151,19 @@ export default function WhatsAppWidget() {
           </div>
 
           {/* Chat Body */}
-          <div className="p-4 bg-slate-50 flex-1 overflow-y-auto flex flex-col gap-3">
-            <div className="bg-white p-3 rounded-2xl rounded-tl-none shadow-sm border border-slate-100 max-w-[90%] text-xs text-slate-700 leading-relaxed font-medium self-start">
-              Selamat datang di Forum Global ASIA Index! Silakan berdiskusi atau bertanya bebas di sini.
+          <div className="p-4 bg-slate-50 flex-1 overflow-y-auto flex flex-col gap-4">
+            <div className="bg-white px-5 py-4 rounded-2xl rounded-tl-none shadow-sm border border-slate-200 max-w-[90%] text-sm text-slate-700 leading-relaxed font-medium self-start">
+              Selamat datang di Forum Global RJRAKP! Silakan berdiskusi atau bertanya bebas di sini.
             </div>
             
             {messages.map((msg) => {
               const isMine = user ? msg.user_id === user.id : msg.guest_name === guestName && !msg.user_id;
-              const senderName = msg.user_id && msg.users ? msg.users.full_name : msg.guest_name || 'Guest';
+              const senderName = msg.user_id ? 'Registered User' : msg.guest_name || 'Guest';
               
               return (
                 <div key={msg.id} className={`flex flex-col max-w-[85%] ${isMine ? 'self-end items-end' : 'self-start items-start'}`}>
-                  <span className="text-[9px] text-slate-400 font-bold mb-1 ml-1">{senderName}</span>
-                  <div className={`p-2.5 rounded-2xl shadow-sm text-xs leading-relaxed break-words ${isMine ? 'bg-[#c9a84c] text-academic-950 rounded-tr-none font-medium' : 'bg-white border border-slate-100 text-slate-700 rounded-tl-none'}`}>
+                  <span className="text-[10px] text-slate-400 font-bold mb-1 mx-2">{senderName}</span>
+                  <div className={`px-5 py-3 rounded-2xl shadow-sm text-sm leading-relaxed break-words ${isMine ? 'bg-[#d4b75a] text-slate-900 rounded-tr-none font-medium' : 'bg-white border border-slate-200 text-slate-700 rounded-tl-none'}`}>
                     {msg.message}
                   </div>
                 </div>
@@ -182,30 +182,30 @@ export default function WhatsAppWidget() {
                     placeholder="Masukkan nama Anda..."
                     value={guestName}
                     onChange={(e) => setGuestName(e.target.value)}
-                    className="flex-grow border border-slate-200 rounded-xl px-4 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#c9a84c] bg-slate-50"
+                    className="flex-grow border-2 border-[#d4b75a] rounded-full pl-6 pr-4 py-3 text-sm font-medium text-slate-900 focus:outline-none focus:ring-4 focus:ring-[#d4b75a]/20 bg-white shadow-sm"
                     autoFocus
                   />
-                  <button type="submit" className="px-4 bg-[#111120] text-[#c9a84c] rounded-xl text-xs font-bold hover:bg-[#1a1a2e]">
+                  <button type="submit" className="px-6 py-3 bg-[#111120] text-[#c9a84c] rounded-full text-sm font-bold hover:bg-[#1a1a2e] transition-colors shadow-md">
                     OK
                   </button>
                 </div>
              </form>
           ) : (
-            <form onSubmit={handleStartChat} className="p-4 border-t border-[#c9a84c]/20 bg-white flex items-center gap-2">
+            <form onSubmit={handleStartChat} className="p-4 border-t border-[#c9a84c]/20 bg-white flex items-center gap-3">
               <input
                 type="text"
                 placeholder="Tulis pesan..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                className="flex-grow border border-slate-200 rounded-xl px-4 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#c9a84c] focus:border-[#c9a84c] bg-slate-50"
+                className="flex-grow border-2 border-[#d4b75a] rounded-full pl-6 pr-4 py-3 text-sm font-medium text-slate-900 focus:outline-none focus:ring-4 focus:ring-[#d4b75a]/20 bg-white shadow-sm"
               />
               <button
                 type="submit"
                 disabled={!message.trim()}
-                className="w-9 h-9 rounded-xl bg-[#c9a84c] hover:bg-[#b8953c] text-academic-950 flex items-center justify-center shadow-md transition-colors cursor-pointer shrink-0 border-none outline-none disabled:opacity-50"
+                className="w-12 h-12 rounded-full bg-[#eadd9e] hover:bg-[#d4b75a] text-[#856e29] flex items-center justify-center shadow-md transition-transform hover:scale-105 cursor-pointer shrink-0 border-none outline-none disabled:opacity-50 disabled:hover:scale-100"
                 title="Kirim Pesan"
               >
-                <Send className="w-4 h-4 ml-0.5" />
+                <Send className="w-5 h-5 ml-1" />
               </button>
             </form>
           )}

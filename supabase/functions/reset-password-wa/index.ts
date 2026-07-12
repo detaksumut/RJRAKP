@@ -69,7 +69,7 @@ serve(async (req) => {
       cleanedTarget = '62' + cleanedTarget.slice(1);
     }
 
-    const message = `*Notifikasi SIP RJRAKP*\n\nHalo *${userProfile.full_name}*,\n\nAnda telah melakukan permintaan reset password. Berikut adalah kredensial login baru Anda:\n\n*Email (User ID):* ${email}\n*Password Sementara:* ${tempPassword}\n\nSilakan gunakan password sementara di atas untuk login kembali di sistem SIP RJRAKP.\n\n*PENTING (KEAMANAN):*\nDemi keamanan akun Anda, harap segera mengubah password sementara ini melalui menu *Profil & Rekening* setelah Anda berhasil masuk ke dashboard.\n\nTerima kasih.`
+    const message = `*Notifikasi SIP Asia Index & Metric*\n\nHalo *${userProfile.full_name}*,\n\nAnda telah melakukan permintaan reset password. Berikut adalah kredensial login baru Anda:\n\n*Email (User ID):* ${email}\n*Password Sementara:* ${tempPassword}\n\nSilakan gunakan password sementara di atas untuk login kembali di sistem SIP Asia Index & Metric.\n\n*PENTING (KEAMANAN):*\nDemi keamanan akun Anda, harap segera mengubah password sementara ini melalui menu *Profil & Rekening* setelah Anda berhasil masuk ke dashboard.\n\nTerima kasih.`
 
     const waResponse = await fetch("https://api.fonnte.com/send", {
       method: "POST",

@@ -333,60 +333,58 @@ export default function AuthorSubmit() {
       
       if (userPhone && publicationType !== 'jurnal_kuliah') {
         const waMessage = isSinta 
-          ? `Terima kasih telah melakukan submit artikel melalui Rumah Jurnal Riset, Analisis dan Keadilan Publik (RJRAKP).
+          ? `Terima kasih telah melakukan submit artikel Anda melalui sistem Asia Index & Metric (Association Asia Pacific Academicians).
 
 Detail Pengajuan:
 
 Judul Artikel:
 ${formData.title}
 
-Target Publikasi:
+Target Indeksasi & Metrik:
 ${pkgDetails.name}
 
 Fasilitas yang diperoleh:
 
-✓ Review awal naskah
-✓ Penyuntingan dan penyempurnaan artikel
-✓ Penyesuaian template jurnal tujuan
+✓ Review dan standardisasi naskah
+✓ Penyuntingan berbasis metrik sitasi
+✓ Penyesuaian template jurnal mitra
 ✓ Pendampingan submit artikel
 ✓ Pendampingan revisi reviewer
 ✓ Monitoring proses publikasi hingga terbit
-✓ Depositori Zenodo
-✓ Integrasi OpenAIRE
-✓ Integrasi ORCID Author
-✓ Terindeks Google Scholar
+✓ Depositori dan jejak digital Zenodo
+✓ Integrasi metrik OpenAIRE
+✓ Integrasi profil ORCID Author
+✓ Indeksasi Google Scholar
 ✓ Pendampingan metadata publikasi
 
-Khusus paket publikasi SINTA, RJRAKP akan melakukan pendampingan dan pengelolaan publikasi hingga artikel diterbitkan pada jurnal yang saat ini terindeks SINTA sesuai kategori yang dipilih oleh penulis.
+Khusus paket publikasi SINTA, Asia Index & Metric akan melakukan pemantauan dan pengelolaan agar artikel Anda memenuhi standar kualitas publikasi pada jurnal yang terindeks SINTA sesuai kategori yang dipilih.
 
 Catatan:
-Proses publikasi dilaksanakan sesuai kebijakan editor, reviewer, dan ketentuan jurnal tujuan.
+Proses evaluasi dan publikasi dilaksanakan sesuai standar kualitas ilmiah dan kebijakan jurnal mitra.
 
-RJRAKP
-Rumah Jurnal Riset, Analisis dan Keadilan Publik
-Jl. H.M. Joni No. 11, Medan
-https://rjrakp.com`
-          : `Terima kasih telah melakukan submit artikel melalui Rumah Jurnal Riset, Analisis dan Keadilan Publik (RJRAKP).
+Asia Index & Metric
+Association Asia Pacific Academicians
+https://apasific.org`
+          : `Terima kasih telah melakukan submit artikel Anda melalui sistem Asia Index & Metric (Association Asia Pacific Academicians).
 
 Detail Pengajuan:
 
 Judul Artikel:
 ${formData.title}
 
-Target Publikasi:
+Target Indeksasi & Metrik:
 Jurnal Internasional
 
 Fasilitas yang diperoleh:
-✓ Penerbitan di Rumah Jurnal Internasional
-✓ Terindeks Google Scholar & Zenodo
-✓ Terhubung ke ORCID
-✓ Terindeks di OpenAIRE
-✓ Penerbitan sertifikat dan nomor DOI
+✓ Penerbitan di Jurnal Internasional mitra
+✓ Indeksasi Google Scholar & Zenodo
+✓ Integrasi profil ORCID
+✓ Indeksasi metadata OpenAIRE (Europe Base Index)
+✓ Penerbitan sertifikat dan jejak DOI
 
-RJRAKP
-Rumah Jurnal Riset, Analisis dan Keadilan Publik
-Jl. H.M. Joni No. 11, Medan
-https://rjrakp.com`;
+Asia Index & Metric
+Association Asia Pacific Academicians
+https://apasific.org`;
 
         supabase.functions.invoke('send-wa', {
           body: {
